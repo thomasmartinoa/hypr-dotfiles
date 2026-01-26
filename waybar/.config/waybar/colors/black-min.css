@@ -1,0 +1,35 @@
+
+@define-color bg0 #0a0a0a;   /* main bar background - almost black */
+@define-color bg1 #141414;   /* slightly lighter */
+@define-color bg2 #1e1e1e;   /* module backgrounds */
+@define-color bg3 #282828;   /* borders, separators */
+@define-color bg4 #333333;   /* hover states */
+
+/* Accent colors - all in greyscale spectrum */
+@define-color accent-bright #ffffff;  /* pure white - for active/important */
+@define-color accent-light  #e0e0e0;  /* light grey - primary text */
+@define-color accent-mid    #a0a0a0;  /* medium grey - secondary text */
+@define-color accent-dim    #606060;  /* dim grey - inactive */
+
+/* Semantic colors for states */
+@define-color active   #ffffff;
+@define-color hover    #cccccc;
+@define-color warning  #b0b0b0;
+@define-color critical #808080;
+
+/* Main foreground */
+@define-color fg #e8e8e8;
+
+/* Legacy color names mapped to greyscale for compatibility */
+@define-color red    #ffffff;
+@define-color orange #e0e0e0;
+@define-color yellow #c8c8c8;
+@define-color green  #b0b0b0;
+@define-color aqua   #989898;
+@define-color blue   #ffffff;
+@define-color purple #d0d0d0;
+
+/* Additional greys */
+@define-color grey0 #404040;
+@define-color grey1 #707070;
+@define-color grey2 #a0a0a0;

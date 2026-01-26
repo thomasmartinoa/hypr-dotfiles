@@ -1,0 +1,67 @@
+
+################
+# Shell
+################
+[terminal.shell]
+program = "/usr/bin/bash"
+
+
+################
+# Font
+################
+[font]
+size = 11.0
+
+#[font.normal]
+#family = "JetBrains Mono Nerd Font"
+#style = "Regular"
+
+################
+# Cursor
+################
+[cursor]
+style = { shape = "Beam", blinking = "On" }
+blink_interval = 500
+
+################
+# Window & Padding
+################
+[window]
+padding = { x = 22, y = 22 }
+opacity = 0.80
+decorations = "full"
+
+################
+# Scrolling
+################
+[scrolling]
+history = 10000
+multiplier = 3
+
+################
+# Mouse
+################
+[mouse]
+hide_when_typing = true
+
+################
+# Keyboard bindings
+################
+[keyboard]
+
+bindings = [
+  # Copy (Kitty: copy_or_interrupt)
+  { key = "C", mods = "Control", action = "Copy" },
+
+  # Scroll page
+  { key = "PageUp", action = "ScrollPageUp" },
+  { key = "PageDown", action = "ScrollPageDown" },
+
+  # Font size controls
+  { key = "Plus", mods = "Control", action = "IncreaseFontSize" },
+  { key = "Equals", mods = "Control", action = "IncreaseFontSize" },
+  { key = "Minus", mods = "Control", action = "DecreaseFontSize" },
+  { key = "Key0", mods = "Control", action = "ResetFontSize" },
+]
+
+
