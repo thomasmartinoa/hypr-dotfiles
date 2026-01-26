@@ -1,209 +1,163 @@
-<h1 align="center">
-  <img src="https://raw.githubusercontent.com/hyprwm/Hyprland/main/assets/header.svg" width="600"/>
-</h1>
+# My Hyprland Dotfiles
 
-<h1 align="center">Hyprland Dotfiles</h1>
+Hey! These are my personal dotfiles for my Hyprland setup. I've been tweaking this rice for a while now and finally decided to share it. It's nothing too crazy - just a clean, minimal setup that works well for me.
 
-<p align="center">
-  <b>A minimal, fast, aesthetic Hyprland rice</b>
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/WM-Hyprland-blue?style=for-the-badge&logo=linux&logoColor=white" alt="Hyprland"/>
-  <img src="https://img.shields.io/badge/Shell-Zsh-green?style=for-the-badge&logo=gnu-bash&logoColor=white" alt="Zsh"/>
-  <img src="https://img.shields.io/badge/Terminal-Kitty-orange?style=for-the-badge&logo=alacritty&logoColor=white" alt="Kitty"/>
-  <img src="https://img.shields.io/badge/Editor-Neovim-brightgreen?style=for-the-badge&logo=neovim&logoColor=white" alt="Neovim"/>
-</p>
+Feel free to grab whatever you find useful!
 
 ---
 
 ## Screenshots
 
-<details open>
-<summary><b>Desktop Overview</b></summary>
-<br>
+Here's what it looks like:
+
+**The main desktop**
 
 ![Main Window](Screenshots/mainwindow.png)
 
-</details>
-
-<details open>
-<summary><b>System Monitoring</b></summary>
-<br>
+**Terminal with fastfetch and btop running**
 
 ![Fastfetch and Btop](Screenshots/withfastfetchandbtop.png)
 
-</details>
-
-<details open>
-<summary><b>Application Launcher</b></summary>
-<br>
+**Rofi launcher**
 
 ![Rofi Launcher](Screenshots/rofi.png)
 
-</details>
-
-<details open>
-<summary><b>Notifications</b></summary>
-<br>
+**Notifications (SwayNC)**
 
 ![SwayNC Notifications](Screenshots/swaync_notification.png)
 
-</details>
-
-<details open>
-<summary><b>Browser</b></summary>
-<br>
+**Zen Browser in action**
 
 ![Zen Browser](Screenshots/zen-browser.png)
 
-</details>
+---
+
+## What I'm using
+
+- **Window Manager:** [Hyprland](https://hyprland.org/) - honestly the best wayland compositor out there
+- **Bar:** [Waybar](https://github.com/Alexays/Waybar) - simple and customizable
+- **Launcher:** [Rofi](https://github.com/davatorium/rofi) - fast app launcher
+- **Notifications:** [SwayNC](https://github.com/ErikReider/SwayNotificationCenter) - nice notification center
+- **Wallpaper:** [Hyprpaper](https://github.com/hyprwm/hyprpaper) + [SWWW](https://github.com/LGFae/swww) for smooth transitions
+- **Lock Screen:** [Swaylock](https://github.com/swaywm/swaylock)
+- **Terminal:** [Kitty](https://sw.kovidgoyal.net/kitty/) (main) and [Alacritty](https://alacritty.org/) (backup)
+- **Shell:** [Zsh](https://www.zsh.org/) with [Starship](https://starship.rs/) prompt
+- **Editor:** [Neovim](https://neovim.io/)
 
 ---
 
-## 🧩 Components
+## Some things I like about this setup
 
-| Component | Name |
-|-----------|------|
-| 🪟 **Window Manager** | [Hyprland](https://hyprland.org/) |
-| 📊 **Status Bar** | [Waybar](https://github.com/Alexays/Waybar) |
-| 🚀 **App Launcher** | [Rofi](https://github.com/davatorium/rofi) |
-| 🔔 **Notifications** | [SwayNC](https://github.com/ErikReider/SwayNotificationCenter) |
-| 🖼️ **Wallpaper** | [Hyprpaper](https://github.com/hyprwm/hyprpaper) / [SWWW](https://github.com/LGFae/swww) |
-| 🔒 **Lock Screen** | [Swaylock](https://github.com/swaywm/swaylock) |
-| 💻 **Terminal** | [Kitty](https://sw.kovidgoyal.net/kitty/) / [Alacritty](https://alacritty.org/) |
-| 🐚 **Shell** | [Zsh](https://www.zsh.org/) + [Starship](https://starship.rs/) |
-| 📝 **Editor** | [Neovim](https://neovim.io/) |
+- Blur on windows looks really nice with the right opacity settings
+- Animations are smooth - I spent way too much time tweaking the bezier curves
+- Dwindle tiling layout just works for how I use my desktop
+- SwayNC gives me a proper notification center instead of notifications just disappearing
+- Starship prompt is fast and shows me git info without being too cluttered
+- SWWW lets me change wallpapers with cool transition effects
 
 ---
 
-## Features
+## How it's organized
 
-- **Blur Effects** - Beautiful blur with configurable opacity
-- **Smooth Animations** - Custom bezier curves for fluid window transitions
-- **Dwindle Layout** - Efficient tiling with smart gaps
-- **Notification Center** - Integrated SwayNC with custom styling
-- **Fast Prompt** - Starship prompt with git integration and custom symbols
-- **Dynamic Wallpapers** - SWWW daemon for smooth wallpaper transitions
-
----
-
-## Structure
+The repo is set up for GNU Stow so each folder is its own "package":
 
 ```
-dotfiles/
-├── 📂 alacritty/          # Alacritty terminal config
-├── 📂 hyprland/           # Hyprland WM configuration
-│   └── .config/hypr/
-│       ├── hyprland.conf      # Main config (imports modules)
-│       ├── hypridle.conf      # Idle daemon config
-│       ├── hyprpaper.conf     # Wallpaper config
-│       ├── modules/           # Modular configs
-│       │   ├── autostart.conf
-│       │   ├── binds.conf
-│       │   ├── decorations.conf
-│       │   ├── env.conf
-│       │   ├── monitors.conf
-│       │   └── windowrules.conf
-│       └── scripts/           # Helper scripts
-├── 📂 kittyterminal/      # Kitty terminal config
-├── 📂 nvim/               # Neovim configuration
-├── 📂 rofi/               # Rofi launcher themes
-├── 📂 starship/           # Starship prompt config
-├── 📂 swaylock/           # Lock screen config
-├── 📂 swaync/             # Notification center config
-├── 📂 wallpaper/          # Wallpaper collection
-├── 📂 waybar/             # Status bar config & styles
-└── 📂 zsh/                # Zsh configuration
+alacritty/       - alacritty terminal config
+hyprland/        - the main hyprland config (split into modules)
+kittyterminal/   - kitty terminal config  
+nvim/            - neovim setup
+rofi/            - launcher themes
+starship/        - shell prompt config
+swaylock/        - lock screen
+swaync/          - notification center
+wallpaper/       - my wallpapers
+waybar/          - status bar config and styles
+zsh/             - zsh config
 ```
+
+The hyprland config is modular - main stuff is in `hyprland/.config/hypr/` and I split things like keybinds, decorations, autostart etc into separate files under `modules/`.
 
 ---
 
-## 🚀 Installation
+## Installation
 
-### Prerequisites
-
-Make sure you have the following packages installed:
+### You'll need these packages
 
 ```bash
-# Core
+# the essentials
 hyprland waybar rofi-wayland swaync swaylock hyprpaper hypridle swww
 
-# Terminal & Shell
+# terminal stuff
 kitty alacritty zsh starship
 
-# Utilities
-polkit-gnome networkmanager pavucontrol
-
-# Optional
-neovim fastfetch btop eza
+# other stuff I use
+polkit-gnome networkmanager pavucontrol neovim fastfetch btop eza
 ```
 
-### Using GNU Stow (Recommended)
+### Using Stow (the easy way)
+
+I use GNU Stow to manage everything. If you don't have it, just `sudo pacman -S stow` (or whatever your package manager is).
 
 ```bash
-# Clone the repository
 git clone https://github.com/yourusername/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 
-# Symlink all configs
+# symlink everything at once
 stow alacritty hyprland kittyterminal nvim rofi starship swaylock swaync waybar zsh
 
-# Or symlink individual configs
-stow hyprland
-stow waybar
-# ... etc
+# or just what you need
+stow hyprland waybar
 ```
 
-### Manual Installation
+### Manual way
+
+If you don't want to use stow, just copy the configs:
 
 ```bash
-# Clone the repository
 git clone https://github.com/yourusername/dotfiles.git ~/dotfiles
 
-# Copy configs to .config
 cp -r ~/dotfiles/hyprland/.config/hypr ~/.config/
 cp -r ~/dotfiles/waybar/.config/waybar ~/.config/
-cp -r ~/dotfiles/rofi/.config/rofi ~/.config/
-# ... etc
+# ... you get the idea
 
-# Copy zshrc
 cp ~/dotfiles/zsh/.zshrc ~/
 ```
 
 ---
 
-## ⌨️ Keybindings
+## Keybindings
 
-Check out the keybindings in `hyprland/.config/hypr/modules/binds.conf`
+All my keybinds are in `hyprland/.config/hypr/modules/binds.conf` - check that file out if you want to see what's what.
 
 ---
 
-## 🎨 Customization
+## Tweaking stuff
 
-### Changing Wallpaper
+**Wallpaper**
 
-Edit `~/.config/hypr/hyprpaper.conf` or use SWWW:
+You can either edit `~/.config/hypr/hyprpaper.conf` or just use swww directly:
 
 ```bash
-swww img /path/to/wallpaper.png --transition-type grow
+swww img /path/to/your/wallpaper.png --transition-type grow
 ```
 
-### Adjusting Blur & Opacity
+**Blur and transparency**
 
-Edit `hyprland/.config/hypr/modules/decorations.conf`:
+These are in `hyprland/.config/hypr/modules/decorations.conf`. The main things you'd want to change:
 
 ```ini
 decoration {
-    active_opacity = 0.9
-    inactive_opacity = 0.7
+    active_opacity = 0.9      # focused window opacity
+    inactive_opacity = 0.7    # unfocused windows
     
     blur {
         enabled = true
         size = 6
-        passes = 4
+        passes = 4            # more passes = more blur but heavier on gpu
     }
 }
 ```
 
 ---
+
+That's pretty much it. If something doesn't work or you have questions, feel free to open an issue.
