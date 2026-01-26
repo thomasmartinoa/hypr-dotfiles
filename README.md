@@ -1,4 +1,4 @@
-# My Hyprland Dotfiles
+# Hyprland Dotfiles
 
 Hey! These are my personal dotfiles for my Hyprland setup. I've been tweaking this rice for a while now and finally decided to share it. It's nothing too crazy - just a clean, minimal setup that works well for me.
 
@@ -6,7 +6,6 @@ Feel free to grab whatever you find useful!
 
 ---
 
-## Screenshots
 
 Here's what it looks like:
 
