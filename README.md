@@ -2,10 +2,10 @@
   <img src="https://raw.githubusercontent.com/hyprwm/Hyprland/main/assets/header.svg" width="600"/>
 </h1>
 
-<h1 align="center">🌿 Martin's Hyprland Dotfiles</h1>
+<h1 align="center">Hyprland Dotfiles</h1>
 
 <p align="center">
-  <b>A minimal, aesthetic, and functional Hyprland rice</b>
+  <b>A minimal, fast, aesthetic Hyprland rice</b>
 </p>
 
 <p align="center">
@@ -17,10 +17,10 @@
 
 ---
 
-## ✨ Screenshots
+## Screenshots
 
 <details open>
-<summary><b>🖥️ Desktop Overview</b></summary>
+<summary><b>Desktop Overview</b></summary>
 <br>
 
 ![Main Window](Screenshots/mainwindow.png)
@@ -28,7 +28,7 @@
 </details>
 
 <details open>
-<summary><b>📊 System Monitoring</b></summary>
+<summary><b>System Monitoring</b></summary>
 <br>
 
 ![Fastfetch and Btop](Screenshots/withfastfetchandbtop.png)
@@ -36,7 +36,7 @@
 </details>
 
 <details open>
-<summary><b>🚀 Application Launcher</b></summary>
+<summary><b>Application Launcher</b></summary>
 <br>
 
 ![Rofi Launcher](Screenshots/rofi.png)
@@ -44,7 +44,7 @@
 </details>
 
 <details open>
-<summary><b>🔔 Notifications</b></summary>
+<summary><b>Notifications</b></summary>
 <br>
 
 ![SwayNC Notifications](Screenshots/swaync_notification.png)
@@ -52,7 +52,7 @@
 </details>
 
 <details open>
-<summary><b>🌐 Browser</b></summary>
+<summary><b>Browser</b></summary>
 <br>
 
 ![Zen Browser](Screenshots/zen-browser.png)
@@ -77,18 +77,18 @@
 
 ---
 
-## 🎨 Features
+## Features
 
-- **🌊 Blur Effects** - Beautiful blur with configurable opacity
-- **✨ Smooth Animations** - Custom bezier curves for fluid window transitions
-- **🎯 Dwindle Layout** - Efficient tiling with smart gaps
-- **🔔 Notification Center** - Integrated SwayNC with custom styling
-- **⚡ Fast Prompt** - Starship prompt with git integration and custom symbols
-- **🖼️ Dynamic Wallpapers** - SWWW daemon for smooth wallpaper transitions
+- **Blur Effects** - Beautiful blur with configurable opacity
+- **Smooth Animations** - Custom bezier curves for fluid window transitions
+- **Dwindle Layout** - Efficient tiling with smart gaps
+- **Notification Center** - Integrated SwayNC with custom styling
+- **Fast Prompt** - Starship prompt with git integration and custom symbols
+- **Dynamic Wallpapers** - SWWW daemon for smooth wallpaper transitions
 
 ---
 
-## 📁 Structure
+## Structure
 
 ```
 dotfiles/
@@ -207,19 +207,3 @@ decoration {
 ```
 
 ---
-
-## 💝 Credits
-
-- [Hyprland](https://hyprland.org/) - An amazing Wayland compositor
-- [r/unixporn](https://reddit.com/r/unixporn) - For endless inspiration
-- The Linux community for all the amazing open-source tools
-
----
-
-<p align="center">
-  <b>⭐ Star this repo if you found it helpful!</b>
-</p>
-
-<p align="center">
-  Made with 💜 and lots of ☕
-</p>
