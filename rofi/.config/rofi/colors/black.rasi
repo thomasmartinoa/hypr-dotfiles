@@ -8,8 +8,8 @@
 
 
 * {
-    background:      #000000FF;
-    background-alt:  #121212FF;
+    background:      rgba(0, 0, 0, 0.74);    /**FF last for no opacity**/ 
+    background-alt:  rgba(18, 18, 18, 0.97);
     surface:         #1E1E1EFF;
     surface-alt:     #2A2A2AFF;
 
@@ -20,4 +20,5 @@
     selected:        #E0E0E0FF;
     active:          #FFFFFFCC;
     urgent:          #B0B0B0FF;
+    textcolor:       #000000FF; 
 }
