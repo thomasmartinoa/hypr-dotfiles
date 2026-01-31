@@ -39,7 +39,7 @@ history = 10000
 multiplier = 3
 
 ################
-# Mouse
+# Mouse#
 ################
 [mouse]
 hide_when_typing = true
