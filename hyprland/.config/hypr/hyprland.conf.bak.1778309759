@@ -6,12 +6,6 @@ source = ~/.config/hypr/modules/monitors.conf
 source = ~/.config/hypr/modules/decorations.conf
 source = ~/.config/hypr/modules/windowrules.conf
 
-# XWayland HiDPI: render X11 apps at native pixel resolution instead of
-# upscaling a 1x bitmap. Paired with GDK_SCALE / Xcursor env vars.
-xwayland {
-    force_zero_scaling = true
-}
-
 ###################
 ### PERMISSIONS ###
 ###################

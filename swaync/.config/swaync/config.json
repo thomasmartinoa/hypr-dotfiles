@@ -141,7 +141,7 @@
         "actions": [
           {
             "label": "󰌾  Lock",
-            "command": "swaylock"
+            "command": "hyprlock"
           },
           {
             "label": "󰗽  Logout",
