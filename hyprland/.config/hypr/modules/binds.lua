@@ -1,0 +1,149 @@
+-- ~/.config/hypr/modules/binds.lua
+-- Ported 1:1 from modules/binds.conf.
+--
+-- Two syntax changes to know:
+--   * `$var = x` becomes `local var = "x"`. `local` is FILE-scoped — a local
+--     declared here is invisible to other required files.
+--   * Keys are one string with " + " separators: "SUPER + SHIFT + Q".
+--   * Bind flags (bindl/binde/bindm) become an options table:
+--       bindl -> { locked = true }      binde -> { repeating = true }
+--       bindm -> { mouse  = true }      bindel -> both locked and repeating
+
+---------------------
+---- MY PROGRAMS ----
+---------------------
+
+local terminal = "kitty"
+local fileManager = "thunar"
+local menu = "~/.config/rofi/launchers/type-2/launcher.sh"
+local browser = "zen-browser"
+
+local mainMod = "SUPER"
+
+---------------------
+---- KEYBINDINGS ----
+---------------------
+
+hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd(terminal))
+hl.bind(mainMod .. " + Q", hl.dsp.window.close()) -- was: killactive
+hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("wlogout"))
+hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
+hl.bind(mainMod .. " + T", hl.dsp.window.float({ action = "toggle" }))
+hl.bind(mainMod .. " + D", hl.dsp.exec_cmd(menu .. " || pkill rofi"))
+hl.bind(mainMod .. " + P", hl.dsp.window.pseudo()) -- dwindle
+hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit")) -- dwindle
+hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("swaylock"))
+hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(browser))
+hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("~/.config/waybar/scripts/launch.sh"))
+
+-- Screenshots.
+-- [[ ]] is a Lua long string: no escape processing at all, so shell quotes and
+-- $( ) survive verbatim. exec_cmd runs through `sh -c`, so they still expand.
+
+hl.bind(
+	mainMod .. " + Print",
+	hl.dsp.exec_cmd(
+		[[grim - | tee ~/Pictures/screenshot/screenshot-$(date +'%Y-%m-%d_%H-%M-%S').png | wl-copy && notify-send "Screenshot Saved happy alle"]]
+	)
+)
+
+hl.bind(
+	mainMod .. " + X",
+	hl.dsp.exec_cmd(
+		[[grim -g "$(slurp)" - | tee ~/Pictures/screenshot/screenshot-$(date +'%Y-%m-%d_%H-%M-%S').png | wl-copy && notify-send "Screenshot Saved happy alle"]]
+	)
+)
+
+hl.bind(
+	mainMod .. " + SHIFT + Print",
+	hl.dsp.exec_cmd(
+		[[grim -g "$(hyprctl activewindow -j | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"')" - | tee ~/Pictures/screenshot/screenshot-$(date +'%Y-%m-%d_%H-%M-%S').png | wl-copy && notify-send "Screenshot" "Active window saved and copied"]]
+	)
+)
+
+hl.bind(
+	mainMod .. " + SHIFT + X",
+	hl.dsp.exec_cmd([[grim -g "$(slurp)" - | wl-copy && notify-send "Screenshot" "Copied to clipboard"]])
+)
+
+-- hl.bind(mainMod .. " + SHIFT + C", hl.dsp.exec_cmd([[grim -g "$(slurp)" - | wl-copy]]))
+
+-- Move focus with mainMod + arrow keys
+hl.bind(mainMod .. " + left", hl.dsp.focus({ direction = "left" }))
+hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))
+hl.bind(mainMod .. " + up", hl.dsp.focus({ direction = "up" }))
+hl.bind(mainMod .. " + down", hl.dsp.focus({ direction = "down" }))
+
+-- Workspaces 1-10, and move-window-to-workspace.
+--
+-- The .conf version hand-wrote these twenty lines and one was missing:
+-- SUPER+SHIFT+1 did not exist (finding HYP-04). A loop makes that class of
+-- bug impossible.
+for i = 1, 10 do
+	local key = i % 10 -- workspace 10 maps to key 0
+	hl.bind(mainMod .. " + " .. key, hl.dsp.focus({ workspace = i }))
+	hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }))
+end
+
+-- Special workspace (scratchpad)
+hl.bind(mainMod .. " + S", hl.dsp.workspace.toggle_special("magic"))
+hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
+
+-- Scroll through existing workspaces with mainMod + scroll
+hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
+hl.bind(mainMod .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
+
+-- Move/resize windows with mainMod + LMB/RMB and dragging  (was: bindm)
+hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
+hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
+
+-- Laptop multimedia keys.  (was: bindel = locked + repeating)
+-- Brightness targets intel_backlight explicitly — on this Optimus laptop the
+-- panel backlight hangs off the Intel iGPU, not the NVIDIA card. Keep it.
+hl.bind(
+	"XF86AudioRaiseVolume",
+	hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"),
+	{ locked = true, repeating = true }
+)
+hl.bind(
+	"XF86AudioLowerVolume",
+	hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),
+	{ locked = true, repeating = true }
+)
+hl.bind(
+	"XF86AudioMute",
+	hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),
+	{ locked = true, repeating = true }
+)
+hl.bind(
+	"XF86AudioMicMute",
+	hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),
+	{ locked = true, repeating = true }
+)
+hl.bind(
+	"XF86MonBrightnessUp",
+	hl.dsp.exec_cmd("brightnessctl -d intel_backlight set 10%+"),
+	{ locked = true, repeating = true }
+)
+hl.bind(
+	"XF86MonBrightnessDown",
+	hl.dsp.exec_cmd("brightnessctl -d intel_backlight set 10%-"),
+	{ locked = true, repeating = true }
+)
+
+-- Requires playerctl.  (was: bindl = locked only)
+hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"), { locked = true })
+hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
+hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
+hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), { locked = true })
+
+-- MISSING IN THE OLD CONFIG (finding HYP-05): there is no fullscreen bind at
+-- all. Uncomment once the faithful port is verified working.
+--
+hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ mode = "fullscreen" }))
+hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.fullscreen({ mode = "maximized" }))
+
+
+hl.bind(mainMod .. " + V", hl.dsp.exec_cmd(
+  "cliphist list | rofi -dmenu | cliphist decode | wl-copy"
+))
