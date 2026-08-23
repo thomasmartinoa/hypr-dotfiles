@@ -7,7 +7,7 @@
 -- catch-all rule that applies to every monitor.
 
 hl.monitor({
-    output   = "",
+    output   = "eDP-1",
     mode     = "2560x1440@165.00",
     position = "auto",
     scale    = 1.60,

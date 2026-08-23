@@ -9,31 +9,29 @@
 -- `namespace` is a RE2 regex, unanchored. Anchoring with ^...$ is stricter and
 -- costs nothing. Check live namespaces with: hyprctl layers
 
-
 -------------------
 ---- LAYER RULES --
 -------------------
 
 -- SwayNotificationCenter
 hl.layer_rule({
-    match        = { namespace = "^swaync-control-center$" },
-    blur         = true,
-    ignore_alpha = 0.5,
+	match = { namespace = "^swaync-control-center$" },
+	blur = true,
+	ignore_alpha = 0.5,
 })
 
 hl.layer_rule({
-    match        = { namespace = "^swaync-notification-window$" },
-    blur         = true,
-    ignore_alpha = 0.4,
+	match = { namespace = "^swaync-notification-window$" },
+	blur = true,
+	ignore_alpha = 0.4,
 })
 
 -- Rofi
 hl.layer_rule({
-    match     = { namespace = "^rofi$" },
-    blur      = true,
-    animation = "popin 65%",
+	match = { namespace = "^rofi$" },
+	blur = true,
+	animation = "popin 65%",
 })
-
 
 --------------------
 ---- WINDOW RULES --
@@ -47,11 +45,11 @@ hl.layer_rule({
 
 -- Stop video players and games from letting the screen lock mid-playback.
 -- This is the single most useful rule missing today.
--- hl.window_rule({
---     name  = "idle-inhibit-fullscreen",
---     match = { fullscreen = true },
---     idle_inhibit = "fullscreen",
--- })
+hl.window_rule({
+	name = "idle-inhibit-fullscreen",
+	match = { fullscreen = true },
+	idle_inhibit = "fullscreen",
+})
 
 -- Ignore maximize requests from all apps.
 -- hl.window_rule({

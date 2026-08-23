@@ -29,13 +29,13 @@
       "urgency": "Normal"
     }
   },
-  "notification-visibility": {
+ /* "notification-visibility": {
     "example-name": {
       "state": "muted",
       "urgency": "Low",
       "app-name": "Spotify"
     }
-  },
+  },  */
   "widgets": [
     "label",
     "buttons-grid",
@@ -140,16 +140,16 @@
         "position": "right",
         "actions": [
           {
-            "label": "󰌾  Lock",
-            "command": "hyprlock"
-          },
-          {
             "label": "󰗽  Logout",
-            "command": "hyprctl dispatch exit"
+            "command": "hyprctl dispatch 'hl.dsp.exit()'"
           },
           {
             "label": "󰜉  Reboot",
             "command": "systemctl reboot"
+          },
+	  {
+            "label": "󰌾  Hibernate",
+            "command": "systemctl hibernate"
           },
           {
             "label": "󰐥  Shutdown",

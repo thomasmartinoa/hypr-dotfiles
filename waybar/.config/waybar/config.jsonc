@@ -70,7 +70,7 @@
         "format": "{icon}  {capacity}%",
         "format-charging": "󰂄  {capacity}%",
         "format-plugged": "󰚥  {capacity}%",
-        "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "��", "󰂂", "󰁹"],
+        "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂀", "󰂂", "󰁹"],
         "tooltip-format": "{capacity}% - {time}"
     },
 
@@ -88,7 +88,7 @@
             "dnd-inhibited-none": "󰪑"
         },
         "return-type": "json",
-        "exec-if": "which swaync-client",
+        "exec-if": "command -v swaync-client",
         "exec": "swaync-client -swb",
         "on-click": "swaync-client -t -sw",
         "on-click-right": "swaync-client -d -sw",

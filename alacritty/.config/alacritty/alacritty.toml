@@ -62,11 +62,5 @@ bindings = [
   { key = "Equals", mods = "Control", action = "IncreaseFontSize" },
   { key = "Minus", mods = "Control", action = "DecreaseFontSize" },
   { key = "Key0", mods = "Control", action = "ResetFontSize" },
+  { key = "Return", mods="Shift", chars="\u001B\r"},
 ]
-
-
-
-[[keyboard.bindings]]
-key = "Return"
-mods = "Shift"
-chars = "\u001B\r"

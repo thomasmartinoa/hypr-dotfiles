@@ -13,41 +13,38 @@
 --   5. NVIDIA / GPU
 --   6. Disabled / optional (kept for reference)
 
-
 -- ─── 1. Session identity ─────────────────────────────────────────────────────
-hl.env("XDG_SESSION_TYPE",    "wayland")
+hl.env("XDG_SESSION_TYPE", "wayland")
 hl.env("XDG_CURRENT_DESKTOP", "Hyprland")
 hl.env("XDG_SESSION_DESKTOP", "Hyprland")
-
 
 -- ─── 2. Toolkit / backend selection ──────────────────────────────────────────
 -- Native Wayland first, X11 only as a fallback.
 
-hl.env("GDK_BACKEND", "wayland,x11,*")           -- GTK
-hl.env("QT_QPA_PLATFORM", "wayland;xcb")         -- Qt
+hl.env("GDK_BACKEND", "wayland,x11,*") -- GTK
+hl.env("QT_QPA_PLATFORM", "wayland;xcb") -- Qt
 hl.env("QT_WAYLAND_DISABLE_WINDOWDECORATION", "1")
-hl.env("QT_QPA_PLATFORMTHEME", "qt5ct")          -- see ENV-03: Qt6 apps stay unthemed
+--hl.env("QT_QPA_PLATFORMTHEME", "qt5ct") -- see ENV-03: Qt6 apps stay unthemed
+hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
+
 hl.env("SDL_VIDEODRIVER", "wayland")
 hl.env("CLUTTER_BACKEND", "wayland")
 hl.env("ELECTRON_OZONE_PLATFORM_HINT", "wayland")
-
 
 -- ─── 3. HiDPI scaling (paired with xwayland.force_zero_scaling) ──────────────
 -- Native-Wayland apps get the scale from the compositor. XWayland apps do not,
 -- so each toolkit is told by hand.
 
-hl.env("GDK_SCALE", "1.6")                       -- see ENV-01: GTK only accepts integers
+--hl.env("GDK_SCALE", "1.6")                       -- see ENV-01: GTK only accepts integers
 hl.env("QT_SCALE_FACTOR", "1.6")
-hl.env("QT_AUTO_SCREEN_SCALE_FACTOR", "1")       -- see ENV-02: this ENABLES auto-scaling
-hl.env("_JAVA_OPTIONS", "-Dsun.java2d.uiScale=1.6")
-
+hl.env("QT_AUTO_SCREEN_SCALE_FACTOR", "0") -- see ENV-02: this ENABLES auto-scaling
+hl.env("JDK_JAVA_OPTIONS", "-Dsun.java2d.uiScale=1.6")
 
 -- ─── 4. Cursor sizing ────────────────────────────────────────────────────────
 -- Keep in sync: XCURSOR_SIZE = HYPRCURSOR_SIZE * monitor scale (16 * 1.6 ≈ 26).
 
 hl.env("HYPRCURSOR_SIZE", "16")
-hl.env("XCURSOR_SIZE", "26")
-
+hl.env("XCURSOR_SIZE", "24")
 
 -- ─── 5. NVIDIA / GPU ─────────────────────────────────────────────────────────
 hl.env("GBM_BACKEND", "nvidia-drm")
@@ -55,7 +52,6 @@ hl.env("LIBVA_DRIVER_NAME", "nvidia")
 
 -- Leave off unless an X11 GL app misbehaves; some setups break with it enabled.
 -- hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
-
 
 -- ─── 6. Disabled / optional (uncomment if needed) ────────────────────────────
 
