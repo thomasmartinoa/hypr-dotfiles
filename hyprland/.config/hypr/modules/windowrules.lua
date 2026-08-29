@@ -15,6 +15,12 @@ hl.layer_rule({
 	ignore_alpha = 0.4,
 })
 
+hl.layer_rule({
+	match = { namespace = "^logout_dialog$" },
+	blur = true,
+	ignore_alpha = 0.7,
+})
+
 -- Rofi
 hl.layer_rule({
 	match = { namespace = "^rofi$" },
