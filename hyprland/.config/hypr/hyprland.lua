@@ -10,7 +10,6 @@ require("modules/monitors")
 require("modules/decorations")
 require("modules/windowrules")
 
-
 -----------------
 ---- XWAYLAND ---
 -----------------
@@ -18,11 +17,10 @@ require("modules/windowrules")
 -- Render X11 apps at native pixel resolution instead of upscaling a 1x bitmap.
 -- Paired with GDK_SCALE / XCURSOR_SIZE in modules/env.lua.
 hl.config({
-    xwayland = {
-        force_zero_scaling = true,
-    },
+	xwayland = {
+		force_zero_scaling = true,
+	},
 })
-
 
 --------------------
 ---- PERMISSIONS ---
@@ -41,35 +39,34 @@ hl.config({
 -- hl.permission({ binary = "/usr/(lib|libexec|lib64)/xdg-desktop-portal-hyprland", type = "screencopy", mode = "allow" })
 -- hl.permission({ binary = "/usr/(bin|local/bin)/hyprpm",                      type = "plugin",     mode = "allow" })
 
-
 ---------------
 ---- INPUT ----
 ---------------
 
 hl.config({
-    input = {
-        kb_layout  = "us",
-        kb_variant = "",
-        kb_model   = "",
-        kb_options = "",
-        kb_rules   = "",
+	input = {
+		kb_layout = "us",
+		kb_variant = "",
+		kb_model = "",
+		kb_options = "",
+		kb_rules = "",
 
-        follow_mouse = 1,
+		follow_mouse = 1,
 
-        sensitivity = 0, -- -1.0 - 1.0, 0 means no modification.
+		sensitivity = 0, -- -1.0 - 1.0, 0 means no modification.
 
-        touchpad = {
-            natural_scroll = true,
-        },
-    },
+		touchpad = {
+			natural_scroll = true,
+		},
+	},
 })
 
 -- 3-finger horizontal swipe switches workspaces.
 -- (Replaces the old `gesture = 3, horizontal, workspace`.)
 hl.gesture({
-    fingers   = 3,
-    direction = "horizontal",
-    action    = "workspace",
+	fingers = 3,
+	direction = "horizontal",
+	action = "workspace",
 })
 
 -- The old config carried the upstream example's per-device block for a device
