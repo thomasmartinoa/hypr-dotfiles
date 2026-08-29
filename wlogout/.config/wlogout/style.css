@@ -1,0 +1,88 @@
+/* ─────────────────────────────────────────────────────────────
+   wlogout — monochrome, icon only
+
+   Palette mirrors waybar/swaync `colors/black-min.css`:
+     #0a0a0a ground · #141414 fill · #1e1e1e raised
+     #282828 border · #606060 dim · #a0a0a0 muted · #e8e8e8 primary
+
+   Icons: Lucide (ISC), rasterised from icons/svg/ at 96px in three
+   tints — rest #a0a0a0, focus #e8e8e8, hover #0a0a0a. GTK cannot
+   recolour a background-image, hence one PNG per state; and the
+   gdk-pixbuf SVG loader is not registered on this system, hence PNG
+   rather than SVG.
+
+   Launch with ./launch.sh — the single row needs `-b 5`, a CLI flag
+   rather than a config key.
+   ───────────────────────────────────────────────────────────── */
+
+/* ── GEOMETRY ─────────────────────────────────────────────────
+   Measured, not guessed. wlogout centres its grid in ~71% x ~48%
+   of the screen; at 1600x900 logical (2560x1440 @ 1.6) with 5
+   buttons that is a 227x436 cell each. `margin` eats the cell
+   down to the tile:  189 x 170.
+
+   Keep each margin under half its cell dimension — exceed it and
+   GTK collapses the button to its natural size and the row breaks.
+   ───────────────────────────────────────────────────────────── */
+
+* {
+    box-shadow: none;
+    text-shadow: none;
+    outline: none;
+    transition: background-color 200ms cubic-bezier(0.23, 1, 0.32, 1),
+                border-color     200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+window {
+    background-color: rgba(10, 10, 10, 0.94);
+}
+
+button {
+    margin: 133px 19px;
+
+    background-color: #141414;
+    border: 1px solid #282828;
+    border-radius: 8px;
+
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 52px 52px;
+}
+
+/* keyboard focus — a quiet lift. wlogout focuses the first button
+   on open, so this must not shout the way a hover does. */
+button:focus {
+    background-color: #1e1e1e;
+    border-color: #606060;
+}
+
+/* hover / activate — full inversion, the same active-state
+   language as the waybar workspace pill (#e8e8e8 on #0a0a0a) */
+button:hover,
+button:active {
+    background-color: #e8e8e8;
+    border-color: #e8e8e8;
+}
+
+/* ── ICONS ────────────────────────────────────────────────────
+   Order matters: rest, then :focus, then :hover last so hover
+   wins while a button is both focused and hovered.
+   ───────────────────────────────────────────────────────────── */
+
+#lock            { background-image: url("icons/lock-rest.png"); }
+#logout          { background-image: url("icons/exit-rest.png"); }
+#suspend         { background-image: url("icons/sleep-rest.png"); }
+#reboot          { background-image: url("icons/reboot-rest.png"); }
+#shutdown        { background-image: url("icons/shutdown-rest.png"); }
+
+#lock:focus      { background-image: url("icons/lock-focus.png"); }
+#logout:focus    { background-image: url("icons/exit-focus.png"); }
+#suspend:focus   { background-image: url("icons/sleep-focus.png"); }
+#reboot:focus    { background-image: url("icons/reboot-focus.png"); }
+#shutdown:focus  { background-image: url("icons/shutdown-focus.png"); }
+
+#lock:hover,      #lock:active      { background-image: url("icons/lock-hover.png"); }
+#logout:hover,    #logout:active    { background-image: url("icons/exit-hover.png"); }
+#suspend:hover,   #suspend:active   { background-image: url("icons/sleep-hover.png"); }
+#reboot:hover,    #reboot:active    { background-image: url("icons/reboot-hover.png"); }
+#shutdown:hover,  #shutdown:active  { background-image: url("icons/shutdown-hover.png"); }
