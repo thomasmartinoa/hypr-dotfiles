@@ -15,7 +15,7 @@
 
 local terminal = "kitty"
 local fileManager = "thunar"
-local menu = "~/.config/rofi/launchers/type-2/launcher.sh"
+local menu = "~/.config/rofi/launchers/launcher.sh"
 local browser = "zen-browser"
 
 local mainMod = "SUPER"
@@ -32,7 +32,7 @@ hl.bind(mainMod .. " + T", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + D", hl.dsp.exec_cmd(menu .. " || pkill rofi"))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo()) -- dwindle
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit")) -- dwindle
-hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("swaylock"))
+hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("hyprlock"))
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(browser))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("~/.config/waybar/scripts/launch.sh"))
 

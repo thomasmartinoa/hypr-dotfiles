@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-dir="$HOME/.config/rofi/launchers/type-2"
+dir="$HOME/.config/rofi/launchers/"
 theme='style'
 
 rofi \
