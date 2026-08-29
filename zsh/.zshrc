@@ -15,4 +15,6 @@ alias ls="eza"
 alias ll="eza -l"
 alias c="clear"
 alias ff="fastfetch"
+alias q="exit"
+
 export PATH="$HOME/.local/bin:$PATH"
