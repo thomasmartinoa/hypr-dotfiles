@@ -12,9 +12,9 @@ program = "/usr/bin/bash"
 [font]
 size = 11.0
 
-#[font.normal]
-#family = "JetBrains Mono Nerd Font"
-#style = "Regular"
+[font.normal]
+family = "JetBrains Mono Nerd Font"
+style = "Regular"
 
 ################
 # Cursor

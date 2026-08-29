@@ -1,14 +1,3 @@
--- ~/.config/hypr/modules/binds.lua
--- Ported 1:1 from modules/binds.conf.
---
--- Two syntax changes to know:
---   * `$var = x` becomes `local var = "x"`. `local` is FILE-scoped — a local
---     declared here is invisible to other required files.
---   * Keys are one string with " + " separators: "SUPER + SHIFT + Q".
---   * Bind flags (bindl/binde/bindm) become an options table:
---       bindl -> { locked = true }      binde -> { repeating = true }
---       bindm -> { mouse  = true }      bindel -> both locked and repeating
-
 ---------------------
 ---- MY PROGRAMS ----
 ---------------------
@@ -72,31 +61,25 @@ hl.bind(mainMod .. " + up", hl.dsp.focus({ direction = "up" }))
 hl.bind(mainMod .. " + down", hl.dsp.focus({ direction = "down" }))
 
 -- Workspaces 1-10, and move-window-to-workspace.
---
--- The .conf version hand-wrote these twenty lines and one was missing:
--- SUPER+SHIFT+1 did not exist (finding HYP-04). A loop makes that class of
--- bug impossible.
 for i = 1, 10 do
 	local key = i % 10 -- workspace 10 maps to key 0
 	hl.bind(mainMod .. " + " .. key, hl.dsp.focus({ workspace = i }))
 	hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }))
 end
 
--- Special workspace (scratchpad)
+
 hl.bind(mainMod .. " + S", hl.dsp.workspace.toggle_special("magic"))
 hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
 
--- Scroll through existing workspaces with mainMod + scroll
+
 hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mainMod .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
 
--- Move/resize windows with mainMod + LMB/RMB and dragging  (was: bindm)
+
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
--- Laptop multimedia keys.  (was: bindel = locked + repeating)
--- Brightness targets intel_backlight explicitly — on this Optimus laptop the
--- panel backlight hangs off the Intel iGPU, not the NVIDIA card. Keep it.
+
 hl.bind(
 	"XF86AudioRaiseVolume",
 	hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"),
@@ -134,9 +117,6 @@ hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = tr
 hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), { locked = true })
 
--- MISSING IN THE OLD CONFIG (finding HYP-05): there is no fullscreen bind at
--- all. Uncomment once the faithful port is verified working.
---
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ mode = "fullscreen" }))
 hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.fullscreen({ mode = "maximized" }))
 
