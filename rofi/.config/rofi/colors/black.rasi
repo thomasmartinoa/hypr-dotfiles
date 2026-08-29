@@ -1,5 +1,5 @@
 * {
-    background:      rgba(0, 0, 0, 0.74);    /**FF last for no opacity**/ 
+    background:      rgba(0, 0, 0, 0.74);    
     background-alt:  rgba(18, 18, 18, 0.97);
     surface:         #1E1E1EFF;
     surface-alt:     #2A2A2AFF;
