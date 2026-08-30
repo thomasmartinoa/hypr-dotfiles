@@ -1,0 +1,119 @@
+# hypr-dotfiles — monochrome KDE colour scheme
+# ============================================================================
+# KDE/KF6 applications (kdenlive, kate, dolphin, ark...) do NOT use the qt6ct
+# palette. They use KColorScheme, which reads a .colors file and overrides
+# QPalette entirely. Without this file kdenlive stays Breeze blue no matter
+# what qt6ct says.
+#
+# Values mirror ~/.config/hypr-theme/palette.css, as R,G,B decimal:
+#   bg0 10,10,10   bg1 20,20,20   bg2 30,30,30   bg3 40,40,40   bg4 51,51,51
+#   fg 232,232,232  bright 255,255,255  light 224,224,224
+#   mid 160,160,160 dim 96,96,96  warning 176,176,176  critical 128,128,128
+[General]
+Name=Hypr Mono
+ColorScheme=HyprMono
+shadeSortColumn=true
+
+[Colors:Window]
+BackgroundNormal=10,10,10
+BackgroundAlternate=30,30,30
+ForegroundNormal=232,232,232
+ForegroundInactive=160,160,160
+ForegroundActive=255,255,255
+ForegroundLink=255,255,255
+ForegroundVisited=160,160,160
+ForegroundNegative=128,128,128
+ForegroundNeutral=176,176,176
+ForegroundPositive=176,176,176
+DecorationFocus=224,224,224
+DecorationHover=51,51,51
+
+[Colors:View]
+BackgroundNormal=20,20,20
+BackgroundAlternate=30,30,30
+ForegroundNormal=232,232,232
+ForegroundInactive=160,160,160
+ForegroundActive=255,255,255
+ForegroundLink=255,255,255
+ForegroundVisited=160,160,160
+ForegroundNegative=128,128,128
+ForegroundNeutral=176,176,176
+ForegroundPositive=176,176,176
+DecorationFocus=224,224,224
+DecorationHover=51,51,51
+
+[Colors:Button]
+BackgroundNormal=30,30,30
+BackgroundAlternate=40,40,40
+ForegroundNormal=232,232,232
+ForegroundInactive=160,160,160
+ForegroundActive=255,255,255
+ForegroundLink=255,255,255
+ForegroundVisited=160,160,160
+ForegroundNegative=128,128,128
+ForegroundNeutral=176,176,176
+ForegroundPositive=176,176,176
+DecorationFocus=224,224,224
+DecorationHover=51,51,51
+
+[Colors:Selection]
+BackgroundNormal=224,224,224
+BackgroundAlternate=224,224,224
+ForegroundNormal=10,10,10
+ForegroundInactive=96,96,96
+ForegroundActive=10,10,10
+ForegroundLink=10,10,10
+ForegroundVisited=96,96,96
+ForegroundNegative=10,10,10
+ForegroundNeutral=10,10,10
+ForegroundPositive=10,10,10
+DecorationFocus=255,255,255
+DecorationHover=255,255,255
+
+[Colors:Tooltip]
+BackgroundNormal=30,30,30
+BackgroundAlternate=40,40,40
+ForegroundNormal=232,232,232
+ForegroundInactive=160,160,160
+ForegroundActive=255,255,255
+ForegroundLink=255,255,255
+ForegroundVisited=160,160,160
+ForegroundNegative=128,128,128
+ForegroundNeutral=176,176,176
+ForegroundPositive=176,176,176
+DecorationFocus=224,224,224
+DecorationHover=51,51,51
+
+[Colors:Complementary]
+BackgroundNormal=10,10,10
+BackgroundAlternate=30,30,30
+ForegroundNormal=232,232,232
+ForegroundInactive=160,160,160
+ForegroundActive=255,255,255
+ForegroundLink=255,255,255
+ForegroundVisited=160,160,160
+ForegroundNegative=128,128,128
+ForegroundNeutral=176,176,176
+ForegroundPositive=176,176,176
+DecorationFocus=224,224,224
+DecorationHover=51,51,51
+
+[Colors:Header]
+BackgroundNormal=20,20,20
+BackgroundAlternate=30,30,30
+ForegroundNormal=232,232,232
+ForegroundInactive=160,160,160
+ForegroundActive=255,255,255
+ForegroundLink=255,255,255
+ForegroundVisited=160,160,160
+ForegroundNegative=128,128,128
+ForegroundNeutral=176,176,176
+ForegroundPositive=176,176,176
+DecorationFocus=224,224,224
+DecorationHover=51,51,51
+
+[WM]
+activeBackground=20,20,20
+activeForeground=232,232,232
+inactiveBackground=10,10,10
+inactiveForeground=160,160,160

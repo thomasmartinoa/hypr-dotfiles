@@ -15,7 +15,7 @@ window {
     padding:           0px;
     border:            1px solid;
     border-radius:     4px;
-    border-color:      #e0e0e03d;
+    border-color:      @border-strong;
     background-color:  @background;
     cursor:            "default";
 }
@@ -35,7 +35,7 @@ inputbar {
     spacing:           8px;
     padding:           0px;
     border:            0px 0px 1px 0px;
-    border-color:      #e0e0e014;
+    border-color:      @border-faint;
     background-color:  transparent;
     text-color:        @foreground;
     children:          [ "prompt", "entry" ];
@@ -114,7 +114,7 @@ error-message {
     padding:           20px;
     border:            1px solid;
     border-radius:     8px;
-    border-color:      #e0e0e02b;
+    border-color:      @border-mid;
     background-color:  @background;
     text-color:        @foreground;
 }

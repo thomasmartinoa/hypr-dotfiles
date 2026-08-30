@@ -5,35 +5,39 @@
 #   ./install.sh              install packages, then symlink configs with stow
 #   ./install.sh --stow-only  skip package installation
 #   ./install.sh --dry-run    show what stow would do, change nothing
+#   ./install.sh --migrate    back up hand-made theme files that block stow
 
 set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Every top-level directory that is a stow package.
-PACKAGES=(alacritty hyprland kittyterminal nvim rofi starship swaync waybar wlogout zsh)
+PACKAGES=(alacritty gtk hyprland kde kittyterminal nvim qt rofi starship swaync
+          theme waybar wlogout zsh)
 
 # In the official Arch repos (core/extra).
 PKGS_REPO=(
   hyprland hyprlock hypridle waybar rofi swaync awww
-  xdg-desktop-portal-hyprland polkit-gnome qt6ct power-profiles-daemon
+  xdg-desktop-portal-hyprland polkit-gnome qt5ct qt6ct power-profiles-daemon
   kitty alacritty zsh starship
   neovim fastfetch btop eza
   grim slurp wl-clipboard cliphist playerctl brightnessctl batsignal jq ffmpeg
   thunar pavucontrol networkmanager nm-connection-editor
-  ttf-jetbrains-mono-nerd stow
+  ttf-jetbrains-mono-nerd inter-font papirus-icon-theme adw-gtk-theme stow
 )
 
-# Not in the official repos. On CachyOS wlogout ships in the [cachyos] repo;
-# on plain Arch it comes from the AUR.
-PKGS_AUR=(wlogout)
+# Not in the official Arch repos. On CachyOS these ship in the [cachyos] repo;
+# on plain Arch they come from the AUR.
+PKGS_AUR=(wlogout adwaita-qt5 adwaita-qt6)
 
 STOW_ONLY=0
 DRY_RUN=0
+MIGRATE=0
 for arg in "$@"; do
   case "$arg" in
     --stow-only) STOW_ONLY=1 ;;
     --dry-run)   DRY_RUN=1 ;;
+    --migrate)   MIGRATE=1 ;;
     -h|--help)   sed -n '2,8p' "$0" | sed 's/^# \?//'; exit 0 ;;
     *) echo "unknown option: $arg" >&2; exit 2 ;;
   esac
@@ -56,18 +60,30 @@ if [[ $STOW_ONLY -eq 0 && $DRY_RUN -eq 0 ]]; then
   info "Installing packages from the official repos..."
   sudo pacman -S --needed "${PKGS_REPO[@]}"
 
-  if pacman -Si "${PKGS_AUR[0]}" >/dev/null 2>&1; then
-    info "${PKGS_AUR[*]} is available in a configured repo — installing."
-    sudo pacman -S --needed "${PKGS_AUR[@]}"
-  elif command -v paru >/dev/null 2>&1; then
-    info "Installing ${PKGS_AUR[*]} with paru..."
-    paru -S --needed "${PKGS_AUR[@]}"
-  elif command -v yay >/dev/null 2>&1; then
-    info "Installing ${PKGS_AUR[*]} with yay..."
-    yay -S --needed "${PKGS_AUR[@]}"
-  else
-    warn "No AUR helper found. Install these manually or the logout menu won't work:"
-    printf '   %s\n' "${PKGS_AUR[*]}"
+  # Some of these may be in a configured repo (CachyOS); the rest need the AUR.
+  from_repo=(); need_aur=()
+  for pkg in "${PKGS_AUR[@]}"; do
+    if pacman -Si "$pkg" >/dev/null 2>&1; then from_repo+=("$pkg"); else need_aur+=("$pkg"); fi
+  done
+
+  if [[ ${#from_repo[@]} -gt 0 ]]; then
+    info "Available in a configured repo: ${from_repo[*]}"
+    sudo pacman -S --needed "${from_repo[@]}"
+  fi
+
+  if [[ ${#need_aur[@]} -gt 0 ]]; then
+    if command -v paru >/dev/null 2>&1; then
+      info "Installing ${need_aur[*]} with paru..."
+      paru -S --needed "${need_aur[@]}"
+    elif command -v yay >/dev/null 2>&1; then
+      info "Installing ${need_aur[*]} with yay..."
+      yay -S --needed "${need_aur[@]}"
+    else
+      warn "No AUR helper found. Install these by hand:"
+      printf '   %s\n' "${need_aur[*]}"
+      warn "Without wlogout the logout menu won't work; without adwaita-qt* Qt apps fall"
+      warn "back to the Fusion style (the hypr-mono palette still applies)."
+    fi
   fi
 fi
 
@@ -77,6 +93,9 @@ command -v stow >/dev/null 2>&1 || die "GNU Stow is not installed (pacman -S sto
 # Screenshot binds pipe through `tee` into this directory; it must already exist.
 if [[ $DRY_RUN -eq 0 ]]; then
   mkdir -p "$HOME/Pictures/screenshot"
+  # Keep ~/.config/qt[56]ct real directories so stow folds only colors/ into a
+  # symlink, leaving qt[56]ct.conf real files that the GUIs can rewrite.
+  mkdir -p "$HOME/.config/qt5ct" "$HOME/.config/qt6ct"
 fi
 
 # A leftover hyprland.conf wins ambiguity against hyprland.lua. Flag it.
@@ -85,14 +104,94 @@ if [[ -e "$HOME/.config/hypr/hyprland.conf" || -L "$HOME/.config/hypr/hyprland.c
   warn "Remove it so Hyprland unambiguously loads hyprland.lua."
 fi
 
+# ---------------------------------------------------------------- migrate ---
+# Files written by nwg-look, or the partial GTK4 theme-symlink hack, sit exactly
+# where stow needs to put symlinks. --migrate backs them up and clears them.
+#
+# The GTK4 entries matter more than they look: symlinking only gtk.css from a
+# theme into ~/.config/gtk-4.0/ breaks it, because GTK resolves that file's
+# relative @imports against ~/.config/gtk-4.0/ (the logical path), not against
+# the theme directory. libadwaita.css is then never found and GTK4 apps end up
+# with no theme at all.
+MIGRATE_PATHS=(
+  # Hyprland writes a default config on its first launch when none exists. On a
+  # fresh machine you log into Hyprland before running this script, so these are
+  # almost always present and are the most common reason stow aborts. The
+  # session banner "You're using an autogenerated config!" is the giveaway.
+  "$HOME/.config/hypr/hyprland.lua"
+  "$HOME/.config/hypr/hyprland.conf"
+  "$HOME/.gtkrc-2.0"
+  "$HOME/.gtkrc-2.0.mine"
+  "$HOME/.config/gtk-3.0/settings.ini"
+  "$HOME/.config/gtk-3.0/gtk.css"
+  "$HOME/.config/gtk-4.0/settings.ini"
+  "$HOME/.config/gtk-4.0/gtk.css"
+  "$HOME/.config/gtk-4.0/gtk-dark.css"
+  "$HOME/.config/gtk-4.0/assets"
+  "$HOME/.config/kdeglobals"
+)
+
+if [[ $MIGRATE -eq 1 && $DRY_RUN -eq 0 ]]; then
+  stamp="$(date +%Y%m%d-%H%M%S)"
+  backup="$HOME/.config/hypr-dotfiles-backup-$stamp"
+  moved=0
+  for f in "${MIGRATE_PATHS[@]}"; do
+    [[ -e "$f" || -L "$f" ]] || continue
+    # Never move a link this repo already owns — that would undo a good stow
+    # and makes re-running --migrate destructive instead of idempotent.
+    if [[ -L "$f" ]] && [[ "$(readlink -f "$f" 2>/dev/null)" == "$DOTFILES_DIR"/* ]]; then
+      continue
+    fi
+    # Preserve the path under $HOME, not just the basename: gtk-3.0/settings.ini
+    # and gtk-4.0/settings.ini would otherwise collide and one would be lost.
+    rel="${f#$HOME/}"
+    mkdir -p "$backup/$(dirname "$rel")"
+    mv -- "$f" "$backup/$rel"
+    moved=$((moved+1))
+  done
+  if [[ $moved -gt 0 ]]; then
+    info "Moved $moved file(s) to $backup"
+  else
+    info "Nothing to migrate — those paths are already clear."
+  fi
+fi
+
 # Stow refuses to overwrite real files. Find them before it fails halfway.
 conflicts="$(stow --no --verbose=1 --target="$HOME" --dir="$DOTFILES_DIR" "${PACKAGES[@]}" 2>&1 \
              | grep -i 'existing target' || true)"
 if [[ -n "$conflicts" ]]; then
   warn "Stow found real files where symlinks need to go:"
   printf '   %s\n' "$conflicts"
-  warn "Back them up and delete them, then re-run. Example:"
-  warn "   mv ~/.config/hypr/hyprlock.conf ~/.config/hypr/hyprlock.conf.bak"
+  echo
+
+  # The overwhelmingly common case on a fresh install: you logged into Hyprland
+  # once before running this, so Hyprland generated its own default config.
+  if grep -q 'hypr/hyprland\.\(lua\|conf\)' <<<"$conflicts"; then
+    warn "That hyprland.lua is Hyprland's own autogenerated default — it writes one"
+    warn "on first launch when no config exists. If your session shows the banner"
+    warn "\"You're using an autogenerated config!\", this is it. It is safe to replace."
+    echo
+  fi
+
+  # Split the conflicts into what --migrate handles and what it does not, so the
+  # advice is specific rather than "figure it out".
+  unhandled=""
+  while IFS= read -r line; do
+    [[ -n "$line" ]] || continue
+    covered=0
+    for m in "${MIGRATE_PATHS[@]}"; do
+      grep -qF "${m#$HOME/}" <<<"$line" && { covered=1; break; }
+    done
+    [[ $covered -eq 0 ]] && unhandled+="   $line"$'\n'
+  done <<<"$conflicts"
+
+  warn "Fix: ./install.sh --migrate     (backs these up, then re-run the install)"
+  if [[ -n "$unhandled" ]]; then
+    echo
+    warn "--migrate does NOT cover these — move them by hand first:"
+    printf '%s' "$unhandled"
+    warn "e.g.  mv ~/.config/hypr/hyprlock.conf ~/.config/hypr/hyprlock.conf.bak"
+  fi
   [[ $DRY_RUN -eq 0 ]] && die "Aborting so nothing of yours is lost."
 fi
 
@@ -112,6 +211,47 @@ chmod +x "$HOME/.config/rofi/launchers/launcher.sh" \
          "$HOME/.config/wlogout/launch.sh" \
          "$HOME/.config/hypr/scripts/songdetail.sh" 2>/dev/null || true
 
+# ------------------------------------------------------- qt5ct / qt6ct.conf ---
+# Templated rather than stowed: color_scheme_path must be an absolute path,
+# and the qt*ct GUIs rewrite these files in place.
+for v in 5 6; do
+  conf="$HOME/.config/qt${v}ct/qt${v}ct.conf"
+  tmpl="$DOTFILES_DIR/templates/qt${v}ct.conf.in"
+  [[ -r "$tmpl" ]] || continue
+  rendered="$(sed "s|@HOME@|$HOME|g" "$tmpl")"
+  if [[ -e "$conf" ]] && ! diff -q <(printf '%s\n' "$rendered") "$conf" >/dev/null 2>&1; then
+    cp -- "$conf" "$conf.bak"
+    info "Backed up your existing qt${v}ct.conf to qt${v}ct.conf.bak"
+  fi
+  printf '%s\n' "$rendered" > "$conf"
+  info "Rendered qt${v}ct.conf (colour scheme: hypr-mono)"
+done
+
+# ------------------------------------------------------------ root theming ---
+# Apps that re-exec themselves through pkexec (grub-customizer is the one here)
+# run their GUI as root. pkexec sanitises the environment, so GTK_THEME and
+# XDG_CONFIG_HOME do not survive, and root reads /root/.config — which has no
+# theme at all, hence the stock light Adwaita window. Point root's GTK config at
+# the same files. Nothing is symlinked into the repo: root gets its own copies.
+if [[ $DRY_RUN -eq 0 ]] && command -v pkexec >/dev/null 2>&1; then
+  info "Theming root for pkexec GUIs (grub-customizer). You'll be asked for sudo."
+  if sudo -v 2>/dev/null; then
+    sudo mkdir -p /root/.config/gtk-3.0 /root/.config/gtk-4.0
+    sudo cp -- "$DOTFILES_DIR/gtk/.config/gtk-3.0/settings.ini" /root/.config/gtk-3.0/settings.ini
+    sudo cp -- "$DOTFILES_DIR/gtk/.config/gtk-4.0/settings.ini" /root/.config/gtk-4.0/settings.ini
+    sudo cp -- "$DOTFILES_DIR/gtk/.gtkrc-2.0"                   /root/.gtkrc-2.0
+    # gtk.css imports ../hypr-theme/palette.css, so root needs that too.
+    sudo mkdir -p /root/.config/hypr-theme
+    sudo cp -- "$DOTFILES_DIR/theme/.config/hypr-theme/palette.css" /root/.config/hypr-theme/palette.css
+    sudo cp -- "$DOTFILES_DIR/gtk/.config/gtk-3.0/gtk.css" /root/.config/gtk-3.0/gtk.css
+    sudo cp -- "$DOTFILES_DIR/gtk/.config/gtk-4.0/gtk.css" /root/.config/gtk-4.0/gtk.css
+    info "Root GTK config installed."
+  else
+    warn "Skipped root theming (no sudo). pkexec GUIs such as grub-customizer"
+    warn "will keep the default light theme."
+  fi
+fi
+
 info "Done."
 echo
 echo "  Two things worth checking before you log in:"
@@ -120,3 +260,10 @@ echo "      Verify with:  fc-list : family | grep -i 'JetBrainsMono Nerd Font Pr
 echo "      Empty output means every waybar/swaync icon will render as a blank box."
 echo "   2. Monitor: hyprland/.config/hypr/modules/monitors.lua is hardcoded to a"
 echo "      2560x1440@165Hz eDP-1 at 1.6x scale. Edit it for your display."
+echo "   3. GTK and Qt apps read their theme at startup — restart them (or log"
+echo "      out and back in) before judging whether the theming applied."
+echo "   4. Qt5 and Qt6 apps are both themed. Both qt5ct and qt6ct register the"
+echo "      keys \"qt5ct\" and \"qt6ct\", so one QT_QPA_PLATFORMTHEME covers both."
+echo "   5. Apps with their own theme engines are NOT covered by any of the"
+echo "      above — VS Code, Zen, Telegram, LocalSend, OBS, Heroic. See the"
+echo "      'Apps that ignore the system theme' section of the README."

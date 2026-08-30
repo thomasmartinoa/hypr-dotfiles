@@ -1,0 +1,66 @@
+/*
+ * GTK4 / libadwaita — driven by the shared palette.
+ * ============================================================================
+ * This file defines NO colour values of its own. It imports the single source
+ * of truth and maps it onto libadwaita's named colours, so a theme change only
+ * ever has to touch ~/.config/hypr-theme/palette.css.
+ *
+ * (This replaces a pair of Gradience-generated imports — libadwaita.css and
+ * libadwaita-tweaks.css — that referenced files which no longer existed.
+ * Gradience is archived; overriding the named colours directly is the
+ * supported route on libadwaita 1.x.)
+ */
+@import '../hypr-theme/palette.css';
+
+/* Windows and views */
+@define-color window_bg_color        @bg0;
+@define-color window_fg_color        @fg;
+@define-color view_bg_color          @bg1;
+@define-color view_fg_color          @fg;
+
+/* Header bars, sidebars, dialogs, popovers, cards */
+@define-color headerbar_bg_color       @bg1;
+@define-color headerbar_fg_color       @fg;
+@define-color headerbar_border_color   @bg3;
+@define-color headerbar_backdrop_color @bg0;
+@define-color sidebar_bg_color         @bg1;
+@define-color sidebar_fg_color         @fg;
+@define-color sidebar_backdrop_color   @bg0;
+@define-color dialog_bg_color          @bg1;
+@define-color dialog_fg_color          @fg;
+@define-color popover_bg_color         @bg2;
+@define-color popover_fg_color         @fg;
+@define-color card_bg_color            @bg2;
+@define-color card_fg_color            @fg;
+
+/* Accent — light-on-dark selection, matching Waybar's active state */
+@define-color accent_bg_color        @accent-light;
+@define-color accent_fg_color        @bg0;
+@define-color accent_color           @accent-bright;
+
+/*
+ * Semantic colours follow the palette's greyscale convention (see the
+ * "legacy color names" block in palette.css). NOTE: this means destructive
+ * actions lose their red affordance — a Delete button reads like any other.
+ * Point these at real hues if you would rather keep the warning signal.
+ */
+@define-color destructive_bg_color   @accent-mid;
+@define-color destructive_fg_color   @bg0;
+@define-color destructive_color      @accent-mid;
+@define-color success_bg_color       @green;
+@define-color success_fg_color       @bg0;
+@define-color success_color          @green;
+@define-color warning_bg_color       @warning;
+@define-color warning_fg_color       @bg0;
+@define-color warning_color          @warning;
+@define-color error_bg_color         @critical;
+@define-color error_fg_color         @bg0;
+@define-color error_color            @critical;
+
+/* Shades and outlines */
+@define-color shade_color            rgba(0, 0, 0, 0.36);
+@define-color headerbar_shade_color  rgba(0, 0, 0, 0.36);
+@define-color card_shade_color       rgba(0, 0, 0, 0.36);
+@define-color popover_shade_color    rgba(0, 0, 0, 0.36);
+@define-color sidebar_shade_color    rgba(0, 0, 0, 0.36);
+@define-color scrollbar_outline_color @bg3;

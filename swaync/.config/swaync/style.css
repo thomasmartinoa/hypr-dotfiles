@@ -1,4 +1,4 @@
-@import 'colors/black-mid.css';
+@import '../hypr-theme/palette.css';
 @import 'themes/black/notifications.css';
 @import 'themes/black/central_control.css';
 

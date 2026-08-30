@@ -1,0 +1,46 @@
+/*
+ * GTK3 (adw-gtk3-dark) — driven by the shared palette.
+ * ============================================================================
+ * Defines no colour values of its own; imports the single source of truth and
+ * maps it onto the names GTK3 themes use.
+ *
+ * Two sets are defined below because adw-gtk3 understands both the classic
+ * GTK3 theme_* names and libadwaita's newer names. Defining both means the
+ * mapping survives a theme change.
+ *
+ * Caveat: how much of this a GTK3 app actually honours depends on the theme —
+ * adw-gtk3 respects the common ones, but a stylesheet that hardcodes colours
+ * will win over these overrides.
+ */
+@import '../hypr-theme/palette.css';
+
+/* Classic GTK3 theme colours */
+@define-color theme_bg_color          @bg0;
+@define-color theme_fg_color          @fg;
+@define-color theme_base_color        @bg1;
+@define-color theme_text_color        @fg;
+@define-color theme_selected_bg_color @accent-light;
+@define-color theme_selected_fg_color @bg0;
+@define-color insensitive_bg_color    @bg1;
+@define-color insensitive_fg_color    @accent-dim;
+@define-color insensitive_base_color  @bg1;
+@define-color borders                 @bg3;
+@define-color unfocused_borders       @bg2;
+@define-color warning_color           @warning;
+@define-color error_color             @critical;
+@define-color success_color           @green;
+
+/* libadwaita names, for adw-gtk3's newer paths */
+@define-color window_bg_color         @bg0;
+@define-color window_fg_color         @fg;
+@define-color view_bg_color           @bg1;
+@define-color view_fg_color           @fg;
+@define-color headerbar_bg_color      @bg1;
+@define-color headerbar_fg_color      @fg;
+@define-color popover_bg_color        @bg2;
+@define-color popover_fg_color        @fg;
+@define-color card_bg_color           @bg2;
+@define-color card_fg_color           @fg;
+@define-color accent_bg_color         @accent-light;
+@define-color accent_fg_color         @bg0;
+@define-color accent_color            @accent-bright;

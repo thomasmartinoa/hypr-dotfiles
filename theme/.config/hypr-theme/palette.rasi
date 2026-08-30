@@ -1,0 +1,36 @@
+/*
+ * hypr-dotfiles — shared palette (rofi)
+ * ============================================================================
+ * SINGLE SOURCE OF TRUTH for every rofi surface: the launcher and the
+ * clipboard menu. Imported by launchers/shared/colors.rasi as:
+ *
+ *     @import "~/.config/hypr-theme/palette.rasi"
+ *
+ * rofi cannot read GTK's @define-color syntax, so this file mirrors
+ * palette.css by hand. The comment on each line names the GTK colour it
+ * corresponds to — keep the two in step when you change a value.
+ *
+ * rofi surfaces are translucent (Hyprland blurs the layer), so several of
+ * these carry an alpha channel and have no exact GTK equivalent.
+ */
+* {
+    background:      rgba(0, 0, 0, 0.74);     /* ~bg0, translucent for layer blur */
+    background-alt:  rgba(18, 18, 18, 0.97);  /* ~bg1 */
+    surface:         #1E1E1EFF;               /* bg2  */
+    surface-alt:     #2A2A2AFF;               /* ~bg3 */
+
+    foreground:      #FFFFFFFF;               /* accent-bright */
+    foreground-alt:  #CFCFCFFF;               /* ~accent-light */
+    muted:           #9A9A9AFF;               /* ~accent-mid   */
+
+    selected:        #E0E0E0FF;               /* accent-light */
+    active:          #FFFFFFCC;               /* accent-bright, translucent */
+    urgent:          #B0B0B0FF;               /* warning */
+    textcolor:       #000000FF;               /* text on a light selection */
+
+    /* Borders — accent-light at three strengths. rofi has no alpha-blend
+       function, so the alpha is baked in rather than derived from @selected. */
+    border-strong:   #E0E0E03D;               /* 24% — window and element borders */
+    border-mid:      #E0E0E02B;               /* 17% — clipboard window border   */
+    border-faint:    #E0E0E014;               /*  8% — subtle separator rules    */
+}

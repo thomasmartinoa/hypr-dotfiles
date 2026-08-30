@@ -1,0 +1,63 @@
+# hypr-dotfiles — GTK2
+# =============================================================================
+# GTK2 has no CSS and cannot import ~/.config/hypr-theme/palette.css, so the
+# palette is transcribed here by hand. Keep it in step with palette.css.
+#
+# No GTK2 theme is installed on this system (adw-gtk3-dark ships gtk-3.0 and
+# gtk-4.0 only), so a gtk-theme-name line would be a dead reference and GTK2
+# apps would fall back to the built-in Raleigh theme. The explicit style block
+# below recolours GTK2 with no theme package at all.
+
+gtk-icon-theme-name="Papirus-Dark"
+gtk-font-name="Inter 11"
+gtk-cursor-theme-name="default"
+gtk-cursor-theme-size=24
+gtk-toolbar-style=GTK_TOOLBAR_ICONS
+gtk-toolbar-icon-size=GTK_ICON_SIZE_LARGE_TOOLBAR
+gtk-button-images=0
+gtk-menu-images=0
+gtk-enable-event-sounds=1
+gtk-enable-input-feedback-sounds=0
+gtk-xft-antialias=1
+gtk-xft-hinting=1
+gtk-xft-hintstyle="hintslight"
+gtk-xft-rgba="rgb"
+
+# For any GTK2 theme that honours colour scheme substitution.
+gtk_color_scheme = "fg_color:#e8e8e8\nbg_color:#0a0a0a\nbase_color:#141414\ntext_color:#e8e8e8\nselected_bg_color:#e0e0e0\nselected_fg_color:#0a0a0a\ntooltip_bg_color:#1e1e1e\ntooltip_fg_color:#e8e8e8"
+
+style "hypr-mono" {
+    # bg0 #0a0a0a  bg1 #141414  bg2 #1e1e1e  bg3 #282828  bg4 #333333
+    # fg  #e8e8e8  accent-light #e0e0e0  accent-dim #606060
+    bg[NORMAL]        = "#0a0a0a"
+    bg[PRELIGHT]      = "#333333"
+    bg[ACTIVE]        = "#1e1e1e"
+    bg[SELECTED]      = "#e0e0e0"
+    bg[INSENSITIVE]   = "#141414"
+
+    fg[NORMAL]        = "#e8e8e8"
+    fg[PRELIGHT]      = "#ffffff"
+    fg[ACTIVE]        = "#e8e8e8"
+    fg[SELECTED]      = "#0a0a0a"
+    fg[INSENSITIVE]   = "#606060"
+
+    base[NORMAL]      = "#141414"
+    base[PRELIGHT]    = "#1e1e1e"
+    base[ACTIVE]      = "#e0e0e0"
+    base[SELECTED]    = "#e0e0e0"
+    base[INSENSITIVE] = "#0a0a0a"
+
+    text[NORMAL]      = "#e8e8e8"
+    text[PRELIGHT]    = "#e8e8e8"
+    text[ACTIVE]      = "#0a0a0a"
+    text[SELECTED]    = "#0a0a0a"
+    text[INSENSITIVE] = "#606060"
+}
+
+style "hypr-mono-tooltip" {
+    bg[NORMAL] = "#1e1e1e"
+    fg[NORMAL] = "#e8e8e8"
+}
+
+class "*" style "hypr-mono"
+widget "gtk-tooltip*" style "hypr-mono-tooltip"

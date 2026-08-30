@@ -1,4 +1,4 @@
-@import 'colors/black-min.css';
+@import '../hypr-theme/palette.css';
 
 * {
     border: none;

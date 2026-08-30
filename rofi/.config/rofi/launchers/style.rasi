@@ -25,7 +25,7 @@ window {
     padding:                     0px;
     border:                      1px solid;
     border-radius:               4px;
-    border-color:                #e0e0e03d;
+    border-color:                @border-strong;
     background-color:            @background;
     cursor:                      "default";
 }
@@ -118,7 +118,7 @@ element {
     padding:                     5px;
     border:                      1px solid;
     border-radius:               2px;
-    border-color:                #e0e0e014;
+    border-color:                @border-faint;
     background-color:            @background;
     text-color:                  @foreground;
     cursor:                      pointer;

@@ -1,0 +1,41 @@
+# hypr-dotfiles — qt5ct configuration TEMPLATE
+# =============================================================================
+# Rendered to ~/.config/qt5ct/qt5ct.conf by install.sh, which substitutes
+# @HOME@. This one file is templated rather than stowed because qt5ct resolves
+# color_scheme_path with QFile, which does not expand "~" and resolves relative
+# paths against the process working directory — so the value must be absolute.
+#
+# It is also the file qt5ct's own GUI rewrites when you change a setting, so
+# keeping it as a real file (not a symlink into the repo) stops the GUI from
+# writing window geometry back into version control.
+#
+# Qt5 font records use the older 10-field format, not Qt6's 17-field one.
+[Appearance]
+color_scheme_path=@HOME@/.config/qt5ct/colors/hypr-mono.conf
+custom_palette=true
+icon_theme=Papirus-Dark
+standard_dialogs=default
+style=Adwaita-Dark
+
+[Fonts]
+fixed="JetBrainsMono Nerd Font,11,-1,5,50,0,0,0,0,0"
+general="Inter,11,-1,5,50,0,0,0,0,0"
+
+[Interface]
+activate_item_on_single_click=1
+buttonbox_layout=0
+cursor_flash_time=1000
+dialog_buttons_have_icons=1
+double_click_interval=400
+gui_effects=@Invalid()
+keyboard_scheme=2
+menus_have_icons=true
+show_shortcuts_in_context_menus=true
+stylesheets=@Invalid()
+toolbutton_style=4
+underline_shortcut=1
+wheel_scroll_lines=3
+
+[Troubleshooting]
+force_raster_widgets=1
+ignored_applications=@Invalid()
