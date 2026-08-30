@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-#
+
 # Installer for thomasmartinoa/hypr-dotfiles
 #
 #   ./install.sh              install packages, then symlink configs with stow
 #   ./install.sh --stow-only  skip package installation
 #   ./install.sh --dry-run    show what stow would do, change nothing
-#
+
 set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -19,7 +19,7 @@ PKGS_REPO=(
   xdg-desktop-portal-hyprland polkit-gnome qt6ct power-profiles-daemon
   kitty alacritty zsh starship
   neovim fastfetch btop eza
-  grim slurp wl-clipboard cliphist playerctl brightnessctl batsignal jq
+  grim slurp wl-clipboard cliphist playerctl brightnessctl batsignal jq ffmpeg
   thunar pavucontrol networkmanager nm-connection-editor
   ttf-jetbrains-mono-nerd stow
 )
@@ -45,7 +45,6 @@ die()   { printf '\033[1;31mxx\033[0m %s\n' "$*" >&2; exit 1; }
 
 [[ $EUID -eq 0 ]] && die "Do not run this as root. It installs into \$HOME and calls sudo only where needed."
 
-# ---------------------------------------------------------------- packages ---
 if [[ $STOW_ONLY -eq 0 && $DRY_RUN -eq 0 ]]; then
   if ! command -v pacman >/dev/null 2>&1; then
     warn "pacman not found — this installer only automates Arch-based systems."
@@ -108,6 +107,7 @@ info "Symlinking: ${PACKAGES[*]}"
 stow --restow --target="$HOME" --dir="$DOTFILES_DIR" "${PACKAGES[@]}"
 
 chmod +x "$HOME/.config/rofi/launchers/launcher.sh" \
+         "$HOME/.config/rofi/scripts/clipboard.sh" \
          "$HOME/.config/waybar/scripts/launch.sh" \
          "$HOME/.config/wlogout/launch.sh" \
          "$HOME/.config/hypr/scripts/songdetail.sh" 2>/dev/null || true

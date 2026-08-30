@@ -81,7 +81,7 @@ Entry point is [`hyprland.lua`](hyprland/.config/hypr/hyprland.lua), which requi
 | Editor | [Neovim](https://neovim.io/) ([LazyVim](https://www.lazyvim.org/)) | `neovim` |
 | Files | [Thunar](https://docs.xfce.org/xfce/thunar/start) | `thunar` |
 | Browser | [Zen Browser](https://zen-browser.app/) | `zen-browser-bin` (AUR) |
-| Clipboard | [cliphist](https://github.com/sentriz/cliphist) | `cliphist` |
+| Clipboard | [cliphist](https://github.com/sentriz/cliphist), with ffmpeg for image thumbnails | `cliphist` `ffmpeg` |
 | Screenshots | grim + slurp | `grim` `slurp` |
 
 
@@ -150,7 +150,7 @@ sudo pacman -S kitty alacritty zsh starship
 sudo pacman -S neovim fastfetch btop eza
 
 # utilities
-sudo pacman -S grim slurp wl-clipboard cliphist playerctl brightnessctl \
+sudo pacman -S grim slurp wl-clipboard cliphist ffmpeg playerctl brightnessctl \
                batsignal jq thunar pavucontrol networkmanager nm-connection-editor
 
 # font (see the section above) + stow
@@ -213,10 +213,30 @@ install.sh       →  installer
 | `SUPER` + `D` | App launcher (rofi) |
 | `SUPER` + `E` | File manager (thunar) |
 | `SUPER` + `B` | Browser (zen-browser) |
-| `SUPER` + `V` | Clipboard history (cliphist via rofi) |
+| `SUPER` + `V` | Clipboard history — see [Clipboard menu](#clipboard-menu) |
 | `SUPER` + `L` | Lock screen (hyprlock) |
 | `SUPER` + `M` | Logout menu (wlogout) |
 | `SUPER` + `R` | Restart waybar + swaync |
+
+### Clipboard menu
+
+`SUPER` + `V` opens [`scripts/clipboard.sh`](rofi/.config/rofi/scripts/clipboard.sh) — a rofi menu
+over cliphist that renders copied images as real thumbnails rather than `binary data` blobs.
+
+| Keys | Action |
+|---|---|
+| `Enter` | Copy the entry and close |
+| `Delete` | Delete that entry from history — the menu stays open on the same row |
+| `Ctrl` + `D` | Forward-delete in the search box (rofi's default is `Delete`, which is reassigned above) |
+| `Esc` | Close |
+| `SUPER` + `V` | Pressing it again closes the menu |
+
+Thumbnails need **ffmpeg**. Without it the menu still opens and still works — it just silently shows
+no thumbnails, because the script sends ffmpeg's stderr to `/dev/null`. If your clipboard menu looks
+plainer than the screenshots, that's why.
+
+Thumbnails are cached in `~/.cache/cliphist-thumbs`, pruned after 14 days. The menu lists the 60
+most recent entries.
 
 ### Windows
 
