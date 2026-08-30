@@ -1,0 +1,23 @@
+# Editor / swap files
+*.swp
+*.swo
+*~
+.DS_Store
+
+*.log
+hyprland*.log
+core
+*.core
+
+.cache/
+*/.config/*/cache/
+zsh/.zsh_history
+zsh/.zcompdump*
+
+nvim/.config/nvim/.luarc.json
+nvim/.config/nvim/spell/
+
+.stow-local-ignore
+
+Screenshots/*-draft.png
+Screenshots/tmp*
