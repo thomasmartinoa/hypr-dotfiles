@@ -281,6 +281,8 @@ awww img /path/to/wallpaper.png --transition-type grow
 
 The lock screen background is separate — it's `~/.config/hypr/hyprlock.png`, set in `hyprlock.conf`.
 
+Neither bundled image is mine — see [Wallpapers](#wallpapers) under Credits before you reuse them.
+
 ### Blur, opacity and gaps
 
 All in [`modules/decorations.lua`](hyprland/.config/hypr/modules/decorations.lua):
@@ -353,7 +355,25 @@ These are hardcoded to *my* laptop. Check them before you file a bug:
 - [awww](https://codeberg.org/LGFae/awww) by LGFae
 - [LazyVim](https://www.lazyvim.org/) for the Neovim base
 
+### Wallpapers
+
+The two images in [`hyprland/.config/hypr/wallpapers/`](hyprland/.config/hypr/wallpapers/) are not
+mine. They're bundled so the rice looks right on first launch, and they are **not covered by this
+repo's MIT licence**.
+
+| File | Source |
+|---|---|
+| `montain_main.png` | Mount Ararat over Yerevan (B&W). Photographer unknown — earliest traceable source: [wallpaperswide.com](https://wallpaperswide.com/) |
+| `creationofadam.png` | *The Creation of Adam*, Michelangelo, Sistine Chapel ceiling (c. 1512). The painting itself is public domain; the provenance of this particular photograph and edit is unknown. |
+
+I couldn't verify an author for either, so I haven't invented one. If you hold rights to either
+image and want it credited differently or pulled from the repo, open an issue and I'll sort it.
+Swapping in your own wallpaper is one line — see [Wallpaper](#wallpaper) under Customising.
+
 ## License
 
-[MIT](LICENSE) — do what you like with it. If a piece of this ends up in your own rice, I'd love to
-see it, but you're under no obligation.
+The configuration in this repo is [MIT](LICENSE) — do what you like with it. If a piece of this
+ends up in your own rice, I'd love to see it, but you're under no obligation.
+
+The bundled wallpapers are **not** mine to license and are excluded from the above; see
+[Wallpapers](#wallpapers).

@@ -122,5 +122,5 @@ hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.fullscreen({ mode = "maximized"
 
 
 hl.bind(mainMod .. " + V", hl.dsp.exec_cmd(
-  "cliphist list | rofi -dmenu | cliphist decode | wl-copy"
+  "~/.config/rofi/scripts/clipboard.sh"
 ))

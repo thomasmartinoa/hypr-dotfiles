@@ -171,3 +171,8 @@ configuration {
 	me-accept-custom: "Control+MouseDPrimary";
 */
 }
+
+/* Default theme for any invocation that does not pass -theme
+   (bare `rofi`, `rofi -dmenu`, cliphist). The launcher script
+   overrides this with launchers/style.rasi for the app grid. */
+@theme "clipboard"
