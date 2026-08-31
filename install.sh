@@ -11,7 +11,6 @@ DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PACKAGES=(alacritty gtk hyprland kde kittyterminal nvim qt rofi starship swaync
           theme waybar wlogout zsh)
 
-# In the official Arch repos (core/extra).
 PKGS_REPO=(
   hyprland hyprlock hypridle waybar rofi swaync awww
   xdg-desktop-portal-hyprland polkit-gnome qt5ct qt6ct power-profiles-daemon
@@ -419,12 +418,12 @@ else
   printf '      %s\n' "Fix:  sudo pacman -S ttf-jetbrains-mono-nerd"
 fi
 
-printf '\n  %s\n' "${C_HI}Next steps${C_RST}"
-printf '  %s\n' "${C_DIM}  1${C_RST} Edit ${C_TXT}hyprland/.config/hypr/modules/monitors.lua${C_RST} — it is hardcoded"
-printf '  %s\n' "${C_DIM}   ${C_RST} to a 2560x1440@165Hz eDP-1 at 1.6x scale. Run ${C_TXT}hyprctl monitors${C_RST}."
-printf '  %s\n' "${C_DIM}  2${C_RST} Restart GTK/Qt apps — they read their theme at startup."
-printf '  %s\n' "${C_DIM}   ${C_RST} ${C_TXT}SUPER+R${C_RST} restarts waybar and swaync for you."
-printf '  %s\n' "${C_DIM}  3${C_RST} Apps with their own theme engines are not covered: VS Code, Zen,"
-printf '  %s\n' "${C_DIM}   ${C_RST} Telegram, LocalSend, OBS, Heroic. See the README section"
-printf '  %s\n' "${C_DIM}   ${C_RST} \"Apps that ignore the system theme\"."
-printf '\n%s\n\n' "${C_DIM}  ────────────────────────────────────────────────────────────${C_RST}"
+# printf '\n  %s\n' "${C_HI}Next steps${C_RST}"
+# printf '  %s\n' "${C_DIM}  1${C_RST} Edit ${C_TXT}hyprland/.config/hypr/modules/monitors.lua${C_RST} — it is hardcoded"
+# printf '  %s\n' "${C_DIM}   ${C_RST} to a 2560x1440@165Hz eDP-1 at 1.6x scale. Run ${C_TXT}hyprctl monitors${C_RST}."
+# printf '  %s\n' "${C_DIM}  2${C_RST} Restart GTK/Qt apps — they read their theme at startup."
+# printf '  %s\n' "${C_DIM}   ${C_RST} ${C_TXT}SUPER+R${C_RST} restarts waybar and swaync for you."
+# printf '  %s\n' "${C_DIM}  3${C_RST} Apps with their own theme engines are not covered: VS Code, Zen,"
+# printf '  %s\n' "${C_DIM}   ${C_RST} Telegram, LocalSend, OBS, Heroic. See the README section"
+# printf '  %s\n' "${C_DIM}   ${C_RST} \"Apps that ignore the system theme\"."
+# printf '\n%s\n\n' "${C_DIM}  ────────────────────────────────────────────────────────────${C_RST}"
