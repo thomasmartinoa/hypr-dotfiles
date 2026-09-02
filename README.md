@@ -99,12 +99,51 @@ without asking first.
 | `--migrate` | Back up blocking files without asking |
 | `--no-migrate` | Never move anything; stop instead |
 | `--skip-root` | Don't copy the GTK config into `/root` |
+| `--no-logout` | Don't offer to log out at the end |
 
-**On a fresh machine** you'll have logged into Hyprland once before installing, so Hyprland will
-have written its own `~/.config/hypr/hyprland.lua`. That blocks the symlink. The installer spots
-it, explains it, and offers to move it to a timestamped backup — just answer `Y`.
+### Manual
 
-The repo can live anywhere; nothing hardcodes its path.
+If you'd rather not run the script:
+
+```bash
+# compositor, session and theming
+sudo pacman -S hyprland hyprlock hypridle waybar rofi swaync awww \
+               xdg-desktop-portal-hyprland polkit-gnome power-profiles-daemon \
+               qt5ct qt6ct papirus-icon-theme adw-gtk-theme
+
+# terminal, shell and editor
+sudo pacman -S kitty alacritty zsh starship neovim fastfetch btop eza
+
+# utilities
+sudo pacman -S grim slurp wl-clipboard cliphist ffmpeg playerctl brightnessctl \
+               batsignal jq thunar pavucontrol networkmanager nm-connection-editor
+
+# fonts and stow
+sudo pacman -S ttf-jetbrains-mono-nerd inter-font stow
+
+# AUR (in the [cachyos] repo if you're on CachyOS)
+paru -S wlogout adwaita-qt5 adwaita-qt6
+```
+
+Then link it up:
+
+```bash
+mkdir -p ~/Pictures/screenshot ~/.config/qt5ct ~/.config/qt6ct
+
+stow alacritty gtk hyprland kde kittyterminal nvim qt rofi starship swaync theme \
+     waybar wlogout zsh
+```
+
+Two things the script does that stow can't:
+
+- **`qt5ct.conf` / `qt6ct.conf` are not symlinked.** `color_scheme_path` has to be an absolute
+  path, so copy [`templates/qt5ct.conf.in`](templates/) to `~/.config/qt5ct/qt5ct.conf` and replace
+  `@HOME@` with your home directory. Same for qt6ct.
+- **`/root` gets its own copy of the GTK config**, so pkexec apps like grub-customizer aren't stuck
+  on the default light theme. Copy `gtk/.config/gtk-*/` and `theme/.config/hypr-theme/` into
+  `/root/.config/` if you want that.
+
+If stow refuses, something real is already at that path — move it aside and re-run.
 
 ---
 

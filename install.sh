@@ -49,7 +49,7 @@ banner() {
   printf '%s\n' "${C_DIM}    ██╔══██║  ╚██╔╝  ██╔═══╝ ██╔══██╗${C_RST}"
   printf '%s\n' "${C_DIM}    ██║  ██║   ██║   ██║     ██║  ██║${C_RST}"
   printf '%s\n' "${C_DIM}    ╚═╝  ╚═╝   ╚═╝   ╚═╝     ╚═╝  ╚═╝${C_RST}"
-  printf '%s\n' "${C_ACC}         d o t f i l e s${C_RST}${C_DIM}  ·  hyprland · lua${C_RST}"
+  printf '%s\n' "${C_ACC}         d o t f i l e s${C_RST}${C_DIM}  ·  ${C_RST}${C_ACC}m a r t i n${C_RST}"
   printf '%s\n' ""
   printf '%s\n' "${C_DIM}    ────────────────────────────────────────────${C_RST}"
   printf '%s\n' "${C_DIM}    repo   ${C_RST}${C_TXT}${DOTFILES_DIR}${C_RST}"
@@ -88,6 +88,7 @@ Installer for thomasmartinoa/hypr-dotfiles
   ./install.sh --migrate      back up blocking files without asking first
   ./install.sh --no-migrate   never move anything; stop instead
   ./install.sh --skip-root    don't copy the GTK config into /root
+  ./install.sh --no-logout    don't offer to log out at the end
   ./install.sh --help         this text
 
 On a fresh machine, Hyprland writes its own default ~/.config/hypr/hyprland.lua
@@ -103,7 +104,7 @@ EOF
 # ============================================================================
 # Arguments
 # ============================================================================
-STOW_ONLY=0; DRY_RUN=0; MIGRATE=0; NO_MIGRATE=0; SKIP_ROOT=0
+STOW_ONLY=0; DRY_RUN=0; MIGRATE=0; NO_MIGRATE=0; SKIP_ROOT=0; NO_LOGOUT=0
 for arg in "$@"; do
   case "$arg" in
     --stow-only)  STOW_ONLY=1 ;;
@@ -111,6 +112,7 @@ for arg in "$@"; do
     --migrate)    MIGRATE=1 ;;
     --no-migrate) NO_MIGRATE=1 ;;
     --skip-root)  SKIP_ROOT=1 ;;
+    --no-logout)  NO_LOGOUT=1 ;;
     -h|--help)   usage; exit 0 ;;
     *) printf 'unknown option: %s\n\n' "$arg" >&2; usage >&2; exit 2 ;;
   esac
@@ -373,7 +375,11 @@ else
   block "$(conflict_targets "$conflicts")"
   # Use a real blocked path in the example, not a hardcoded one that may have
   # nothing to do with what is actually in the way.
-  first="$(conflict_targets "$conflicts" | head -1)"
+  # Herestring rather than a pipe: `head -1` closes early, and with a large
+  # enough upstream that raises SIGPIPE which `set -o pipefail` would turn into
+  # an abort — inside the very block that is trying to explain the problem.
+  all_targets="$(conflict_targets "$conflicts")"
+  first="$(head -1 <<<"$all_targets")"
   warn "Move each aside and re-run, e.g.:"
   warn "   mv ${first} ${first}.bak"
   die "Aborting so nothing of yours is lost."
@@ -460,30 +466,70 @@ fi
 # ============================================================================
 # Summary
 # ============================================================================
-printf '\n%s\n' "${C_DIM}  ────────────────────────────────────────────────────────────${C_RST}"
-printf '%s\n\n' "  ${C_OK}✓${C_RST} ${C_HI}Installed.${C_RST}${C_DIM}  Restart your apps to see the theme.${C_RST}"
+rule()  { printf '%s\n' "${C_DIM}  ────────────────────────────────────────────────────────────${C_RST}"; }
+head2() { printf '\n  %s\n' "${C_HI}$*${C_RST}"; }
+item()  { printf '  %s %s\n' "${C_DIM}·${C_RST}" "$*"; }
+
+printf '\n'; rule
+printf '\n  %s %s\n' "${C_OK}✓${C_RST}" "${C_HI}Installed.${C_RST}"
 
 # NOTE: do not write this as `fc-list | grep -q`. `grep -q` exits on the first
 # match, fc-list then dies of SIGPIPE (141), and `set -o pipefail` turns the
 # whole pipeline into a failure — so the check reports "missing" even when the
 # font is installed. Capture first, match second.
-font_ok=0
 font_families="$(fc-list : family 2>/dev/null || true)"
-grep -qi 'JetBrainsMono Nerd Font Propo' <<<"$font_families" && font_ok=1
-if [[ $font_ok -eq 1 ]]; then
+if grep -qi 'JetBrainsMono Nerd Font Propo' <<<"$font_families"; then
   printf '  %s %s\n' "${C_OK}✓${C_RST}" "Font: JetBrainsMono Nerd Font Propo found."
 else
-  printf '  %s %s\n' "${C_WRN}!${C_RST}" "${C_WRN}Font missing:${C_RST} JetBrainsMono Nerd Font ${C_HI}Propo${C_RST} is not installed."
+  printf '  %s %s\n' "${C_WRN}!${C_RST}" "${C_WRN}Font missing:${C_RST} JetBrainsMono Nerd Font ${C_HI}Propo${C_RST}"
   printf '      %s\n' "Every waybar and swaync icon will render as a blank box."
   printf '      %s\n' "Fix:  sudo pacman -S ttf-jetbrains-mono-nerd"
 fi
 
-printf '\n  %s\n' "${C_HI}Next steps${C_RST}"
-printf '  %s\n' "${C_DIM}  1${C_RST} Edit ${C_TXT}hyprland/.config/hypr/modules/monitors.lua${C_RST} — it is hardcoded"
-printf '  %s\n' "${C_DIM}   ${C_RST} to a 2560x1440@165Hz eDP-1 at 1.6x scale. Run ${C_TXT}hyprctl monitors${C_RST}."
-printf '  %s\n' "${C_DIM}  2${C_RST} Restart GTK/Qt apps — they read their theme at startup."
-printf '  %s\n' "${C_DIM}   ${C_RST} ${C_TXT}SUPER+R${C_RST} restarts waybar and swaync for you."
-printf '  %s\n' "${C_DIM}  3${C_RST} Apps with their own theme engines are not covered: VS Code, Zen,"
-printf '  %s\n' "${C_DIM}   ${C_RST} Telegram, LocalSend, OBS, Heroic. See the README section"
-printf '  %s\n' "${C_DIM}   ${C_RST} \"Apps that ignore the system theme\"."
-printf '\n%s\n\n' "${C_DIM}  ────────────────────────────────────────────────────────────${C_RST}"
+head2 "Live already"
+item "Configs are symlinked — Hyprland, waybar, swaync, rofi, kitty, zsh."
+item "${C_TXT}SUPER+R${C_RST} restarts waybar and swaync."
+
+head2 "Needs a re-login"
+item "GTK and Qt apps read their theme once, at startup."
+item "env.lua sets QT_QPA_PLATFORMTHEME and the scale factors — those only"
+item "reach applications launched by a fresh session."
+
+head2 "Worth doing first"
+item "${C_TXT}monitors.lua${C_RST} is hardcoded to one eDP-1 at 2560x1440@165Hz, scale 1.6."
+item "Run ${C_TXT}hyprctl monitors${C_RST} and edit it to match your display."
+item "VS Code, Zen, Telegram, OBS and other apps with their own theme engines"
+item "are not covered — see the README."
+
+printf '\n'; rule
+
+# ---------------------------------------------------------------- log out ---
+# Almost everything above needs a fresh session to take effect, so offer it
+# rather than leaving the user wondering why half the theme did not apply.
+# Default is NO: logging out drops whatever else they have open.
+if [[ $NO_LOGOUT -eq 1 ]]; then
+  :
+elif [[ -z "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]]; then
+  printf '\n  %s %s\n\n' "${C_ACC}·${C_RST}" "Log out and back in to apply the rest."
+elif [[ -t 0 && -t 1 ]]; then
+  printf '\n  %s %s\n' "${C_WRN}!${C_RST}" "Logging out will close everything you have open."
+  reply=""
+  read -r -p "  $(printf '%s' "${C_ACC}?${C_RST}") Log out of Hyprland now? [y/N] " reply </dev/tty || reply="n"
+  echo
+  case "${reply,,}" in
+    y|yes)
+      printf '  %s %s\n\n' "${C_ACC}·${C_RST}" "Logging out..."
+      # Do not let a failed dispatch abort the script under `set -e` — the
+      # install already succeeded, and a bare hyprctl error would look like it
+      # had not.
+      if ! hyprctl dispatch exit 2>/dev/null; then
+        warn "Could not reach Hyprland. Log out by hand (SUPER+M)."
+      fi
+      ;;
+    *)
+      printf '  %s %s\n\n' "${C_ACC}·${C_RST}" "Log out when you are ready — ${C_TXT}SUPER+M${C_RST} opens the logout menu."
+      ;;
+  esac
+else
+  printf '\n  %s %s\n\n' "${C_ACC}·${C_RST}" "Log out and back in to apply the rest."
+fi
