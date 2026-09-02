@@ -78,6 +78,33 @@ conflict_targets() {
     | sed 's/^[[:space:]]*\*[[:space:]]*//' | sort -u
 }
 
+# Build and install paru from the AUR. Uses paru-bin (prebuilt) rather than
+# paru, which would compile a Rust project and take far longer on a fresh box.
+bootstrap_paru() {
+  local tmp rc=0
+  info "Installing base-devel and git (needed to build AUR packages)..."
+  sudo pacman -S --needed base-devel git || return 1
+
+  tmp="$(mktemp -d)"
+  info "Cloning paru-bin from the AUR..."
+  if git clone --depth 1 https://aur.archlinux.org/paru-bin.git "$tmp/paru-bin" >/dev/null 2>&1; then
+    info "Building — this runs makepkg, so it may ask for sudo again."
+    # Subshell so a failed cd cannot leave us somewhere unexpected.
+    ( cd "$tmp/paru-bin" && makepkg -si --noconfirm ) || rc=1
+  else
+    warn "Could not reach aur.archlinux.org."
+    rc=1
+  fi
+  rm -rf "$tmp"
+
+  if [[ $rc -eq 0 ]] && command -v paru >/dev/null 2>&1; then
+    ok "paru installed."
+    return 0
+  fi
+  warn "Could not install paru. Install an AUR helper by hand and re-run."
+  return 1
+}
+
 usage() {
   cat <<'EOF'
 Installer for thomasmartinoa/hypr-dotfiles
@@ -89,6 +116,7 @@ Installer for thomasmartinoa/hypr-dotfiles
   ./install.sh --no-migrate   never move anything; stop instead
   ./install.sh --skip-root    don't copy the GTK config into /root
   ./install.sh --no-logout    don't offer to log out at the end
+  ./install.sh --no-aur       don't offer to install an AUR helper
   ./install.sh --help         this text
 
 On a fresh machine, Hyprland writes its own default ~/.config/hypr/hyprland.lua
@@ -104,7 +132,7 @@ EOF
 # ============================================================================
 # Arguments
 # ============================================================================
-STOW_ONLY=0; DRY_RUN=0; MIGRATE=0; NO_MIGRATE=0; SKIP_ROOT=0; NO_LOGOUT=0
+STOW_ONLY=0; DRY_RUN=0; MIGRATE=0; NO_MIGRATE=0; SKIP_ROOT=0; NO_LOGOUT=0; NO_AUR=0
 for arg in "$@"; do
   case "$arg" in
     --stow-only)  STOW_ONLY=1 ;;
@@ -113,6 +141,7 @@ for arg in "$@"; do
     --no-migrate) NO_MIGRATE=1 ;;
     --skip-root)  SKIP_ROOT=1 ;;
     --no-logout)  NO_LOGOUT=1 ;;
+    --no-aur)     NO_AUR=1 ;;
     -h|--help)   usage; exit 0 ;;
     *) printf 'unknown option: %s\n\n' "$arg" >&2; usage >&2; exit 2 ;;
   esac
@@ -174,19 +203,37 @@ if [[ $STOW_ONLY -eq 0 && $DRY_RUN -eq 0 ]]; then
   fi
 
   if [[ ${#need_aur[@]} -gt 0 ]]; then
-    if command -v paru >/dev/null 2>&1; then
-      info "Installing with paru: ${need_aur[*]}"
-      paru -S --needed "${need_aur[@]}"
-      ok "AUR packages done."
-    elif command -v yay >/dev/null 2>&1; then
-      info "Installing with yay: ${need_aur[*]}"
-      yay -S --needed "${need_aur[@]}"
+    aur_helper=""
+    command -v paru >/dev/null 2>&1 && aur_helper=paru
+    [[ -z "$aur_helper" ]] && command -v yay >/dev/null 2>&1 && aur_helper=yay
+
+    # Nothing to build with. These packages are not optional extras — wlogout is
+    # the logout menu and adwaita-qt* is what makes Qt apps take the palette — so
+    # offer to bootstrap a helper rather than just printing names.
+    if [[ -z "$aur_helper" && $NO_AUR -eq 0 ]]; then
+      warn "These are only in the AUR: ${need_aur[*]}"
+      info "Without them: no logout menu, and Qt apps fall back to the Fusion style."
+      echo
+      if [[ -t 0 && -t 1 ]]; then
+        reply=""
+        read -r -p "  $(printf '%s' "${C_ACC}?${C_RST}") Install the paru AUR helper now? [Y/n] " reply </dev/tty || reply="n"
+        echo
+        case "${reply,,}" in
+          ""|y|yes) bootstrap_paru && aur_helper=paru ;;
+          *)        warn "Skipped." ;;
+        esac
+      else
+        warn "Not a terminal — cannot ask. Install paru or yay, then re-run."
+      fi
+    fi
+
+    if [[ -n "$aur_helper" ]]; then
+      info "Installing with $aur_helper: ${need_aur[*]}"
+      "$aur_helper" -S --needed "${need_aur[@]}"
       ok "AUR packages done."
     else
-      warn "No AUR helper found. Install these by hand:"
+      warn "Install these by hand to complete the rice:"
       block "${need_aur[*]}"
-      warn "Without wlogout the logout menu won't work; without adwaita-qt* Qt apps"
-      warn "fall back to the Fusion style (the hypr-mono palette still applies)."
     fi
   fi
 else
