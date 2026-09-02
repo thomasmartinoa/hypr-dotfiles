@@ -78,31 +78,53 @@ conflict_targets() {
     | sed 's/^[[:space:]]*\*[[:space:]]*//' | sort -u
 }
 
-# Build and install paru from the AUR. Uses paru-bin (prebuilt) rather than
-# paru, which would compile a Rust project and take far longer on a fresh box.
-bootstrap_paru() {
-  local tmp rc=0
-  info "Installing base-devel and git (needed to build AUR packages)..."
-  sudo pacman -S --needed base-devel git || return 1
-
+# Build one AUR package with makepkg.
+#
+# Deliberately NOT via paru-bin/yay-bin: those are prebuilt binaries linked
+# against a fixed libalpm soname, so on a system whose pacman has moved on they
+# install fine and then die with
+#     error while loading shared libraries: libalpm.so.15
+# Building here compiles against whatever pacman is actually installed.
+#
+# This works without a helper because every AUR package we need depends only on
+# repo packages (wlogout -> gtk3/gtk-layer-shell, adwaita-qt5 -> qt5-x11extras,
+# adwaita-qt6 -> qt6-base). makepkg resolves those itself. If that ever stops
+# being true, a real helper becomes necessary.
+build_aur_pkg() {
+  local pkg="$1" tmp rc=0
   tmp="$(mktemp -d)"
-  info "Cloning paru-bin from the AUR..."
-  if git clone --depth 1 https://aur.archlinux.org/paru-bin.git "$tmp/paru-bin" >/dev/null 2>&1; then
-    info "Building — this runs makepkg, so it may ask for sudo again."
+  if git clone --depth 1 "https://aur.archlinux.org/${pkg}.git" "$tmp/$pkg" >/dev/null 2>&1; then
     # Subshell so a failed cd cannot leave us somewhere unexpected.
-    ( cd "$tmp/paru-bin" && makepkg -si --noconfirm ) || rc=1
+    ( cd "$tmp/$pkg" && makepkg -si --noconfirm --needed ) || rc=1
   else
-    warn "Could not reach aur.archlinux.org."
+    warn "Could not clone $pkg from the AUR."
     rc=1
   fi
   rm -rf "$tmp"
+  return $rc
+}
 
-  if [[ $rc -eq 0 ]] && command -v paru >/dev/null 2>&1; then
-    ok "paru installed."
-    return 0
+# Install base-devel and git once, then build each package in turn.
+build_aur_packages() {
+  local pkg failed=()
+  info "Installing base-devel and git (needed to build AUR packages)..."
+  sudo pacman -S --needed base-devel git || return 1
+
+  for pkg in "$@"; do
+    info "Building $pkg..."
+    if build_aur_pkg "$pkg"; then
+      ok "$pkg installed."
+    else
+      failed+=("$pkg")
+      warn "$pkg failed to build."
+    fi
+  done
+
+  if [[ ${#failed[@]} -gt 0 ]]; then
+    warn "Could not build: ${failed[*]}"
+    return 1
   fi
-  warn "Could not install paru. Install an AUR helper by hand and re-run."
-  return 1
+  return 0
 }
 
 usage() {
@@ -116,7 +138,7 @@ Installer for thomasmartinoa/hypr-dotfiles
   ./install.sh --no-migrate   never move anything; stop instead
   ./install.sh --skip-root    don't copy the GTK config into /root
   ./install.sh --no-logout    don't offer to log out at the end
-  ./install.sh --no-aur       don't offer to install an AUR helper
+  ./install.sh --no-aur       don't offer to build AUR packages
   ./install.sh --help         this text
 
 On a fresh machine, Hyprland writes its own default ~/.config/hypr/hyprland.lua
@@ -210,30 +232,37 @@ if [[ $STOW_ONLY -eq 0 && $DRY_RUN -eq 0 ]]; then
     # Nothing to build with. These packages are not optional extras — wlogout is
     # the logout menu and adwaita-qt* is what makes Qt apps take the palette — so
     # offer to bootstrap a helper rather than just printing names.
-    if [[ -z "$aur_helper" && $NO_AUR -eq 0 ]]; then
-      warn "These are only in the AUR: ${need_aur[*]}"
-      info "Without them: no logout menu, and Qt apps fall back to the Fusion style."
-      echo
-      if [[ -t 0 && -t 1 ]]; then
-        reply=""
-        read -r -p "  $(printf '%s' "${C_ACC}?${C_RST}") Install the paru AUR helper now? [Y/n] " reply </dev/tty || reply="n"
-        echo
-        case "${reply,,}" in
-          ""|y|yes) bootstrap_paru && aur_helper=paru ;;
-          *)        warn "Skipped." ;;
-        esac
-      else
-        warn "Not a terminal — cannot ask. Install paru or yay, then re-run."
-      fi
-    fi
-
     if [[ -n "$aur_helper" ]]; then
       info "Installing with $aur_helper: ${need_aur[*]}"
       "$aur_helper" -S --needed "${need_aur[@]}"
       ok "AUR packages done."
-    else
-      warn "Install these by hand to complete the rice:"
+    elif [[ $NO_AUR -eq 1 ]]; then
+      warn "--no-aur given. Install these by hand to complete the rice:"
       block "${need_aur[*]}"
+    else
+      warn "These are only in the AUR: ${need_aur[*]}"
+      info "Without them: no logout menu, and Qt apps fall back to the Fusion style."
+      info "No AUR helper found, so they can be built directly with makepkg."
+      echo
+      if [[ -t 0 && -t 1 ]]; then
+        reply=""
+        read -r -p "  $(printf '%s' "${C_ACC}?${C_RST}") Build them from the AUR now? [Y/n] " reply </dev/tty || reply="n"
+        echo
+        case "${reply,,}" in
+          ""|y|yes)
+            build_aur_packages "${need_aur[@]}" || \
+              warn "Finish the rest by hand, or install an AUR helper and re-run."
+            ;;
+          *)
+            warn "Skipped. Install these by hand to complete the rice:"
+            block "${need_aur[*]}"
+            ;;
+        esac
+      else
+        warn "Not a terminal — cannot ask. Install these by hand, or install an"
+        warn "AUR helper (paru/yay) and re-run."
+        block "${need_aur[*]}"
+      fi
     fi
   fi
 else

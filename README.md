@@ -101,7 +101,7 @@ without asking first.
 | `--no-migrate` | Never move anything; stop instead |
 | `--skip-root` | Don't copy the GTK config into `/root` |
 | `--no-logout` | Don't offer to log out at the end |
-| `--no-aur` | Don't offer to install an AUR helper |
+| `--no-aur` | Don't offer to build AUR packages |
 
 ### Manual
 
@@ -126,10 +126,6 @@ sudo pacman -S ttf-jetbrains-mono-nerd inter-font stow
 # AUR (in the [cachyos] repo if you're on CachyOS)
 yay -S wlogout adwaita-qt5 adwaita-qt6
 ```
-
-`wlogout` and `adwaita-qt5`/`adwaita-qt6` are only in the AUR on plain Arch, and they're not
-optional — `wlogout` is the logout menu, and without `adwaita-qt*` Qt apps fall back to Fusion and
-ignore the colour scheme. If you have no AUR helper, `install.sh` offers to build `paru` for you.
 
 Then link it up:
 
