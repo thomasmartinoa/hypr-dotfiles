@@ -101,7 +101,7 @@ without asking first.
 | `--no-migrate` | Never move anything; stop instead |
 | `--skip-root` | Don't copy the GTK config into `/root` |
 | `--no-logout` | Don't offer to log out at the end |
-| `--no-aur` | Don't offer to build AUR packages |
+| `--no-aur` | Don't offer to install yay / AUR packages |
 
 ### Manual
 

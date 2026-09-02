@@ -78,53 +78,45 @@ conflict_targets() {
     | sed 's/^[[:space:]]*\*[[:space:]]*//' | sort -u
 }
 
-# Build one AUR package with makepkg.
+# Build and install yay from the AUR, using makepkg directly.
 #
-# Deliberately NOT via paru-bin/yay-bin: those are prebuilt binaries linked
-# against a fixed libalpm soname, so on a system whose pacman has moved on they
-# install fine and then die with
+# Deliberately NOT yay-bin/paru-bin: those are prebuilt and linked against a
+# fixed libalpm soname, so on a system whose pacman has moved on they install
+# and then die with
 #     error while loading shared libraries: libalpm.so.15
-# Building here compiles against whatever pacman is actually installed.
+# Building from source compiles against whatever pacman is actually installed.
 #
-# This works without a helper because every AUR package we need depends only on
-# repo packages (wlogout -> gtk3/gtk-layer-shell, adwaita-qt5 -> qt5-x11extras,
-# adwaita-qt6 -> qt6-base). makepkg resolves those itself. If that ever stops
-# being true, a real helper becomes necessary.
-build_aur_pkg() {
-  local pkg="$1" tmp rc=0
+# yay is worth having rather than calling makepkg per package, because it also
+# resolves split packages to their PackageBase and handles PGP keys for source
+# tarballs — both of which bit this script when it tried to do it by hand.
+bootstrap_yay() {
+  local tmp rc=0
+  info "Installing base-devel, git and go (needed to build yay)..."
+  sudo pacman -S --needed base-devel git go || return 1
+
   tmp="$(mktemp -d)"
-  if git clone --depth 1 "https://aur.archlinux.org/${pkg}.git" "$tmp/$pkg" >/dev/null 2>&1; then
-    # Subshell so a failed cd cannot leave us somewhere unexpected.
-    ( cd "$tmp/$pkg" && makepkg -si --noconfirm --needed ) || rc=1
+  info "Cloning yay from the AUR..."
+  if git clone --depth 1 https://aur.archlinux.org/yay.git "$tmp/yay" >/dev/null 2>&1; then
+    if [[ -f "$tmp/yay/PKGBUILD" ]]; then
+      info "Building yay — this compiles Go, so give it a minute."
+      # Subshell so a failed cd cannot leave us somewhere unexpected.
+      ( cd "$tmp/yay" && makepkg -si --noconfirm ) || rc=1
+    else
+      warn "Cloned yay but there is no PKGBUILD in it."
+      rc=1
+    fi
   else
-    warn "Could not clone $pkg from the AUR."
+    warn "Could not clone yay from the AUR."
     rc=1
   fi
   rm -rf "$tmp"
-  return $rc
-}
 
-# Install base-devel and git once, then build each package in turn.
-build_aur_packages() {
-  local pkg failed=()
-  info "Installing base-devel and git (needed to build AUR packages)..."
-  sudo pacman -S --needed base-devel git || return 1
-
-  for pkg in "$@"; do
-    info "Building $pkg..."
-    if build_aur_pkg "$pkg"; then
-      ok "$pkg installed."
-    else
-      failed+=("$pkg")
-      warn "$pkg failed to build."
-    fi
-  done
-
-  if [[ ${#failed[@]} -gt 0 ]]; then
-    warn "Could not build: ${failed[*]}"
-    return 1
+  if [[ $rc -eq 0 ]] && command -v yay >/dev/null 2>&1; then
+    ok "yay installed."
+    return 0
   fi
-  return 0
+  warn "Could not install yay."
+  return 1
 }
 
 usage() {
@@ -138,7 +130,7 @@ Installer for thomasmartinoa/hypr-dotfiles
   ./install.sh --no-migrate   never move anything; stop instead
   ./install.sh --skip-root    don't copy the GTK config into /root
   ./install.sh --no-logout    don't offer to log out at the end
-  ./install.sh --no-aur       don't offer to build AUR packages
+  ./install.sh --no-aur       don't offer to install yay / AUR packages
   ./install.sh --help         this text
 
 On a fresh machine, Hyprland writes its own default ~/.config/hypr/hyprland.lua
@@ -242,16 +234,26 @@ if [[ $STOW_ONLY -eq 0 && $DRY_RUN -eq 0 ]]; then
     else
       warn "These are only in the AUR: ${need_aur[*]}"
       info "Without them: no logout menu, and Qt apps fall back to the Fusion style."
-      info "No AUR helper found, so they can be built directly with makepkg."
+      info "No AUR helper found — yay can be built from source and used to get them."
       echo
       if [[ -t 0 && -t 1 ]]; then
         reply=""
-        read -r -p "  $(printf '%s' "${C_ACC}?${C_RST}") Build them from the AUR now? [Y/n] " reply </dev/tty || reply="n"
+        read -r -p "  $(printf '%s' "${C_ACC}?${C_RST}") Install yay and use it to fetch them? [Y/n] " reply </dev/tty || reply="n"
         echo
         case "${reply,,}" in
           ""|y|yes)
-            build_aur_packages "${need_aur[@]}" || \
-              warn "Finish the rest by hand, or install an AUR helper and re-run."
+            if bootstrap_yay; then
+              info "Installing with yay: ${need_aur[*]}"
+              if yay -S --needed "${need_aur[@]}"; then
+                ok "AUR packages done."
+              else
+                warn "yay could not install all of them:"
+                block "${need_aur[*]}"
+              fi
+            else
+              warn "Install an AUR helper by hand, then re-run. Needed:"
+              block "${need_aur[*]}"
+            fi
             ;;
           *)
             warn "Skipped. Install these by hand to complete the rice:"
@@ -259,8 +261,8 @@ if [[ $STOW_ONLY -eq 0 && $DRY_RUN -eq 0 ]]; then
             ;;
         esac
       else
-        warn "Not a terminal — cannot ask. Install these by hand, or install an"
-        warn "AUR helper (paru/yay) and re-run."
+        warn "Not a terminal — cannot ask. Install an AUR helper (paru/yay)"
+        warn "and re-run. Needed:"
         block "${need_aur[*]}"
       fi
     fi
