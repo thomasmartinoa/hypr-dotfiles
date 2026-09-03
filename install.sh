@@ -91,10 +91,19 @@ conflict_targets() {
 # tarballs — both of which bit this script when it tried to do it by hand.
 bootstrap_yay() {
   local tmp rc=0
-  info "Installing base-devel, git and go (needed to build yay)..."
-  sudo pacman -S --needed base-devel git go || return 1
+  # --noconfirm: the user already said yes at our prompt. Asking again for a
+  # 31-package, ~150 MB dependency transaction reads like a duplicate question,
+  # and answering "n" to it silently aborts the whole yay build.
+  info "Installing base-devel, git and go (~150 MB, needed to build yay)..."
+  if ! sudo pacman -S --needed --noconfirm base-devel git go; then
+    warn "Could not install the build dependencies (base-devel, git, go)."
+    warn "Check your mirrors and network, then re-run."
+    return 1
+  fi
 
-  tmp="$(mktemp -d)"
+  # Guard the mktemp: an empty $tmp would make the clone target "/yay" and the
+  # later cleanup "rm -rf ''", both of which fail confusingly rather than clearly.
+  tmp="$(mktemp -d)" || { warn "Could not create a temporary directory."; return 1; }
   info "Cloning yay from the AUR..."
   if git clone --depth 1 https://aur.archlinux.org/yay.git "$tmp/yay" >/dev/null 2>&1; then
     if [[ -f "$tmp/yay/PKGBUILD" ]]; then
@@ -225,8 +234,12 @@ if [[ $STOW_ONLY -eq 0 && $DRY_RUN -eq 0 ]]; then
     # the logout menu and adwaita-qt* is what makes Qt apps take the palette — so
     # offer to bootstrap a helper rather than just printing names.
     if [[ -n "$aur_helper" ]]; then
+      # --noconfirm: helpers ask their own questions (cleanBuild, view diffs,
+      # edit PKGBUILD). Mid-install those read as duplicates of consent already
+      # given, and an unanswered one aborts the whole batch. These are three
+      # named packages, not an open-ended set.
       info "Installing with $aur_helper: ${need_aur[*]}"
-      "$aur_helper" -S --needed "${need_aur[@]}"
+      "$aur_helper" -S --needed --noconfirm "${need_aur[@]}"
       ok "AUR packages done."
     elif [[ $NO_AUR -eq 1 ]]; then
       warn "--no-aur given. Install these by hand to complete the rice:"
@@ -244,7 +257,7 @@ if [[ $STOW_ONLY -eq 0 && $DRY_RUN -eq 0 ]]; then
           ""|y|yes)
             if bootstrap_yay; then
               info "Installing with yay: ${need_aur[*]}"
-              if yay -S --needed "${need_aur[@]}"; then
+              if yay -S --needed --noconfirm "${need_aur[@]}"; then
                 ok "AUR packages done."
               else
                 warn "yay could not install all of them:"
