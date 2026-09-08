@@ -210,7 +210,43 @@ if [[ $STOW_ONLY -eq 0 && $DRY_RUN -eq 0 ]]; then
 
   if [[ ${#avail[@]} -gt 0 ]]; then
     info "Installing ${#avail[@]} package(s) — sudo will prompt."
-    sudo pacman -S --needed "${avail[@]}"
+    if ! sudo pacman -S --needed "${avail[@]}"; then
+      echo
+      warn "pacman could not complete that transaction."
+      echo
+      # By far the most common cause, and the error text is distinctive:
+      #   installing aquamarine (0.15.0-2) breaks dependency
+      #   'libaquamarine.so=13-64' required by hyprtoolkit
+      info "The usual cause is a ${C_HI}partial upgrade${C_RST}: the package database was"
+      info "refreshed with ${C_TXT}pacman -Sy${C_RST} but installed packages were never upgraded,"
+      info "so new packages need libraries your system does not have yet."
+      info "A \"breaks dependency 'libfoo.so=NN'\" message is the giveaway."
+      echo
+      info "The fix is a full upgrade. It may pull in a new kernel, in which"
+      info "case reboot before carrying on."
+      echo
+
+      upgraded=0
+      if [[ -t 0 && -t 1 ]]; then
+        reply=""
+        read -r -p "  $(printf '%s' "${C_ACC}?${C_RST}") Run ${C_TXT}sudo pacman -Syu${C_RST} now? [y/N] " reply </dev/tty || reply="n"
+        echo
+        case "${reply,,}" in
+          y|yes)
+            if sudo pacman -Syu; then
+              info "Retrying the package install..."
+              sudo pacman -S --needed "${avail[@]}" && upgraded=1
+            fi
+            ;;
+        esac
+      fi
+
+      if [[ $upgraded -eq 0 ]]; then
+        warn "Run this, then start install.sh again:"
+        warn "   sudo pacman -Syu"
+        die "Stopping here — nothing else has been changed."
+      fi
+    fi
     ok "Repo packages done."
   fi
 

@@ -84,7 +84,7 @@ install looks broken.
 ## Install
 
 ```bash
-sudo pacman -Sy git go --needed
+sudo pacman -Syu --needed git
 git clone https://github.com/thomasmartinoa/hypr-dotfiles.git ~/hypr-dotfiles
 cd ~/hypr-dotfiles
 ./install.sh
