@@ -468,9 +468,24 @@ step "Pre-flight checks"
 if [[ $DRY_RUN -eq 0 ]]; then
   # Screenshot binds pipe through `tee`, which will not create the directory.
   mkdir -p "$HOME/Pictures/screenshot"
-  # Keep ~/.config/qt[56]ct real directories so stow folds only colors/ into a
-  # symlink, leaving qt[56]ct.conf real files that the GUIs can rewrite.
-  mkdir -p "$HOME/.config/qt5ct" "$HOME/.config/qt6ct"
+  # These must be REAL directories, not stow-folded symlinks.
+  #
+  # gtk-3.0/gtk-4.0: gtk.css starts with `@import '../hypr-theme/palette.css'`.
+  #   If the whole directory is a symlink into the repo, that relative import
+  #   resolves from inside the repo (~/hypr-dotfiles/gtk/.config/) rather than
+  #   ~/.config/, finds nothing, and EVERY @define-color below it collapses —
+  #   silently, leaving the stock theme colours. Keeping the directory real
+  #   makes stow link the files inside it, so ../ is ~/.config/ as intended.
+  # qt5ct/qt6ct: so stow folds only colors/, leaving qt*ct.conf real files the
+  #   GUIs can rewrite.
+  for _d in gtk-3.0 gtk-4.0 qt5ct qt6ct; do
+    _t="$HOME/.config/$_d"
+    # Unfold a directory symlink we previously created; never touch anything else.
+    if [[ -L "$_t" && "$(readlink -f "$_t" 2>/dev/null)" == "$DOTFILES_DIR"/* ]]; then
+      rm -- "$_t"
+    fi
+    mkdir -p "$_t"
+  done
   ok "Directories ready."
 fi
 
