@@ -21,9 +21,9 @@ hl.env("ELECTRON_OZONE_PLATFORM_HINT", "wayland")
 -- so each toolkit is told by hand.
 
 --hl.env("GDK_SCALE", "1.6")                 
-hl.env("QT_SCALE_FACTOR", "1.6")
-hl.env("QT_AUTO_SCREEN_SCALE_FACTOR", "0") 
-hl.env("JDK_JAVA_OPTIONS", "-Dsun.java2d.uiScale=1.6")
+--hl.env("QT_SCALE_FACTOR", "1.6")
+--hl.env("QT_AUTO_SCREEN_SCALE_FACTOR", "0") 
+--hl.env("JDK_JAVA_OPTIONS", "-Dsun.java2d.uiScale=1.6")
 
 -- ─── 4. Cursor sizing ────────────────────────────────────────────────────────
 hl.env("HYPRCURSOR_SIZE", "16")

@@ -16,3 +16,5 @@ alias ff="fastfetch"
 alias q="exit"
 
 export PATH="$HOME/.local/bin:$PATH"
+
+. "$HOME/.local/share/../bin/env"
