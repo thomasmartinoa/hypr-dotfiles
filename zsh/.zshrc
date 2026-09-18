@@ -17,4 +17,4 @@ alias q="exit"
 
 export PATH="$HOME/.local/bin:$PATH"
 
-. "$HOME/.local/share/../bin/env"
+#. "$HOME/.local/share/../bin/env"
