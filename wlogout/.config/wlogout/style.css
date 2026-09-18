@@ -39,18 +39,18 @@ button:active {
 
 #lock            { background-image: url("icons/lock-rest.png"); }
 #logout          { background-image: url("icons/exit-rest.png"); }
-#suspend         { background-image: url("icons/sleep-rest.png"); }
+#hibernate        { background-image: url("icons/sleep-rest.png"); }
 #reboot          { background-image: url("icons/reboot-rest.png"); }
 #shutdown        { background-image: url("icons/shutdown-rest.png"); }
 
 #lock:focus      { background-image: url("icons/lock-focus.png"); }
 #logout:focus    { background-image: url("icons/exit-focus.png"); }
-#suspend:focus   { background-image: url("icons/sleep-focus.png"); }
+#hibernate:focus   { background-image: url("icons/sleep-focus.png"); }
 #reboot:focus    { background-image: url("icons/reboot-focus.png"); }
 #shutdown:focus  { background-image: url("icons/shutdown-focus.png"); }
 
 #lock:hover,      #lock:active      { background-image: url("icons/lock-hover.png"); }
 #logout:hover,    #logout:active    { background-image: url("icons/exit-hover.png"); }
-#suspend:hover,   #suspend:active   { background-image: url("icons/sleep-hover.png"); }
+#hibernate:hover,   #hibernate:active   { background-image: url("icons/sleep-hover.png"); }
 #reboot:hover,    #reboot:active    { background-image: url("icons/reboot-hover.png"); }
 #shutdown:hover,  #shutdown:active  { background-image: url("icons/shutdown-hover.png"); }

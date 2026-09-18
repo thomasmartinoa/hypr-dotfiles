@@ -8,13 +8,13 @@
     "label"   : "logout",
     "action"  : "hyprctl dispatch 'hl.dsp.exit()'",
     "text"    : "",
-    "keybind" : "e"
+    "keybind" : "o"
 }
 {
-    "label"   : "suspend",
-    "action"  : "systemctl suspend",
+    "label"   : "hibernate",
+    "action"  : "systemctl hibernate",
     "text"    : "",
-    "keybind" : "u"
+    "keybind" : "h"
 }
 {
     "label"   : "reboot",
