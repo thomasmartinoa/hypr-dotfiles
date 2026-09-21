@@ -25,10 +25,10 @@ Variants {
 
         Rectangle {
             anchors.fill: parent
-            radius: 12
+            radius: Theme.radius
             color: Theme.c.bg0
             border.width: 1
-            border.color: Theme.c.bg3
+            border.color: Theme.c.border
             opacity: Osd.visible ? 1 : 0
             Behavior on opacity { NumberAnimation { duration: 120 } }
 

@@ -30,8 +30,13 @@ Singleton {
         fg: "#e8e8e8",
         accentBright: "#ffffff", accentLight: "#e0e0e0", accentMid: "#a0a0a0", accentDim: "#606060",
         active: "#ffffff", hover: "#cccccc", warning: "#b0b0b0", critical: "#808080",
-        grey0: "#404040", grey1: "#707070", grey2: "#a0a0a0"
+        grey0: "#404040", grey1: "#707070", grey2: "#a0a0a0",
+        border: "#3de0e0e0", borderStrong: "#abffffff"
     })
+
+    // The rice's corner: squarish, 4px (Hyprland rounding = 4, rofi 4px).
+    property int radius: 4
+    readonly property int radiusSm: 3
 
     readonly property string font: "JetBrainsMono Nerd Font Propo"
     // GTK's "12px" in the old waybar css rendered at ~15 logical px; match it.
@@ -44,6 +49,7 @@ Singleton {
             if (j.mode) root.mode = j.mode
             if (j.name) root.name = j.name
             if (j.bar) root.themeBarStyle = j.bar
+            if (j.radius !== undefined) root.radius = j.radius
         } catch (e) {
             console.warn("Theme: could not parse " + root.file + ": " + e)
         }

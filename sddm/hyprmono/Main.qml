@@ -226,7 +226,7 @@ Item {
 
             Rectangle {
                 anchors.fill: parent
-                radius: 5 * root.s
+                radius: 4 * root.s
                 color: Qt.rgba(root.onWall.r, root.onWall.g, root.onWall.b, greetHover.containsMouse && root.userCount > 1 ? 0.08 : 0)
                 Behavior on color { ColorAnimation { duration: 120 } }
             }
@@ -270,7 +270,7 @@ Item {
             y: 75 * root.s
             width: 340 * root.s
             height: 62 * root.s
-            radius: 5 * root.s
+            radius: 4 * root.s
             color: root.light ? Qt.rgba(1, 1, 1, 0.45) : Qt.rgba(64/255, 64/255, 64/255, 0.4)
             border.width: 2 * root.s
             border.color: root.errorText !== "" ? Qt.rgba(root.onWall.r, root.onWall.g, root.onWall.b, 0.9)
@@ -393,7 +393,7 @@ Item {
 
         Rectangle {
             anchors.fill: parent
-            radius: 6 * root.s
+            radius: 4 * root.s
             color: sessHover.containsMouse || root.openPopup === "session" ? root.bg2 : root.bg0
             opacity: 0.85
             border.width: 1
@@ -479,7 +479,7 @@ Item {
         readonly property bool lit: pbMouse.containsMouse || pbMouse.pressed
         Rectangle {
             anchors.fill: parent
-            radius: 6 * root.s
+            radius: 4 * root.s
             color: pb.lit ? root.fg : root.bg0
             opacity: pb.lit ? 1 : 0.85
             border.width: 1
@@ -529,7 +529,7 @@ Item {
         // count-based, not contentHeight: that would be circular with the
         // ListView filling this rectangle and collapse to 0.
         height: list.count * rowHeight + 12 * root.s
-        radius: 6 * root.s
+        radius: 4 * root.s
         color: root.bg0
         opacity: visible ? 0.95 : 0
         border.width: 1

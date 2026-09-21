@@ -16,7 +16,7 @@ Rectangle {
     signal rightClicked()
     width: parent.width
     height: subtitle !== "" ? 44 : 36
-    radius: 8
+    radius: Theme.radius
     color: active ? Theme.c.bg2 : m.containsMouse ? Theme.c.bg1 : "transparent"
     Behavior on color { ColorAnimation { duration: 120 } }
     Label {

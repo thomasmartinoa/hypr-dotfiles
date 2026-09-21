@@ -22,8 +22,8 @@
 
 .control-center {
   background: alpha(@bg0, .6);
-  border-radius: 12px;
-  border: 1px solid @bg3;
+  border-radius: 4px;
+  border: 1px solid @border;
   box-shadow: 0 4px 20px 0 rgba(0,0,0,.5);
   margin: 10px;
   padding: 16px;
@@ -33,7 +33,7 @@
 .control-center .notification-row .notification-background,
 .control-center .notification-row .notification-background .notification.critical {
   background-color: @background-alt;
-  border-radius: 6px;
+  border-radius: 4px;
   margin: 4px 0px;
   padding: 4px;
 }
@@ -138,7 +138,7 @@ progressbar {
 
 .widget-title button {
   background: @background-alt;
-  border-radius: 6px;
+  border-radius: 4px;
   padding: 6px 14px;
 }
 
@@ -160,7 +160,7 @@ progressbar {
 .widget-dnd > switch {
   background: @background-alt;
   font-size: initial;
-  border-radius: 6px;
+  border-radius: 4px;
   box-shadow: none;
   padding: 4px;
 }
@@ -187,7 +187,7 @@ progressbar {
   font-size: x-large;
   padding: 8px 4px;
   margin: 0 0 8px 0;
-  border-radius: 8px;
+  border-radius: 4px;
   background: @background-alt;
 }
 
@@ -195,7 +195,7 @@ progressbar {
   margin: 4px 8px;
   padding: 10px 14px;
   background: transparent;
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
 .widget-buttons-grid>flowbox>flowboxchild>button:hover {
@@ -225,7 +225,7 @@ progressbar {
   /* Music player */
 .widget-mpris {
     background: @background-alt;
-    border-radius: 8px;
+    border-radius: 4px;
     color: @text;
     margin: 8px 0;
     padding: 4px;
@@ -234,14 +234,14 @@ progressbar {
   /* NOTE: Background need *opacity 1* otherwise will turn into the album art blurred  */
 .widget-mpris-player {
     background-color: transparent;
-    border-radius: 6px;
+    border-radius: 4px;
     padding: 8px 12px;
     margin: 4px;
 }
 
 .widget-mpris > box > button {
   color: @text;
-  border-radius: 6px;
+  border-radius: 4px;
 }
  
 .widget-mpris button {
@@ -253,7 +253,7 @@ progressbar {
 }
 
 .widget-mpris-album-art {
-  border-radius: 6px;
+  border-radius: 4px;
 }
  
 .widget-mpris-title {
@@ -275,7 +275,7 @@ picture.mpris-background {
   background: @background-alt;
   padding: 12px 14px;
   margin: 8px 0;
-  border-radius: 8px;
+  border-radius: 4px;
 }
 
 .widget-volume > box {
@@ -334,7 +334,7 @@ picture.mpris-background {
   background: @background-alt;
   padding: 12px 14px;
   margin: 8px 0;
-  border-radius: 8px;
+  border-radius: 4px;
 }
 
 .widget-backlight > box {
@@ -383,7 +383,7 @@ picture.mpris-background {
 
 .widget-menubar > box > box {
   background: @background-alt;
-  border-radius: 8px;
+  border-radius: 4px;
   padding: 2px;
 }
 
@@ -392,7 +392,7 @@ picture.mpris-background {
   color: @text;
   padding: 10px 14px;
   margin: 2px;
-  border-radius: 6px;
+  border-radius: 4px;
   font-size: 1.2rem;
 }
 
@@ -403,10 +403,10 @@ picture.mpris-background {
 /* Power menu dropdown */
 .widget-menubar > revealer > box {
   background: @bg2;
-  border-radius: 8px;
+  border-radius: 4px;
   padding: 8px;
   margin-top: 8px;
-  border: 1px solid @bg3;
+  border: 1px solid @border;
 }
 
 .widget-menubar > revealer > box > button {
@@ -414,7 +414,7 @@ picture.mpris-background {
   color: @text;
   padding: 10px 16px;
   margin: 2px 0;
-  border-radius: 6px;
+  border-radius: 4px;
   font-size: 0.95rem;
 }
 

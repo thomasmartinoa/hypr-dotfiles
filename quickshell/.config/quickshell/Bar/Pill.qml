@@ -21,11 +21,11 @@ Rectangle {
 
     implicitWidth: inner.implicitWidth + padH * 2
     implicitHeight: pillMode ? 28 : 26
-    radius: pillMode ? (round ? 12 : 6) : 4
+    radius: pillMode ? (round ? Theme.radius + 2 : Theme.radius) : Theme.radius
     color: pillMode ? (hovered && interactive ? Theme.c.bg2 : Theme.c.bg0)
                     : (hovered && interactive ? Theme.c.bg2 : "transparent")
     border.width: pillMode ? 1 : 0
-    border.color: hovered && interactive ? Theme.c.bg4 : Theme.c.bg3
+    border.color: hovered && interactive ? Theme.c.borderStrong : Theme.c.border
     Behavior on color { ColorAnimation { duration: 150 } }
     Behavior on border.color { ColorAnimation { duration: 150 } }
 

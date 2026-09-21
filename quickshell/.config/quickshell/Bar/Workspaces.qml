@@ -44,7 +44,7 @@ Pill {
 
             implicitWidth: ws.pillMode ? Math.max(active ? 37 : 27, t.implicitWidth + 14) : Math.max(18, t.implicitWidth + 12)
             implicitHeight: ws.pillMode ? 20 : 22
-            radius: ws.pillMode ? 5 : 4
+            radius: Theme.radiusSm
             color: ws.pillMode
                    ? (active ? Theme.c.fg : hov ? Theme.c.bg4 : urgent ? Theme.c.grey2 : Theme.c.bg2)
                    : (hov ? Theme.c.bg2 : "transparent")

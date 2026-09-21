@@ -8,8 +8,10 @@
     "accentBright": "{{ accent_bright }}", "accentLight": "{{ accent_light }}",
     "accentMid": "{{ accent_mid }}", "accentDim": "{{ accent_dim }}",
     "active": "{{ active }}", "hover": "{{ hover }}", "warning": "{{ warning }}", "critical": "{{ critical }}",
-    "grey0": "{{ grey0 }}", "grey1": "{{ grey1 }}", "grey2": "{{ grey2 }}"
+    "grey0": "{{ grey0 }}", "grey1": "{{ grey1 }}", "grey2": "{{ grey2 }}",
+    "border": "{{ accent_light | argb 0.24 }}", "borderStrong": "{{ accent_bright | argb 0.67 }}"
   },
+  "radius": 4,
   "terminal": {
     "background": "{{ background }}", "foreground": "{{ foreground }}", "cursor": "{{ cursor }}",
     "color0": "{{ color0 }}", "color1": "{{ color1 }}", "color2": "{{ color2 }}", "color3": "{{ color3 }}",

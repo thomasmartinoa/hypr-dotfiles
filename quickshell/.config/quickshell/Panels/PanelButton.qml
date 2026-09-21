@@ -11,10 +11,10 @@ Rectangle {
     signal clicked()
     implicitWidth: row.implicitWidth + 24
     implicitHeight: 30
-    radius: 8
+    radius: Theme.radius
     color: primary ? (m.containsMouse ? Theme.c.accentLight : Theme.c.fg) : (m.containsMouse ? Theme.c.bg3 : Theme.c.bg2)
     border.width: primary ? 0 : 1
-    border.color: Theme.c.bg3
+    border.color: m.containsMouse ? Theme.c.borderStrong : Theme.c.border
     Behavior on color { ColorAnimation { duration: 120 } }
     Row {
         id: row

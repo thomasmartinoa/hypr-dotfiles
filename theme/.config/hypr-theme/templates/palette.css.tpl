@@ -38,6 +38,11 @@
 @define-color blue   {{ blue }};
 @define-color purple {{ purple }};
 
+/* Borders — the rice's 1px outline: a subtle light line, stronger when focused.
+   Corners go with it: 4px everywhere (Hyprland rounding = 4, rofi 4px). */
+@define-color border        {{ accent_light | rgba 0.24 }};
+@define-color border-strong {{ accent_bright | rgba 0.67 }};
+
 /* Additional greys */
 @define-color grey0 {{ grey0 }};
 @define-color grey1 {{ grey1 }};

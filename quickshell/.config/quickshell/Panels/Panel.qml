@@ -40,8 +40,8 @@ PopupWindow {
         implicitHeight: column.implicitHeight + 28
         color: Theme.c.bg0
         border.width: 1
-        border.color: Theme.c.bg3
-        radius: 10
+        border.color: Theme.c.border
+        radius: Theme.radius
         Behavior on color { ColorAnimation { duration: 150 } }
 
         Column {

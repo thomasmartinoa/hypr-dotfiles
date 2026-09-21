@@ -20,8 +20,8 @@ button {
     margin: 133px 19px;
 
     background-color: @bg1;
-    border: 1px solid @bg3;
-    border-radius: 8px;
+    border: 1px solid @border;
+    border-radius: 4px;
 
     background-repeat: no-repeat;
     background-position: center;
@@ -30,7 +30,7 @@ button {
 
 button:focus {
     background-color: @bg2;
-    border-color: @accent-dim;
+    border-color: @border-strong;
 }
 
 button:hover,

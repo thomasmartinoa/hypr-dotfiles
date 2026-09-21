@@ -73,8 +73,8 @@ Panel {
                 // password prompt for an unknown secured network
                 Rectangle {
                     visible: p.pskFor === modelData
-                    width: parent.width; height: 34; radius: 8
-                    color: Theme.c.bg1; border.width: 1; border.color: Theme.c.bg3
+                    width: parent.width; height: 34; radius: Theme.radius
+                    color: Theme.c.bg1; border.width: 1; border.color: Theme.c.border
                     TextInput {
                         id: psk
                         anchors.fill: parent; anchors.margins: 8
