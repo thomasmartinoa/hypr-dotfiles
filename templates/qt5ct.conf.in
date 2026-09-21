@@ -11,7 +11,7 @@
 #
 # Qt5 font records use the older 10-field format, not Qt6's 17-field one.
 [Appearance]
-color_scheme_path=@HOME@/.config/qt5ct/colors/hypr-mono.conf
+color_scheme_path=@HOME@/.config/hypr-theme/current/qtct-colors.conf
 custom_palette=true
 icon_theme=Papirus-Dark
 standard_dialogs=default

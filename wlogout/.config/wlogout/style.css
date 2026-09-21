@@ -1,3 +1,5 @@
+@import '../hypr-theme/current/palette.css';
+
 * {
     box-shadow: none;
     text-shadow: none;
@@ -7,14 +9,14 @@
 }
 
 window {
-    background-color: rgba(10, 10, 10, 0.7);
+    background-color: alpha(@bg0, 0.7);
 }
 
 button {
     margin: 133px 19px;
 
-    background-color: #141414;
-    border: 1px solid #282828;
+    background-color: @bg1;
+    border: 1px solid @bg3;
     border-radius: 8px;
 
     background-repeat: no-repeat;
@@ -24,15 +26,15 @@ button {
 
 
 button:focus {
-    background-color: #1e1e1e;
-    border-color: #606060;
+    background-color: @bg2;
+    border-color: @accent-dim;
 }
 
 
 button:hover,
 button:active {
-    background-color: #e8e8e8;
-    border-color: #e8e8e8;
+    background-color: @fg;
+    border-color: @fg;
 }
 
 

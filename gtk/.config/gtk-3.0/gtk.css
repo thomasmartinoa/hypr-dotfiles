@@ -12,7 +12,7 @@
  * adw-gtk3 respects the common ones, but a stylesheet that hardcodes colours
  * will win over these overrides.
  */
-@import '../hypr-theme/palette.css';
+@import '../hypr-theme/current/palette.css';
 
 /* Classic GTK3 theme colours */
 @define-color theme_bg_color          @bg0;

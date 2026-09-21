@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# hypr-theme-menu — pick a theme from a rofi list and apply it.
+# Placeholder UI until the Quickshell switcher exists; same shape as the
+# clipboard menu so it matches the rice.
+set -uo pipefail
+
+if pgrep -x rofi >/dev/null 2>&1; then
+    pkill -x rofi
+    exit 0
+fi
+
+THEME="$HOME/.config/rofi/clipboard.rasi"
+THEMES_DIR="$HOME/.config/hypr-theme/themes"
+current="$(hypr-theme current)"
+
+mapfile -t names < <(hypr-theme list | sed 's/^[* ] //')
+[[ ${#names[@]} -gt 0 ]] || exit 0
+
+row=0
+build_menu() {
+    local i name pretty mode
+    for i in "${!names[@]}"; do
+        name="${names[$i]}"
+        pretty="$(sed -n 's/^name *= *"\(.*\)".*/\1/p' "$THEMES_DIR/$name/colors.toml")"
+        mode="$(sed -n 's/^mode *= *"\(.*\)".*/\1/p' "$THEMES_DIR/$name/colors.toml")"
+        [[ "$name" == "$current" ]] && row=$i
+        printf '%s  ·  %s\n' "${pretty:-$name}" "$mode"
+    done
+}
+
+index=$(build_menu | rofi -dmenu -format i -no-custom -theme "$THEME" -p "theme" -selected-row "$row")
+[[ "$index" =~ ^[0-9]+$ ]] || exit 0
+hypr-theme set "${names[$index]}" >/dev/null

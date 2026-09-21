@@ -1,0 +1,173 @@
+#!/usr/bin/env bash
+# hypr-theme — theme engine for hypr-dotfiles.
+#
+#   hypr-theme set <name>     render a theme and apply it everywhere
+#   hypr-theme next           cycle to the next theme
+#   hypr-theme toggle         switch between the current dark and light theme
+#   hypr-theme list           list available themes (* = current)
+#   hypr-theme current        print the current theme name
+#   hypr-theme render <name>  render only, into a temp dir (for testing)
+#   hypr-theme reload         re-render the current theme and re-apply
+#
+# A theme is ~/.config/hypr-theme/themes/<name>/colors.toml (+ backgrounds/).
+# `set` renders templates/*.tpl into ~/.config/hypr-theme/current/, then tells
+# every running app to pick the new colours up. Apps import from current/;
+# nothing in the repo is edited.
+
+set -euo pipefail
+
+HT_DIR="$HOME/.config/hypr-theme"
+THEMES_DIR="$HT_DIR/themes"
+TEMPLATES_DIR="$HT_DIR/templates"
+CURRENT_DIR="$HT_DIR/current"
+NEXT_DIR="$HT_DIR/current.next"
+RENDER="$HT_DIR/render.py"
+
+die()  { printf 'hypr-theme: %s\n' "$*" >&2; exit 1; }
+have() { command -v "$1" >/dev/null 2>&1; }
+
+theme_path() {
+    local name="$1"
+    [[ -n "$name" && "$name" != */* && "$name" != .* ]] || die "invalid theme name '$name'"
+    [[ -f "$THEMES_DIR/$name/colors.toml" ]] || die "no such theme: $name (see: hypr-theme list)"
+    printf '%s' "$THEMES_DIR/$name"
+}
+
+current_name() {
+    [[ -f "$CURRENT_DIR/theme.name" ]] && cat "$CURRENT_DIR/theme.name" || true
+}
+
+theme_mode() {
+    # `mode = "dark"` from a colors.toml
+    sed -n 's/^mode *= *"\([a-z]*\)".*/\1/p' "$1/colors.toml" | head -n1
+}
+
+list_themes() {
+    local cur d
+    cur="$(current_name)"
+    for d in "$THEMES_DIR"/*/; do
+        d="${d%/}"; [[ -f "$d/colors.toml" ]] || continue
+        d="${d##*/}"
+        if [[ "$d" == "$cur" ]]; then printf '* %s\n' "$d"; else printf '  %s\n' "$d"; fi
+    done
+}
+
+# ---------------------------------------------------------------------------
+# render <name> <out-dir>
+# ---------------------------------------------------------------------------
+render_into() {
+    local src="$1" out="$2"
+    rm -rf "$out"
+    mkdir -p "$out"
+    python3 "$RENDER" "$src" "$TEMPLATES_DIR" "$out" >/dev/null
+    printf '%s\n' "${src##*/}" > "$out/theme.name"
+    # Keep a stable path to the theme dir and its backgrounds for other tools.
+    ln -nsf "$src" "$out/theme"
+}
+
+# ---------------------------------------------------------------------------
+# apply — copy generated files that cannot be imported, then poke every app
+# ---------------------------------------------------------------------------
+install_file() {
+    # install_file <generated> <destination>. Destination is always a real
+    # file: if an old stow symlink is there, replace it rather than writing
+    # through it into the repo.
+    local src="$1" dst="$2"
+    mkdir -p "$(dirname "$dst")"
+    [[ -L "$dst" ]] && rm -f "$dst"
+    cp -f -- "$src" "$dst"
+}
+
+apply() {
+    local mode gtk_theme icon_theme
+    mode="$(theme_mode "$CURRENT_DIR/theme")"
+    gtk_theme="$(sed -n 's/^gtk-theme-name=\(.*\)/\1/p' "$CURRENT_DIR/gtk3-settings.ini")"
+    icon_theme="$(sed -n 's/^gtk-icon-theme-name=\(.*\)/\1/p' "$CURRENT_DIR/gtk3-settings.ini")"
+
+    # Files that must live at a fixed path the app owns.
+    install_file "$CURRENT_DIR/gtk3-settings.ini" "$HOME/.config/gtk-3.0/settings.ini"
+    install_file "$CURRENT_DIR/gtk4-settings.ini" "$HOME/.config/gtk-4.0/settings.ini"
+    install_file "$CURRENT_DIR/gtkrc-2.0"          "$HOME/.gtkrc-2.0"
+    install_file "$CURRENT_DIR/kde-colors"         "$HOME/.local/share/color-schemes/HyprTheme.colors"
+    install_file "$CURRENT_DIR/kdeglobals"         "$HOME/.config/kdeglobals"
+
+    # GTK4 / libadwaita apps and the portal read the colour scheme from
+    # gsettings, not settings.ini. Zen/Firefox follow this too.
+    if have gsettings; then
+        gsettings set org.gnome.desktop.interface color-scheme \
+            "$([[ "$mode" == light ]] && echo prefer-light || echo prefer-dark)" 2>/dev/null || true
+        gsettings set org.gnome.desktop.interface gtk-theme  "$gtk_theme"  2>/dev/null || true
+        gsettings set org.gnome.desktop.interface icon-theme "$icon_theme" 2>/dev/null || true
+    fi
+
+    # Running apps: reload in place where the app supports it.
+    have hyprctl       && hyprctl reload >/dev/null 2>&1 || true
+    pkill -SIGUSR2 -x waybar        2>/dev/null || true   # reload config + css
+    pkill -SIGUSR1 -x kitty         2>/dev/null || true   # kitty re-reads kitty.conf
+    have swaync-client && swaync-client --reload-css >/dev/null 2>&1 || true
+    # neovim: every running instance re-applies its colorscheme
+    local sock
+    for sock in "${XDG_RUNTIME_DIR:-/tmp}"/nvim.*.0; do
+        [[ -S "$sock" ]] || continue
+        nvim --server "$sock" --remote-send '<Cmd>lua pcall(function() require("config.hypr-theme").apply() end)<CR>' >/dev/null 2>&1 || true
+    done
+    # quickshell (when the shell exists): it watches colors.json itself, but a
+    # nudge makes the switch instant.
+    have qs && qs ipc call theme reload >/dev/null 2>&1 || true
+
+    # Login screen: needs root, so it is a separate, optional step.
+    if have hypr-theme-sddm-sync; then
+        hypr-theme-sddm-sync >/dev/null 2>&1 || true
+    fi
+}
+
+# ---------------------------------------------------------------------------
+cmd_set() {
+    local name="${1:-}" src
+    src="$(theme_path "$name")"
+    render_into "$src" "$NEXT_DIR"
+    rm -rf "$CURRENT_DIR"
+    mv "$NEXT_DIR" "$CURRENT_DIR"
+    apply
+    have notify-send && notify-send -a hypr-theme "Theme: $(sed -n 's/^name *= *"\(.*\)".*/\1/p' "$src/colors.toml")" "$(theme_mode "$src") mode" 2>/dev/null || true
+    printf '%s\n' "$name"
+}
+
+cmd_next() {
+    local cur names=() i n
+    cur="$(current_name)"
+    mapfile -t names < <(list_themes | sed 's/^[* ] //')
+    n=${#names[@]}; (( n > 0 )) || die "no themes in $THEMES_DIR"
+    for i in "${!names[@]}"; do
+        if [[ "${names[$i]}" == "$cur" ]]; then cmd_set "${names[$(( (i + 1) % n ))]}"; return; fi
+    done
+    cmd_set "${names[0]}"
+}
+
+cmd_toggle() {
+    # Prefer a theme whose name differs only by a -light / -dark suffix; else
+    # the first theme with the opposite mode.
+    local cur mode want name
+    cur="$(current_name)"; [[ -n "$cur" ]] || die "no current theme"
+    mode="$(theme_mode "$THEMES_DIR/$cur")"
+    want=$([[ "$mode" == light ]] && echo dark || echo light)
+    for name in "${cur%-light}" "${cur%-dark}" "${cur}-${want}" "${cur%-light}-${want}" "${cur%-dark}-${want}"; do
+        [[ "$name" != "$cur" && -f "$THEMES_DIR/$name/colors.toml" ]] || continue
+        [[ "$(theme_mode "$THEMES_DIR/$name")" == "$want" ]] && { cmd_set "$name"; return; }
+    done
+    for name in $(list_themes | sed 's/^[* ] //'); do
+        [[ "$name" != "$cur" && "$(theme_mode "$THEMES_DIR/$name")" == "$want" ]] && { cmd_set "$name"; return; }
+    done
+    die "no $want theme to switch to"
+}
+
+case "${1:-}" in
+    set)     cmd_set "${2:-}" ;;
+    next)    cmd_next ;;
+    toggle)  cmd_toggle ;;
+    list)    list_themes ;;
+    current) current_name ;;
+    reload)  cur="$(current_name)"; [[ -n "$cur" ]] || die "no current theme"; cmd_set "$cur" ;;
+    render)  src="$(theme_path "${2:-}")"; out="$(mktemp -d)"; render_into "$src" "$out"; printf '%s\n' "$out" ;;
+    *)       sed -n '2,15p' "$0" | sed 's/^# \{0,1\}//'; exit 1 ;;
+esac

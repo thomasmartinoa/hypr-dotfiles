@@ -1,0 +1,74 @@
+# HyprMono — the original monochrome dark theme.
+#
+# A theme is this file plus an optional backgrounds/ directory. Every app
+# config is rendered from templates/ using these values, so to make a new
+# theme: copy this directory, change the colours, run `hypr-theme set <name>`.
+
+name = "HyprMono"
+mode = "dark"       # dark | light — drives GTK/Qt/nvim light-dark switches
+bar  = "pill"       # preferred bar style: pill (current look) | minimal (Omarchy-like)
+
+[colors]
+# Backgrounds — darkest to lightest
+bg0 = "#0a0a0a"     # main bar background, almost black
+bg1 = "#141414"     # slightly lighter
+bg2 = "#1e1e1e"     # module backgrounds
+bg3 = "#282828"     # borders, separators
+bg4 = "#333333"     # hover states
+
+# Foregrounds
+fg            = "#e8e8e8"   # main text
+accent_bright = "#ffffff"   # active / important
+accent_light  = "#e0e0e0"   # primary text
+accent_mid    = "#a0a0a0"   # secondary text
+accent_dim    = "#606060"   # inactive
+
+# Semantic
+active   = "#ffffff"
+hover    = "#cccccc"
+warning  = "#b0b0b0"
+critical = "#808080"
+
+# Extra greys
+grey0 = "#404040"
+grey1 = "#707070"
+grey2 = "#a0a0a0"
+
+# Legacy names some stylesheets still use, mapped into the greyscale
+red    = "#ffffff"
+orange = "#e0e0e0"
+yellow = "#c8c8c8"
+green  = "#b0b0b0"
+aqua   = "#989898"
+blue   = "#ffffff"
+purple = "#d0d0d0"
+
+[terminal]
+background = "#000000"
+foreground = "#b5b5b5"
+cursor     = "#e0e0e0"
+selection_background = "#2a2a2a"
+selection_foreground = "#ffffff"
+color0  = "#000000"
+color1  = "#5e5e5e"
+color2  = "#6a6a6a"
+color3  = "#777777"
+color4  = "#8c8c8c"
+color5  = "#9a9a9a"
+color6  = "#b0b0b0"
+color7  = "#cfcfcf"
+color8  = "#4a4a4a"
+color9  = "#7a7a7a"
+color10 = "#8a8a8a"
+color11 = "#9c9c9c"
+color12 = "#b1b1b1"
+color13 = "#c4c4c4"
+color14 = "#d8d8d8"
+color15 = "#f2f2f2"
+
+[apps]
+gtk_theme       = "adw-gtk3-dark"
+icon_theme      = "Papirus-Dark"
+cursor_theme    = "default"
+qt_style        = "Adwaita-Dark"
+nvim_colorscheme = "zenwritten"

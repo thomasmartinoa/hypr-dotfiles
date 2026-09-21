@@ -132,7 +132,7 @@ Then link it up:
 ```bash
 mkdir -p ~/Pictures/screenshot ~/.config/qt5ct ~/.config/qt6ct
 
-stow alacritty gtk hyprland kde kittyterminal nvim qt rofi starship swaync theme \
+stow alacritty gtk hyprland kittyterminal nvim rofi starship swaync theme \
      waybar wlogout zsh
 ```
 
@@ -157,14 +157,12 @@ Each top-level folder is a Stow package mirroring your home directory:
 alacritty/   →  ~/.config/alacritty/
 gtk/         →  ~/.gtkrc-2.0, ~/.config/gtk-3.0/, ~/.config/gtk-4.0/
 hyprland/    →  ~/.config/hypr/     (lua config, hyprlock, hypridle, wallpapers)
-kde/         →  ~/.config/kdeglobals, ~/.local/share/color-schemes/
 kittyterminal/ → ~/.config/kitty/
 nvim/        →  ~/.config/nvim/     (LazyVim)
-qt/          →  ~/.config/qt5ct/colors/, ~/.config/qt6ct/colors/
 rofi/        →  ~/.config/rofi/
 starship/    →  ~/.config/starship.toml
 swaync/      →  ~/.config/swaync/
-theme/       →  ~/.config/hypr-theme/   (the shared palette)
+theme/       →  ~/.config/hypr-theme/ (themes, templates, engine), ~/.local/bin/hypr-theme*
 waybar/      →  ~/.config/waybar/
 wlogout/     →  ~/.config/wlogout/
 zsh/         →  ~/.zshrc
@@ -175,6 +173,29 @@ sddm/        →  /usr/share/sddm/themes/hyprmono, /etc/sddm.conf.d/   (not stow
 The Hyprland config is split into modules under
 [`hypr/modules/`](hyprland/.config/hypr/modules/) — `binds`, `monitors`, `decorations`, `env`,
 `autostart`, `windowrules`.
+
+---
+
+## Theming
+
+Colours live in **one place**: [`theme/.config/hypr-theme/themes/<name>/colors.toml`](theme/.config/hypr-theme/themes/).
+`hypr-theme set <name>` renders every template in [`templates/`](theme/.config/hypr-theme/templates/)
+into `~/.config/hypr-theme/current/` and tells the running apps to reload — waybar, swaync, GTK
+(gsettings + settings.ini), Qt (qt5ct/qt6ct + kdeglobals), kitty, alacritty, Hyprland borders,
+hyprlock, rofi, wlogout, neovim, and the login screen. Nothing in the repo is edited; `current/` is
+gitignored.
+
+```sh
+hypr-theme list            # available themes, * = current
+hypr-theme set hyprmono    # apply one
+hypr-theme toggle          # dark <-> light          (SUPER+SHIFT+T)
+hypr-theme-menu            # rofi picker             (SUPER+CTRL+SHIFT+SPACE)
+```
+
+To make a theme: copy `themes/hyprmono/`, edit `colors.toml` (`mode = "light"` flips GTK/Qt/nvim to
+their light variants), run `hypr-theme set <name>`. Templates use `{{ bg0 }}`, filters like
+`{{ bg0 | rgba 0.6 }}` / `{{ bg0 | hypr }}`, and `{{ mix bg0 fg 20% }}` — see
+[`render.py`](theme/.config/hypr-theme/render.py).
 
 ---
 
