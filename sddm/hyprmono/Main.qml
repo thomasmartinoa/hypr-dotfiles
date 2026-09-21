@@ -468,20 +468,23 @@ Item {
         width: 44 * root.s
         height: 44 * root.s
 
+        // Same states as wlogout/style.css: rest = dark pill + light icon,
+        // hover/press = light (#e8e8e8) fill + the dark "-hover" icon.
+        readonly property bool lit: pbMouse.containsMouse || pbMouse.pressed
         Rectangle {
             anchors.fill: parent
             radius: 6 * root.s
-            color: pbMouse.pressed ? root.fg : pbMouse.containsMouse ? root.bg2 : root.bg0
-            opacity: 0.85
+            color: pb.lit ? root.fg : root.bg0
+            opacity: pb.lit ? 1 : 0.85
             border.width: 1
-            border.color: pbMouse.pressed ? root.fg : pbMouse.containsMouse ? root.dim : root.bg3
+            border.color: pb.lit ? root.fg : root.bg3
             Behavior on color { ColorAnimation { duration: 150 } }
         }
         Image {
             anchors.centerIn: parent
             width: 22 * root.s
             height: 22 * root.s
-            source: "icons/" + pb.icon + (pbMouse.pressed ? "-focus" : pbMouse.containsMouse ? "-hover" : "-rest") + ".png"
+            source: "icons/" + pb.icon + (pb.lit ? "-hover" : "-rest") + ".png"
             sourceSize: Qt.size(96, 96)
             smooth: true
         }
@@ -489,7 +492,7 @@ Item {
             anchors.bottom: parent.top
             anchors.bottomMargin: 8 * root.s
             anchors.horizontalCenter: parent.horizontalCenter
-            visible: pbMouse.containsMouse
+            visible: pb.lit
             text: pb.tip
             font.family: root.font
             font.pixelSize: 13 * root.s
