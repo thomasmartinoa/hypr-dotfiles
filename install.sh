@@ -16,10 +16,12 @@ PKGS_REPO=(
   xdg-desktop-portal-hyprland polkit-gnome qt5ct qt6ct power-profiles-daemon
   kitty alacritty zsh starship
   neovim fastfetch btop eza
-  grim slurp wl-clipboard cliphist playerctl brightnessctl batsignal jq ffmpeg
+  grim slurp wl-clipboard cliphist playerctl brightnessctl batsignal ffmpeg
   thunar pavucontrol networkmanager nm-connection-editor
   ttf-jetbrains-mono-nerd inter-font papirus-icon-theme adw-gtk-theme stow
-  python
+  # theme engine: renderer, JSON edits, gsettings schema, portal settings backend
+  # (GTK4/Zen follow dark/light through it), login screen
+  python jq gsettings-desktop-schemas xdg-desktop-portal-gtk sddm
 )
 
 # Not in the official Arch repos. On CachyOS these ship in the [cachyos] repo;

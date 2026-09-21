@@ -88,7 +88,12 @@ install_file() {
 # recolours it live; the light/dark base (uiTheme) is read on the next start.
 apply_vscode() {
     local ext_base="$1" settings="$2" ext="$1/hypr-theme" ui
-    [[ -d "$ext_base" ]] || return 0
+    # Only where the editor exists; VS Code creates ~/.vscode on first launch,
+    # but if the binary is here we can pre-seed it so the first launch is themed.
+    if [[ ! -d "$ext_base" ]]; then
+        have code || return 0
+        mkdir -p "$ext_base"
+    fi
     have jq || return 0
     ui=$([[ "$(theme_mode "$CURRENT_DIR/theme")" == light ]] && echo vs || echo vs-dark)
     mkdir -p "$ext/themes"
@@ -188,7 +193,10 @@ apply() {
     have qs && qs ipc call theme reload >/dev/null 2>&1 || true
 
     # Wallpaper: each theme has backgrounds/; keep (or restore) one of them.
-    have hypr-wall && hypr-wall ensure >/dev/null 2>&1 || true
+    # Sibling script by path: during install.sh ~/.local/bin may not be on PATH yet.
+    local hw="${BASH_SOURCE[0]%/*}/hypr-wall"
+    [[ -x "$hw" ]] || hw="$(command -v hypr-wall || true)"
+    [[ -n "$hw" ]] && "$hw" ensure >/dev/null 2>&1 || true
 
     # root's GTK config (pkexec apps like grub-customizer) and the SDDM theme
     # need root. install.sh installs the helper + a sudoers rule for exactly
