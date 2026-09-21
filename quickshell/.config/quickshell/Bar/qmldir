@@ -1,0 +1,12 @@
+module Bar
+Bar 1.0 Bar.qml
+Pill 1.0 Pill.qml
+Workspaces 1.0 Workspaces.qml
+Clock 1.0 Clock.qml
+Tray 1.0 Tray.qml
+Audio 1.0 Audio.qml
+Network 1.0 Network.qml
+Battery 1.0 Battery.qml
+CaffeineWidget 1.0 CaffeineWidget.qml
+Bell 1.0 Bell.qml
+Label 1.0 Label.qml

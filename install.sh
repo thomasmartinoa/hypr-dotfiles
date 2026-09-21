@@ -8,11 +8,11 @@ set -euo pipefail
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Every top-level directory that is a stow package.
-PACKAGES=(alacritty gtk hyprland kittyterminal nvim rofi starship swaync
+PACKAGES=(alacritty gtk hyprland kittyterminal nvim quickshell rofi starship swaync
           theme waybar wlogout zsh)
 
 PKGS_REPO=(
-  hyprland hyprlock hypridle waybar rofi swaync awww
+  hyprland hyprlock hypridle quickshell waybar rofi swaync awww
   xdg-desktop-portal-hyprland polkit-gnome qt5ct qt6ct power-profiles-daemon
   kitty alacritty zsh starship
   neovim fastfetch btop eza

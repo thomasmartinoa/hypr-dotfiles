@@ -1,0 +1,34 @@
+import QtQuick
+import Quickshell
+import Quickshell.Services.UPower
+import qs.Commons
+
+Pill {
+    id: bat
+    readonly property var dev: UPower.displayDevice
+    visible: dev && dev.isLaptopBattery
+    readonly property int pct: dev ? Math.round(dev.percentage * 100) : 0
+    readonly property bool charging: dev && dev.state === UPowerDeviceState.Charging
+    readonly property bool full: dev && dev.state === UPowerDeviceState.FullyCharged
+    readonly property bool plugged: charging || full || (dev && dev.state === UPowerDeviceState.PendingCharge)
+    readonly property var icons: ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂀", "󰂂", "󰁹"]
+    readonly property string icon: charging ? "󰂄" : plugged ? "󰚥" : icons[Math.min(10, Math.floor(pct / 10))]
+    readonly property color tone: plugged ? Theme.c.accentBright
+                                 : pct <= 15 ? Theme.c.accentDim : pct <= 30 ? Theme.c.accentMid : Theme.c.accentLight
+
+    onClicked: Quickshell.execDetached([Quickshell.env("HOME") + "/.config/wlogout/launch.sh"])
+
+    Label {
+        id: ic
+        text: bat.icon
+        color: bat.tone
+        SequentialAnimation on opacity {
+            running: !bat.plugged && bat.pct <= 15
+            loops: Animation.Infinite
+            NumberAnimation { to: 0.3; duration: 500 }
+            NumberAnimation { to: 1.0; duration: 500 }
+            onRunningChanged: if (!running) ic.opacity = 1
+        }
+    }
+    Label { visible: bat.pillMode; text: bat.pct + "%"; color: bat.tone }
+}

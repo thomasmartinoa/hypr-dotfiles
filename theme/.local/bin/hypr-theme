@@ -170,11 +170,13 @@ apply() {
     # Wayland (tested: neither directly nor through the settings portal), so
     # every GTK3 daemon we own is restarted: waybar + swaync together (the
     # bar's bell module is a swaync-client subscription) and the polkit agent.
-    if [[ -x "$HOME/.config/waybar/scripts/launch.sh" ]]; then
-        "$HOME/.config/waybar/scripts/launch.sh" >/dev/null 2>&1 || true
-    else
-        pkill -SIGUSR2 -x waybar 2>/dev/null || true
-        have swaync-client && swaync-client --reload-css >/dev/null 2>&1 || true
+    # The Quickshell bar recolours itself (it watches colors.json); only the
+    # GTK3 pieces need a restart. With the classic waybar bar, both.
+    if pgrep -x qs >/dev/null 2>&1; then
+        pkill -x swaync 2>/dev/null || true
+        setsid -f swaync >/dev/null 2>&1
+    elif [[ -x "$HOME/.config/hypr/scripts/shell.sh" ]]; then
+        "$HOME/.config/hypr/scripts/shell.sh" restart >/dev/null 2>&1 || true
     fi
     if pgrep -x polkit-gnome-au >/dev/null 2>&1; then
         pkill -x polkit-gnome-au 2>/dev/null || true

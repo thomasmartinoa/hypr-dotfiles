@@ -159,11 +159,12 @@ gtk/         →  ~/.gtkrc-2.0, ~/.config/gtk-3.0/, ~/.config/gtk-4.0/
 hyprland/    →  ~/.config/hypr/     (lua config, hyprlock, hypridle, wallpapers)
 kittyterminal/ → ~/.config/kitty/
 nvim/        →  ~/.config/nvim/     (LazyVim)
+quickshell/  →  ~/.config/quickshell/ (the bar; more to come)
 rofi/        →  ~/.config/rofi/
 starship/    →  ~/.config/starship.toml
 swaync/      →  ~/.config/swaync/
 theme/       →  ~/.config/hypr-theme/ (themes, templates, engine), ~/.local/bin/hypr-theme*
-waybar/      →  ~/.config/waybar/
+waybar/      →  ~/.config/waybar/   (classic bar, kept as a fallback: HYPR_SHELL=waybar)
 wlogout/     →  ~/.config/wlogout/
 zsh/         →  ~/.zshrc
 
@@ -173,6 +174,24 @@ sddm/        →  /usr/share/sddm/themes/hyprmono, /etc/sddm.conf.d/   (not stow
 The Hyprland config is split into modules under
 [`hypr/modules/`](hyprland/.config/hypr/modules/) — `binds`, `monitors`, `decorations`, `env`,
 `autostart`, `windowrules`.
+
+---
+
+## The bar (Quickshell)
+
+[`quickshell/`](quickshell/.config/quickshell/) is the desktop shell, written in QML on
+[Quickshell](https://quickshell.org). Today it is the bar; panels, OSD, wallpaper, notifications,
+lock screen and launcher follow (see the roadmap below). It reads the theme's `colors.json` live, so a
+theme switch recolours it in place — no restart.
+
+Two skins, switched live:
+
+| `pill` | the classic look: bordered floating modules, clock · workspaces · tray · audio · wifi · battery · caffeine · bell |
+| `minimal` | flat 26px strip, Omarchy layout: numbered workspaces with a dot for the active one, day + time centred, icons right |
+
+A theme picks its skin with `bar = "pill"` in `colors.toml`; `SUPER+SHIFT+B` (or
+`qs ipc call bar style minimal|pill|auto`) overrides it for the session. `SUPER+R` restarts the shell.
+`HYPR_SHELL=waybar` in `autostart.lua` brings the old waybar back.
 
 ---
 
@@ -239,8 +258,10 @@ If the login screen ever comes up black, switch to a TTY (`Ctrl+Alt+F3`) and
 | `SUPER` + `Return` / `E` / `B` | Terminal · file manager · browser |
 | `SUPER` + `D` / `V` | App launcher · clipboard history |
 | `SUPER` + `L` / `M` | Lock screen · logout menu |
-| `SUPER` + `R` | Restart waybar + swaync |
-| `SUPER` + `CTRL` + `I` | Caffeine: pause idle lock & suspend (also the ☕ in waybar) |
+| `SUPER` + `R` | Restart the shell (bar + notifications) |
+| `SUPER` + `SHIFT` + `B` | Bar skin: pill ↔ minimal |
+| `SUPER` + `CTRL` + `I` | Caffeine: pause idle lock & suspend (also the ☕ in the bar) |
+| `SUPER` + `CTRL` + `SPACE` | Next wallpaper |
 | `SUPER` + `Q` / `T` / `F` | Close · float · fullscreen |
 | `SUPER` + `SHIFT` + `F` / `P` / `J` | Maximize · pseudo-tile · toggle split |
 | `SUPER` + `←↑↓→` | Move focus |

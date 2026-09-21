@@ -1,7 +1,11 @@
 
 
+-- Which bar: "quickshell" (the shell in ~/.config/quickshell) or "waybar"
+-- (the classic config, kept as a fallback). scripts/shell.sh reads this.
+hl.env("HYPR_SHELL", "quickshell")
+
 hl.on("hyprland.start", function()
-    hl.exec_cmd("waybar")
+    hl.exec_cmd("~/.config/hypr/scripts/shell.sh start")
     hl.exec_cmd("awww-daemon & sleep 0.5 && hypr-wall apply")   -- wallpaper = ~/.config/hypr-theme/current/background
     hl.exec_cmd("hypridle")
     hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
