@@ -127,6 +127,4 @@ hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ mode = "fullscreen" }))
 hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.fullscreen({ mode = "maximized" }))
 
 
-hl.bind(mainMod .. " + V", hl.dsp.exec_cmd(
-  "~/.config/rofi/scripts/clipboard.sh"
-))
+hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("~/.config/hypr/scripts/clipboard.sh"))

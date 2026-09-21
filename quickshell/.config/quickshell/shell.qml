@@ -8,6 +8,7 @@ import qs.Lock
 import qs.Power
 import qs.Picker
 import qs.Launcher
+import qs.Clipboard
 import qs.Services
 
 // hypr-dotfiles shell. Bars come first; panels, OSD, wallpaper,
@@ -21,6 +22,7 @@ ShellRoot {
     PowerMenu {}
     ImagePicker {}
     Launcher {}
+    Clipboard {}
     // singletons only come alive when referenced; these must run from the start
     Scope { Component.onCompleted: { void Idle.paused; void Caffeine.on; void Notifs.count; void Themes.themes } }
 }

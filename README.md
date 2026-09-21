@@ -214,8 +214,9 @@ scripts work unchanged. A module can be a **QML plugin** instead: `{ "qml": "~/.
 — any Item, with `import qs.Bar` for the `Pill` container and `import qs.Commons` for `Theme`.
 
 **Launcher** (`SUPER+D`): the rofi drun window rebuilt in the shell — same chip, search and
-two-column icon list — with fuzzy matching and a launch history so frequent apps rise. rofi stays
-for the clipboard menu and as the fallback.
+two-column icon list — with fuzzy matching and a launch history so frequent apps rise (seeded from
+rofi's on first run). **Clipboard** (`SUPER+V`): cliphist history with image thumbnails, Enter
+copies, Delete removes. rofi is now only the fallback when the shell is not running.
 
 **Panels** drop down from the bar: click the speaker for output/input volume and device pick, the
 wifi icon for networks (toggle, connect with a password prompt, right-click to forget), bluetooth
@@ -303,7 +304,7 @@ If the login screen ever comes up black, switch to a TTY (`Ctrl+Alt+F3`) and
 | Keys | Action |
 |---|---|
 | `SUPER` + `Return` / `E` / `B` | Terminal · file manager · browser |
-| `SUPER` + `D` / `V` | App launcher (shell) · clipboard history (rofi) |
+| `SUPER` + `D` / `V` | App launcher · clipboard history |
 | `SUPER` + `L` / `M` | Lock screen · power menu |
 | `SUPER` + `R` | Restart the shell (bar + notifications) |
 | `SUPER` + `SHIFT` + `B` | Bar skin: pill ↔ minimal |

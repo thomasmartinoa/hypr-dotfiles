@@ -9,3 +9,4 @@ singleton Lock 1.0 Lock.qml
 singleton Idle 1.0 Idle.qml
 singleton Themes 1.0 Themes.qml
 singleton Apps 1.0 Apps.qml
+singleton Clip 1.0 Clip.qml
