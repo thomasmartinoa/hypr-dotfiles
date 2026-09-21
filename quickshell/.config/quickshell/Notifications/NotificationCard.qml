@@ -11,7 +11,7 @@ Rectangle {
     id: card
     required property var entry
     property bool compact: false
-    readonly property var n: entry.n
+    readonly property var n: entry.n || ({ summary: "", body: "", appName: "", appIcon: "", image: "", actions: [], urgency: 1 })
     readonly property bool critical: n.urgency === NotificationUrgency.Critical
 
     width: parent.width
