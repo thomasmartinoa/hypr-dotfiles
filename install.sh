@@ -486,6 +486,26 @@ if [[ $DRY_RUN -eq 0 ]]; then
     fi
     mkdir -p "$_t"
   done
+
+  # ~/.local: on a fresh machine it may not exist yet. Stow then folds the
+  # WHOLE of ~/.local into a symlink to kde/.local, and every app that writes
+  # to ~/.local (nvim, Trash, uv, ...) writes straight into the repo. Creating
+  # the real path up front makes stow link only the one .colors file.
+  #
+  # If it is already folded, do NOT just delete the link like above: the app
+  # data would be stranded inside the repo and re-linked back. Refuse instead.
+  for _d in .local .local/share .local/share/color-schemes; do
+    _t="$HOME/$_d"
+    if [[ -L "$_t" && "$(readlink -f "$_t" 2>/dev/null)" == "$DOTFILES_DIR"/* ]]; then
+      warn "~/$_d is a symlink into the repo (stow folded it)."
+      warn "Move the real data back home before re-running:"
+      warn "  rm ~/$_d"
+      warn "  mv $DOTFILES_DIR/kde/$_d ~/$_d"
+      warn "  git -C $DOTFILES_DIR checkout -- kde/.local"
+      die "Refusing to continue with ~/$_d folded."
+    fi
+    mkdir -p "$_t"
+  done
   ok "Directories ready."
 fi
 
