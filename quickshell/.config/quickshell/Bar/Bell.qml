@@ -6,6 +6,7 @@ import qs.Notifications
 
 Pill {
     id: bell
+    extraRight: pillMode ? 1 : 0     // Qt draws the glyph ~1px narrower than GTK did
     onClicked: Panels.toggle("notifications", bell)
     onRightClicked: Notifs.toggleDnd()
     Label {

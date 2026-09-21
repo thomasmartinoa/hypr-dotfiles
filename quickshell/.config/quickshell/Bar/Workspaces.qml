@@ -7,8 +7,8 @@ import qs.Commons
 // minimal: Omarchy — plain numbers 1..5 (always) + any others, active shown as 󱓻
 Pill {
     id: ws
-    padH: pillMode ? 6 : 4
-    gap: pillMode ? 7 : 2
+    padH: pillMode ? 3 : 4
+    gap: pillMode ? 4 : 2
     padV: 0
     interactive: false
     // Hyprland with a Lua config takes Lua dispatchers, not the classic syntax.
@@ -49,9 +49,9 @@ Pill {
             readonly property bool exists: modelData.ws !== null
             readonly property bool hov: m.containsMouse
 
-            implicitWidth: ws.pillMode ? Math.max(active ? 37 : 27, t.implicitWidth + 14) : Math.max(18, t.implicitWidth + 12)
-            implicitHeight: ws.pillMode ? 20 : 22
-            radius: Theme.radiusSm
+            implicitWidth: ws.pillMode ? Math.max(active ? 38 : 34, t.implicitWidth + 14) : Math.max(18, t.implicitWidth + 12)
+            implicitHeight: ws.pillMode ? 22 : 22
+            radius: ws.pillMode ? 5 : Theme.radiusSm
             color: ws.pillMode
                    ? (active ? Theme.c.fg : hov ? Theme.c.bg4 : urgent ? Theme.c.grey2 : Theme.c.bg2)
                    : (hov ? Theme.c.bg2 : "transparent")

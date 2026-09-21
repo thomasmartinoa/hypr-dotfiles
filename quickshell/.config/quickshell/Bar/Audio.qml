@@ -7,6 +7,7 @@ import qs.Panels
 
 Pill {
     id: audio
+    extraRight: pillMode ? 1 : 0     // Qt draws the glyph ~1px narrower than GTK did
     readonly property var sink: Pipewire.defaultAudioSink
     readonly property bool ready: sink && sink.audio
     readonly property real vol: ready ? sink.audio.volume : 0

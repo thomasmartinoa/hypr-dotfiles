@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Effects
 import Quickshell
 import Quickshell.Wayland
+import Quickshell.Hyprland
 import Quickshell.Services.Mpris
 import qs.Commons
 import qs.Bar
@@ -18,7 +19,9 @@ WlSessionLock {
         id: surf
         color: Theme.c.bg0
 
-        readonly property real dpr: screen ? screen.devicePixelRatio : 1
+        // Qt rounds the Wayland scale (1.6 reports as 2); Hyprland has the real one.
+        readonly property var hyprMon: screen ? Hyprland.monitorFor(screen) : null
+        readonly property real dpr: hyprMon && hyprMon.scale > 0 ? hyprMon.scale : (screen ? screen.devicePixelRatio : 1)
         function px(physical) { return physical / dpr }              // hyprlock size / position
         function pt(size) { return size * 4 / 3 / dpr }               // hyprlock font_size (points)
         readonly property color onWall: Theme.light ? "#141414" : "#ffffff"

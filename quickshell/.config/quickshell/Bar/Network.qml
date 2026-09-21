@@ -7,6 +7,8 @@ import qs.Panels
 
 Pill {
     id: net
+    gap: pillMode ? 15 : 6
+    extraRight: pillMode && net.text.length > 12 ? 5 : 0
     // Pick the connected device: wired first, else wifi.
     readonly property var devices: Networking.devices.values
     property var dev: null
