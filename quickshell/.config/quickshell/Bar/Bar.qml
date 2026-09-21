@@ -189,7 +189,7 @@ Scope {
                     anchors.fill: parent
                     anchors.margins: 4
                     radius: Theme.radius
-                    color: Qt.rgba(Theme.c.fg.r, Theme.c.fg.g, Theme.c.fg.b, 0.18)
+                    color: Theme.alpha(Theme.c.fg, 0.18)
                     border.width: 1
                     border.color: Theme.c.borderStrong
                 }

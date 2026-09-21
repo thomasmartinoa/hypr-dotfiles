@@ -38,6 +38,9 @@ Singleton {
     property int radius: 4
     readonly property int radiusSm: 3
 
+    // colours in `c` are strings (JSON); use this for translucent variants
+    function alpha(col, a) { const q = Qt.color(col); return Qt.rgba(q.r, q.g, q.b, a) }
+
     readonly property string font: "JetBrainsMono Nerd Font Propo"
     // GTK's "12px" in the old waybar css rendered at ~15 logical px; match it.
     readonly property int fontSize: barStyle === "pill" ? 12 : 12

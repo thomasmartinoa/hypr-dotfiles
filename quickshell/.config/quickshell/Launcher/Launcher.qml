@@ -34,11 +34,15 @@ Variants {
 
         Rectangle {
             id: card
-            anchors.centerIn: parent
+            // rofi: 800 wide, 30px padding, 42px inputbar, 10px gap, ten 44px
+            // rows 10px apart, 6px under the last row; window 150..768 on a
+            // 900px-high screen, i.e. 9px below dead centre
+            x: (parent.width - width) / 2
+            y: (parent.height - height) / 2 + 9
             width: 800
-            height: 30 + 42 + 10 + win.rowsShown * 44 + (win.rowsShown - 1) * 10 + 30
+            height: 30 + 42 + 10 + win.rowsShown * 44 + (win.rowsShown - 1) * 10 + 6
             radius: Theme.radius
-            color: Qt.rgba(Theme.c.bg0.r, Theme.c.bg0.g, Theme.c.bg0.b, 0.74)
+            color: Theme.alpha(Theme.c.bg0, 0.74)
             border.width: 1; border.color: Theme.c.borderStrong
 
             // inputbar
@@ -46,7 +50,7 @@ Variants {
                 id: bar
                 x: 30; y: 30; width: parent.width - 60; height: 42
                 radius: Theme.radius
-                color: Qt.rgba(Theme.c.bg1.r, Theme.c.bg1.g, Theme.c.bg1.b, 0.97)
+                color: Theme.alpha(Theme.c.bg1, 0.97)
                 Rectangle {
                     id: prompt
                     width: pl.implicitWidth + 24; height: parent.height; radius: Theme.radius
@@ -98,7 +102,7 @@ Variants {
                     Rectangle {
                         width: parent.width - 10; height: 44
                         radius: Theme.radiusSm
-                        color: row.sel ? Theme.c.bg3 : Theme.c.bg2
+                        color: Theme.c.bg2
                         Rectangle { visible: row.sel; width: 3; height: parent.height; radius: 1; color: Theme.c.accentBright }
                         IconImage {
                             x: 16; anchors.verticalCenter: parent.verticalCenter

@@ -42,12 +42,27 @@ Singleton {
     }
     function toggle() { query = ""; open = !open }
 
+    function seedFromRofi() {
+        // first run: start from rofi's drun history so the order carries over
+        let t = ""
+        try { t = rofiCache.text() } catch (e) { return }
+        const h = {}
+        for (const line of t.split("\n")) {
+            const m = line.match(/^(\d+)\s+(.+)\.desktop$/)
+            if (m) h[m[2]] = parseInt(m[1])
+        }
+        if (Object.keys(h).length === 0) return
+        history = h
+        hist.setText(JSON.stringify(h))
+    }
     FileView {
         id: hist
         path: root.histFile
         onLoaded: { try { root.history = JSON.parse(text()) } catch (e) {} }
-        onLoadFailed: {}
+        onLoadFailed: seed.start()
     }
+    FileView { id: rofiCache; path: Quickshell.env("HOME") + "/.cache/rofi3.druncache"; onLoadFailed: {} }
+    Timer { id: seed; interval: 500; onTriggered: root.seedFromRofi() }
 
     IpcHandler {
         target: "launcher"

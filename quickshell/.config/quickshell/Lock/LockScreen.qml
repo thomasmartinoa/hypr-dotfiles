@@ -77,7 +77,7 @@ WlSessionLock {
             color: Theme.light ? Qt.rgba(1, 1, 1, 0.45) : Qt.rgba(64/255, 64/255, 64/255, 0.4)
             border.width: Math.max(1, surf.px(2))
             border.color: Lock.error !== "" ? surf.oc(0.9)
-                        : Theme.light ? Qt.rgba(Theme.c.accentMid.r, Theme.c.accentMid.g, Theme.c.accentMid.b, 0.8)
+                        : Theme.light ? Theme.alpha(Theme.c.accentMid, 0.8)
                         : Qt.rgba(207/255, 207/255, 207/255, 0.6)
             opacity: Lock.busy ? 0.5 : 1
 

@@ -46,7 +46,7 @@ Scope {
             WlrLayershell.keyboardFocus: scope.open ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
             WlrLayershell.namespace: "hypr-powermenu"
             // window { background-color: alpha(@bg0, 0.7) }
-            color: Qt.rgba(Theme.c.bg0.r, Theme.c.bg0.g, Theme.c.bg0.b, 0.7)
+            color: Theme.alpha(Theme.c.bg0, 0.7)
 
             MouseArea { anchors.fill: parent; onClicked: scope.open = false }
 

@@ -20,7 +20,7 @@ Variants {
         WlrLayershell.layer: WlrLayer.Overlay
         WlrLayershell.keyboardFocus: Themes.open ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
         WlrLayershell.namespace: "hypr-picker"
-        color: Qt.rgba(Theme.c.bg0.r, Theme.c.bg0.g, Theme.c.bg0.b, 0.7)
+        color: Theme.alpha(Theme.c.bg0, 0.7)
 
         readonly property bool themeMode: Themes.pickerMode === "theme"
         property string filter: ""
