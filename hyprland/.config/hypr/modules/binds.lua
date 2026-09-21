@@ -26,7 +26,8 @@ hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(browser))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("~/.config/hypr/scripts/shell.sh restart"))   -- restart bar + notifications
 hl.bind(mainMod .. " + SHIFT + B", hl.dsp.exec_cmd("qs ipc call bar toggle"))             -- bar skin: pill <-> minimal
 hl.bind(mainMod .. " + CTRL + I", hl.dsp.exec_cmd("~/.config/hypr/scripts/caffeine.sh toggle")) -- stay awake toggle
-hl.bind(mainMod .. " + CTRL + SHIFT + space", hl.dsp.exec_cmd("hypr-theme-menu"))   -- theme switcher
+hl.bind(mainMod .. " + CTRL + SHIFT + space", hl.dsp.exec_cmd("hypr-theme-menu theme"))      -- theme picker
+hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("hypr-theme-menu wallpaper"))               -- wallpaper picker
 hl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd("hypr-theme toggle"))                -- dark <-> light
 hl.bind(mainMod .. " + CTRL + space", hl.dsp.exec_cmd("hypr-wall next"))                 -- next wallpaper
 

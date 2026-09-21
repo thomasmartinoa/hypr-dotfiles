@@ -7,3 +7,4 @@ singleton Wallpaper 1.0 Wallpaper.qml
 singleton Notifs 1.0 Notifs.qml
 singleton Lock 1.0 Lock.qml
 singleton Idle 1.0 Idle.qml
+singleton Themes 1.0 Themes.qml

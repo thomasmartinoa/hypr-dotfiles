@@ -244,7 +244,8 @@ gitignored.
 hypr-theme list            # available themes, * = current
 hypr-theme set hyprmono    # apply one
 hypr-theme toggle          # dark <-> light          (SUPER+SHIFT+T)
-hypr-theme-menu            # rofi picker             (SUPER+CTRL+SHIFT+SPACE)
+hypr-theme-menu            # theme picker            (SUPER+CTRL+SHIFT+SPACE)
+hypr-theme-menu wallpaper  # wallpaper picker        (SUPER+SHIFT+W)
 ```
 
 What follows a switch **live**, and what needs a restart (GTK3 reads its theme once at startup and
@@ -258,6 +259,11 @@ does not pick up gsettings on Wayland — verified, including via the settings p
 | VS Code, Electron apps such as Claude (portal) | Alacritty (reads its import at start) |
 | Neovim (every running instance) | pkexec apps like grub-customizer |
 | Login screen, `/root` GTK config (root sync) | |
+
+The **picker** is an image grid in the shell: every folder in `themes/` with a `colors.toml` is a
+tile drawn in its own colours (wallpaper, mock bar, palette swatches, dark/light badge) — drop a
+theme in and it appears. Arrows or hjkl, Enter applies, type to filter, Esc. The same grid picks
+wallpapers (the current theme's first, then the rest). Without the shell, `hypr-theme-menu --rofi`.
 
 To make a theme: copy `themes/hyprmono/`, edit `colors.toml` (`mode = "light"` flips GTK/Qt/nvim to
 their light variants), run `hypr-theme set <name>`. Templates use `{{ bg0 }}`, filters like

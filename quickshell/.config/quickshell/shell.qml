@@ -6,6 +6,7 @@ import qs.Wallpaper
 import qs.Notifications
 import qs.Lock
 import qs.Power
+import qs.Picker
 import qs.Services
 
 // hypr-dotfiles shell. Bars come first; panels, OSD, wallpaper,
@@ -17,6 +18,7 @@ ShellRoot {
     NotificationPopups {}
     LockScreen {}
     PowerMenu {}
+    ImagePicker {}
     // singletons only come alive when referenced; these must run from the start
-    Scope { Component.onCompleted: { void Idle.paused; void Caffeine.on; void Notifs.count } }
+    Scope { Component.onCompleted: { void Idle.paused; void Caffeine.on; void Notifs.count; void Themes.themes } }
 }

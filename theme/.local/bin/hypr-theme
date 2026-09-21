@@ -8,6 +8,8 @@
 #   hypr-theme current        print the current theme name
 #   hypr-theme render <name>  render only, into a temp dir (for testing)
 #   hypr-theme reload         re-render the current theme and re-apply
+#   hypr-theme json           every theme as JSON (name, mode, colours,
+#                             backgrounds) — what the shell's picker reads
 #
 # A theme is ~/.config/hypr-theme/themes/<name>/colors.toml (+ backgrounds/).
 # `set` renders templates/*.tpl into ~/.config/hypr-theme/current/, then tells
@@ -248,7 +250,28 @@ cmd_toggle() {
     die "no $want theme to switch to"
 }
 
+cmd_json() {
+    python3 - "$THEMES_DIR" "$(current_name)" <<'PY'
+import json, sys, tomllib, os
+root, current = sys.argv[1], sys.argv[2]
+out = []
+for d in sorted(os.listdir(root)):
+    f = os.path.join(root, d, "colors.toml")
+    if not os.path.isfile(f): continue
+    with open(f, "rb") as fh: t = tomllib.load(fh)
+    bg = os.path.join(root, d, "backgrounds")
+    imgs = sorted(os.path.realpath(os.path.join(bg, x)) for x in os.listdir(bg)
+                  if os.path.isfile(os.path.join(bg, x)) and x.lower().rsplit(".", 1)[-1] in ("png", "jpg", "jpeg", "webp")) if os.path.isdir(bg) else []
+    c = t.get("colors", {})
+    out.append({"id": d, "name": t.get("name", d), "mode": t.get("mode", "dark"), "bar": t.get("bar", "pill"),
+                "current": d == current, "backgrounds": imgs,
+                "colors": {k: c.get(k, "") for k in ("bg0", "bg1", "bg2", "bg3", "fg", "accent_bright", "accent_light", "accent_mid", "accent_dim")}})
+print(json.dumps(out))
+PY
+}
+
 case "${1:-}" in
+    json)    cmd_json ;;
     set)     cmd_set "${2:-}" ;;
     next)    cmd_next ;;
     toggle)  cmd_toggle ;;
@@ -256,5 +279,5 @@ case "${1:-}" in
     current) current_name ;;
     reload)  cur="$(current_name)"; [[ -n "$cur" ]] || die "no current theme"; cmd_set "$cur" ;;
     render)  src="$(theme_path "${2:-}")"; out="$(mktemp -d)"; render_into "$src" "$out"; printf '%s\n' "$out" ;;
-    *)       sed -n '2,15p' "$0" | sed 's/^# \{0,1\}//'; exit 1 ;;
+    *)       sed -n '2,17p' "$0" | sed 's/^# \{0,1\}//'; exit 1 ;;
 esac

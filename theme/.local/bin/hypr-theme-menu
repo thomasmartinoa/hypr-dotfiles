@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
-# hypr-theme-menu — pick a theme from a rofi list and apply it.
-# Placeholder UI until the Quickshell switcher exists; same shape as the
-# clipboard menu so it matches the rice.
+# hypr-theme-menu [theme|wallpaper] — open the shell's picker; with no shell
+# running, a rofi list of themes (--rofi forces it).
 set -uo pipefail
+
+# The shell has its own picker (image grid); rofi is the fallback.
+if [[ "${1:-}" != "--rofi" ]] && command -v qs >/dev/null 2>&1 && pgrep -x qs >/dev/null 2>&1; then
+    exec qs ipc call picker toggle "${1:-theme}"
+fi
 
 if pgrep -x rofi >/dev/null 2>&1; then
     pkill -x rofi

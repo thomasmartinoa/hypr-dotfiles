@@ -25,6 +25,7 @@ hl.layer_rule({
 hl.layer_rule({ match = { namespace = "^hypr-powermenu$" },      blur = true, ignore_alpha = 0.7 })
 hl.layer_rule({ match = { namespace = "^hypr-notifications$" },  blur = true, ignore_alpha = 0.4 })
 hl.layer_rule({ match = { namespace = "^hypr-control-center$" }, blur = true, ignore_alpha = 0.5 })
+hl.layer_rule({ match = { namespace = "^hypr-picker$" },         blur = true, ignore_alpha = 0.7 })
 
 -- Rofi
 hl.layer_rule({
