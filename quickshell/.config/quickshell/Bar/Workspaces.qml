@@ -11,7 +11,14 @@ Pill {
     gap: pillMode ? 7 : 2
     padV: 0
     interactive: false
-    onScrolled: (d) => Hyprland.dispatch("workspace " + (d > 0 ? "e-1" : "e+1"))
+    // Hyprland with a Lua config takes Lua dispatchers, not the classic syntax.
+    function go(target) {
+        if (Hyprland.usingLua)
+            Hyprland.dispatch("hl.dsp.focus({ workspace = " + (typeof target === "number" ? target : '"' + target + '"') + " })")
+        else
+            Hyprland.dispatch("workspace " + target)
+    }
+    onScrolled: (d) => go(d > 0 ? "e-1" : "e+1")
 
     readonly property var live: Hyprland.workspaces.values
     property var entries: []
@@ -66,8 +73,8 @@ Pill {
                 anchors.fill: parent
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
-                onClicked: Hyprland.dispatch("workspace " + btn.modelData.id)
-                onWheel: (w) => Hyprland.dispatch("workspace " + (w.angleDelta.y > 0 ? "e-1" : "e+1"))
+                onClicked: ws.go(btn.modelData.id)
+                onWheel: (w) => ws.go(w.angleDelta.y > 0 ? "e-1" : "e+1")
             }
         }
     }

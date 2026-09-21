@@ -18,8 +18,16 @@ stop() {
 start() {
     setsid -f swaync >/dev/null 2>&1
     case "$which" in
-        waybar) setsid -f waybar >/dev/null 2>&1 ;;
-        *)      setsid -f qs >/dev/null 2>&1 ;;
+        waybar)
+            setsid -f waybar >/dev/null 2>&1
+            # the classic setup needs a wallpaper daemon; the shell draws its own
+            pgrep -x awww-daemon >/dev/null 2>&1 || setsid -f awww-daemon >/dev/null 2>&1
+            (sleep 0.6; "$HOME/.local/bin/hypr-wall" apply) >/dev/null 2>&1 &
+            ;;
+        *)
+            pkill -x awww-daemon 2>/dev/null
+            setsid -f qs >/dev/null 2>&1
+            ;;
     esac
 }
 

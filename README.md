@@ -200,6 +200,9 @@ profile and lock/sleep/reboot/off. Click elsewhere or press Escape to close;
 `qs ipc call panels open audio|network|bluetooth|power` from scripts. Volume and brightness show an
 **OSD** at the bottom of the screen.
 
+The shell also draws the **wallpaper** (one background layer per screen, crossfade on change);
+`hypr-wall set|next` and a theme switch push the new image over IPC. In waybar mode, `awww` does it.
+
 ---
 
 ## Theming

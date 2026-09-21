@@ -3,3 +3,4 @@ singleton Caffeine 1.0 Caffeine.qml
 singleton Swaync 1.0 Swaync.qml
 singleton Panels 1.0 Panels.qml
 singleton Osd 1.0 Osd.qml
+singleton Wallpaper 1.0 Wallpaper.qml

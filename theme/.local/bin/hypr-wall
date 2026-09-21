@@ -8,8 +8,9 @@
 #   hypr-wall current      print the current wallpaper path
 #
 # The wallpaper is ~/.config/hypr-theme/current/background, a symlink.
-# Everything that shows a wallpaper reads that one path: awww (desktop),
-# hyprlock, and the SDDM greeter via hypr-theme-root-sync. Themes carry
+# Everything that shows a wallpaper reads that one path: the shell (or
+# awww in waybar mode), hyprlock, and the SDDM greeter via
+# hypr-theme-root-sync. Themes carry
 # their own backgrounds/ dir; `hypr-theme set` calls `hypr-wall next` so a
 # theme switch also switches the wallpaper (Omarchy does the same).
 
@@ -24,14 +25,19 @@ die()  { printf 'hypr-wall: %s\n' "$*" >&2; exit 1; }
 have() { command -v "$1" >/dev/null 2>&1; }
 
 show() {
-    # Push the image to the running daemon; start it if needed.
+    # The Quickshell shell draws the wallpaper itself (crossfade); tell it.
+    # With the classic waybar setup, awww does the job.
     [[ -e "$LINK" ]] || return 0
+    local img; img="$(readlink -f "$LINK")"
+    if have qs && pgrep -x qs >/dev/null 2>&1; then
+        qs ipc call wallpaper set "$img" >/dev/null 2>&1 && return 0
+    fi
     have awww || return 0
     if ! pgrep -x awww-daemon >/dev/null 2>&1; then
         setsid -f awww-daemon >/dev/null 2>&1
         sleep 0.3
     fi
-    awww img "$(readlink -f "$LINK")" --resize crop "${TRANSITION[@]}" >/dev/null 2>&1 || true
+    awww img "$img" --resize crop "${TRANSITION[@]}" >/dev/null 2>&1 || true
 }
 
 set_wallpaper() {
@@ -50,7 +56,9 @@ set_wallpaper() {
 theme_backgrounds() {
     local dir="$CURRENT_DIR/theme/backgrounds"
     [[ -d "$dir" ]] || return 0
-    find -L "$dir" -maxdepth 1 -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) | sort
+    # canonical paths, so they compare equal to the resolved current link
+    find -L "$dir" -maxdepth 1 -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) -print0 \
+        | xargs -0 -r -n1 readlink -f | sort
 }
 
 cmd_next() {
