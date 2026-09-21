@@ -9,5 +9,6 @@ Text {
     color: Theme.c.fg
     verticalAlignment: Text.AlignVCenter
     renderType: Text.CurveRendering   // grayscale AA: no colour fringing on the fractional scale
+    font.hintingPreference: Font.PreferNoHinting   // GTK rendered with hintslight; unhinted matches its glyph height
     Behavior on color { ColorAnimation { duration: 150 } }
 }
