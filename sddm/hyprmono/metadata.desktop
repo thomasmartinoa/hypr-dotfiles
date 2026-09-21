@@ -1,0 +1,10 @@
+[SddmGreeterTheme]
+Name=HyprMono
+Description=Monochrome login screen matching the hypr-dotfiles rice (hyprlock look)
+Author=thomasmartinoa
+Type=sddm-theme
+Version=1.0
+QtVersion=6
+ConfigFile=theme.conf
+MainScript=Main.qml
+Screenshot=

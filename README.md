@@ -99,7 +99,7 @@ without asking first.
 | `--stow-only` | Skip package installation |
 | `--migrate` | Back up blocking files without asking |
 | `--no-migrate` | Never move anything; stop instead |
-| `--skip-root` | Don't copy the GTK config into `/root` |
+| `--skip-root` | Don't copy the GTK config into `/root` or install the SDDM theme |
 | `--no-logout` | Don't offer to log out at the end |
 | `--no-aur` | Don't offer to install yay / AUR packages |
 
@@ -168,11 +168,31 @@ theme/       →  ~/.config/hypr-theme/   (the shared palette)
 waybar/      →  ~/.config/waybar/
 wlogout/     →  ~/.config/wlogout/
 zsh/         →  ~/.zshrc
+
+sddm/        →  /usr/share/sddm/themes/hyprmono, /etc/sddm.conf.d/   (not stowed — copied by install.sh)
 ```
 
 The Hyprland config is split into modules under
 [`hypr/modules/`](hyprland/.config/hypr/modules/) — `binds`, `monitors`, `decorations`, `env`,
 `autostart`, `windowrules`.
+
+---
+
+## Login screen
+
+[`sddm/hyprmono/`](sddm/hyprmono/) is an SDDM theme that mirrors hyprlock: blurred wallpaper, big
+clock, `Hello, <user>`, the same grey password box — plus a user picker, session picker and
+suspend / reboot / shutdown (the wlogout icons). Like Omarchy, the greeter runs under Hyprland
+([`sddm/hyprland.lua`](sddm/hyprland.lua)) instead of X11.
+
+`install.sh` copies it into place. Preview it in a window without logging out:
+
+```sh
+sddm-greeter-qt6 --test-mode --theme /usr/share/sddm/themes/hyprmono
+```
+
+If the login screen ever comes up black, switch to a TTY (`Ctrl+Alt+F3`) and
+`sudo rm /etc/sddm.conf.d/10-wayland.conf` — SDDM falls back to X11 with the same theme.
 
 ---
 
@@ -187,6 +207,7 @@ The Hyprland config is split into modules under
 | `SUPER` + `D` / `V` | App launcher · clipboard history |
 | `SUPER` + `L` / `M` | Lock screen · logout menu |
 | `SUPER` + `R` | Restart waybar + swaync |
+| `SUPER` + `CTRL` + `I` | Caffeine: pause idle lock & suspend (also the ☕ in waybar) |
 | `SUPER` + `Q` / `T` / `F` | Close · float · fullscreen |
 | `SUPER` + `SHIFT` + `F` / `P` / `J` | Maximize · pseudo-tile · toggle split |
 | `SUPER` + `←↑↓→` | Move focus |
