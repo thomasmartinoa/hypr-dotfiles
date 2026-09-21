@@ -1,0 +1,66 @@
+# HyprMono Light — the same monochrome rice, inverted.
+# Same keys as hyprmono; only the values and mode change.
+
+name = "HyprMono Light"
+mode = "light"
+bar  = "pill"
+
+[colors]
+bg0 = "#f4f4f4"
+bg1 = "#ebebeb"
+bg2 = "#e2e2e2"
+bg3 = "#d4d4d4"
+bg4 = "#c6c6c6"
+
+fg            = "#141414"
+accent_bright = "#000000"
+accent_light  = "#202020"
+accent_mid    = "#5e5e5e"
+accent_dim    = "#9a9a9a"
+
+active   = "#000000"
+hover    = "#333333"
+warning  = "#4a4a4a"
+critical = "#7a7a7a"
+
+grey0 = "#bdbdbd"
+grey1 = "#8f8f8f"
+grey2 = "#5e5e5e"
+
+red    = "#000000"
+orange = "#202020"
+yellow = "#383838"
+green  = "#4a4a4a"
+aqua   = "#666666"
+blue   = "#000000"
+purple = "#2e2e2e"
+
+[terminal]
+background = "#f4f4f4"
+foreground = "#3a3a3a"
+cursor     = "#202020"
+selection_background = "#d4d4d4"
+selection_foreground = "#000000"
+color0  = "#fafafa"
+color1  = "#a1a1a1"
+color2  = "#959595"
+color3  = "#888888"
+color4  = "#737373"
+color5  = "#656565"
+color6  = "#4f4f4f"
+color7  = "#303030"
+color8  = "#b5b5b5"
+color9  = "#858585"
+color10 = "#757575"
+color11 = "#636363"
+color12 = "#4e4e4e"
+color13 = "#3b3b3b"
+color14 = "#272727"
+color15 = "#0d0d0d"
+
+[apps]
+gtk_theme        = "adw-gtk3"
+icon_theme       = "Papirus-Light"
+cursor_theme     = "default"
+qt_style         = "Adwaita"
+nvim_colorscheme = "zenwritten"
