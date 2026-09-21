@@ -68,6 +68,7 @@ tooltip label {
 #battery,
 #pulseaudio,
 #network,
+#custom-caffeine,
 #custom-notification,
 #tray {
     background-color: @bg0;
@@ -161,10 +162,19 @@ tooltip label {
     color: @accent-light;
 }
 
+#custom-caffeine.off {
+    color: @accent-dim;
+}
+
+#custom-caffeine.on {
+    color: @accent-bright;
+}
+
 #clock:hover,
 #battery:hover,
 #pulseaudio:hover,
 #network:hover,
+#custom-caffeine:hover,
 #custom-notification:hover,
 #tray:hover {
     background-color: @bg2;

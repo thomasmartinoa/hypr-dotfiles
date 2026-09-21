@@ -17,6 +17,7 @@
         "pulseaudio",
         "network",
         "battery",
+        "custom/caffeine",
         "custom/notification"
     ],
 
@@ -72,6 +73,15 @@
         "format-plugged": "󰚥  {capacity}%",
         "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂀", "󰂂", "󰁹"],
         "tooltip-format": "{capacity}% - {time}"
+    },
+
+    "custom/caffeine": {
+        "return-type": "json",
+        "exec": "~/.config/hypr/scripts/caffeine.sh status",
+        "interval": "once",
+        "signal": 9,
+        "on-click": "~/.config/hypr/scripts/caffeine.sh toggle",
+        "tooltip": true
     },
 
     "custom/notification": {
