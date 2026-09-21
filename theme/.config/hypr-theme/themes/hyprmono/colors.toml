@@ -66,9 +66,19 @@ color13 = "#c4c4c4"
 color14 = "#d8d8d8"
 color15 = "#f2f2f2"
 
+[git]
+# The one place the rice uses real hues: git status in editors must read at
+# a glance (green = new, yellow = changed, red = gone). Everything else
+# stays monochrome.
+added     = "#7bc275"
+modified  = "#e5c07b"
+deleted   = "#e06c75"
+renamed   = "#61afef"
+conflict  = "#d19a66"
+
 [apps]
 gtk_theme       = "adw-gtk3-dark"
 icon_theme      = "Papirus-Dark"
 cursor_theme    = "default"
 qt_style        = "Adwaita-Dark"
-nvim_colorscheme = "zenwritten"
+nvim_colorscheme = "hyprmono"

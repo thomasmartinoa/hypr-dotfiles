@@ -1,9 +1,11 @@
 -- Colourscheme follows the hypr-theme engine (see config/hypr-theme.lua).
-local theme = require("config.hypr-theme").read()
+-- "hyprmono" is generated from the theme palette by lua/hyprmono/init.lua;
+-- zenbones stays installed as the fallback family with real light/dark
+-- variants for themes that name it.
+local bridge = require("config.hypr-theme")
+local theme = bridge.read()
 
 return {
-  -- zenbones: near-monochrome family with matching light and dark variants.
-  -- "zenwritten" is the neutral grey one used by the HyprMono themes.
   {
     "zenbones-theme/zenbones.nvim",
     dependencies = "rktjmp/lush.nvim",
@@ -17,7 +19,9 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = theme.colorscheme,
+      colorscheme = function()
+        bridge.apply()
+      end,
     },
   },
 }

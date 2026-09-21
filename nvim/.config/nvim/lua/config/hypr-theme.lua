@@ -14,12 +14,16 @@ function M.read()
   if ok and type(t) == "table" then
     return t
   end
-  return { colorscheme = "zenwritten", background = "dark" }
+  return { colorscheme = "habamax", background = "dark" }
 end
 
 function M.apply()
   local t = M.read()
   vim.o.background = t.background or "dark"
+  if t.colorscheme == "hyprmono" and t.palette then
+    require("hyprmono").load(t.palette)
+    return
+  end
   local ok = pcall(vim.cmd.colorscheme, t.colorscheme)
   if not ok then
     vim.notify("hypr-theme: colorscheme '" .. tostring(t.colorscheme) .. "' not installed", vim.log.levels.WARN)

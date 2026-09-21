@@ -25,6 +25,7 @@ Template syntax — one tag per colour, Omarchy-style:
     {{ mode }} {{ name }} {{ bar }}   plain strings from the top level
     {{ home }}                   $HOME, for absolute url() paths in CSS
     {{ gtk_theme }}              anything under [apps] / [terminal] / [colors]
+    {{ added }} {{ modified }}   [git] hues (the only real colours in the rice)
 
 Filters chain: {{ mix bg0 fg 20% | hypr 0.5 }}.
 """
@@ -68,7 +69,7 @@ class Renderer:
             if k in theme:
                 self.vars[k] = str(theme[k])
         self.vars["home"] = os.environ.get("HOME", "")
-        for section in ("colors", "terminal", "apps"):
+        for section in ("colors", "terminal", "apps", "git"):
             for k, v in theme.get(section, {}).items():
                 self.vars[k] = str(v)
         self.mode = self.vars.get("mode", "dark")
