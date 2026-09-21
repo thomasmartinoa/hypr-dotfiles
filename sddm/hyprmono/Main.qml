@@ -34,8 +34,11 @@ Item {
     // text drawn straight on the wallpaper: white on dark themes, near-black on light
     readonly property color onWall: light ? "#141414" : "#ffffff"
 
-    // hyprlock font sizes are for 1080p-ish; scale everything from there.
-    readonly property real s: Math.min(height / 1080, width / 1920)
+    // hyprlock sizes are physical pixels (font_size in points); the greeter's
+    // Hyprland runs at scale 1, so they apply as-is. `s` only shrinks the
+    // preview window (sddm-greeter-qt6 --test-mode).
+    readonly property real s: Math.min(1, Math.min(height / 1080, width / 1920))
+    function pt(size) { return size * 4 / 3 * s }
     readonly property string font: config.stringValue("font") || "JetBrainsMono Nerd Font Propo"
     readonly property bool clock12h: config.boolValue("clock12h")
 
@@ -194,16 +197,9 @@ Item {
             text: root.clock12h ? Qt.formatTime(clock.now, "h:mmAP")
                                 : Qt.formatTime(clock.now, "HH:mm")
             font.family: root.font
-            font.pixelSize: 130 * root.s
-            font.weight: Font.Light
+            font.pixelSize: root.pt(100)
+            font.weight: Font.Normal
             color: Qt.rgba(root.onWall.r, root.onWall.g, root.onWall.b, 0.8)
-        }
-        Text {
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: Qt.formatDate(clock.now, "dddd, d MMMM")
-            font.family: root.font
-            font.pixelSize: 22 * root.s
-            color: Qt.rgba(root.onWall.r, root.onWall.g, root.onWall.b, 0.5)
         }
     }
 
@@ -238,7 +234,7 @@ Item {
                 Text {
                     text: "Hello, " + root.currentUserPretty
                     font.family: root.font
-                    font.pixelSize: 32 * root.s
+                    font.pixelSize: root.pt(25)
                     color: Qt.rgba(root.onWall.r, root.onWall.g, root.onWall.b, 0.8)
                 }
                 Text {
@@ -270,7 +266,7 @@ Item {
             y: 75 * root.s
             width: 340 * root.s
             height: 62 * root.s
-            radius: 4 * root.s
+            radius: 5 * root.s
             color: root.light ? Qt.rgba(1, 1, 1, 0.45) : Qt.rgba(64/255, 64/255, 64/255, 0.4)
             border.width: 2 * root.s
             border.color: root.errorText !== "" ? Qt.rgba(root.onWall.r, root.onWall.g, root.onWall.b, 0.9)
@@ -302,20 +298,6 @@ Item {
                         radius: width / 2
                         color: root.light ? root.fg : "#c8c8c8"
                     }
-                }
-            }
-
-            // caret when empty, so it's obvious the box is live
-            Rectangle {
-                anchors.centerIn: parent
-                width: 2 * root.s
-                height: field.height * 0.4
-                color: Qt.rgba(root.onWall.r, root.onWall.g, root.onWall.b, 0.4)
-                visible: password.text.length === 0 && password.activeFocus && !root.busy
-                SequentialAnimation on opacity {
-                    loops: Animation.Infinite; running: true
-                    NumberAnimation { to: 0; duration: 500 }
-                    NumberAnimation { to: 1; duration: 500 }
                 }
             }
 

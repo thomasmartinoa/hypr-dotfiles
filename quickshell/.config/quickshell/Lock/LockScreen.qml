@@ -2,12 +2,14 @@ import QtQuick
 import QtQuick.Effects
 import Quickshell
 import Quickshell.Wayland
+import Quickshell.Services.Mpris
 import qs.Commons
 import qs.Bar
 import qs.Services
 
-// The lock screen: the same picture as the login screen — blurred
-// wallpaper, big clock, "Hello, user", the grey box with dots.
+// The lock screen — a faithful port of hyprlock.conf. hyprlock measures in
+// physical pixels (font_size in points at physical DPI), so every size here
+// is that value divided by the screen's device pixel ratio.
 WlSessionLock {
     id: lock
     locked: Lock.locked
@@ -16,102 +18,118 @@ WlSessionLock {
         id: surf
         color: Theme.c.bg0
 
-        readonly property real s: Math.min(height / 1080, width / 1920)
+        readonly property real dpr: screen ? screen.devicePixelRatio : 1
+        function px(physical) { return physical / dpr }              // hyprlock size / position
+        function pt(size) { return size * 4 / 3 / dpr }               // hyprlock font_size (points)
         readonly property color onWall: Theme.light ? "#141414" : "#ffffff"
         function oc(a) { return Qt.rgba(onWall.r, onWall.g, onWall.b, a) }
 
+        // background: blur_passes = 4, brightness 0.8172, contrast 0.8916.
+        // A quarter-resolution source + max blur gives hyprlock's haze.
         Image {
             id: wall
             anchors.fill: parent
             anchors.margins: -64
             source: "file://" + Wallpaper.path + "?g=" + Wallpaper.generation
             fillMode: Image.PreserveAspectCrop
+            sourceSize: Qt.size(Math.round(width / 8), Math.round(height / 8))
             cache: false
             visible: false
         }
         MultiEffect {
             anchors.fill: wall
             source: wall
-            blurEnabled: true; blur: 1.0; blurMax: 48
-            brightness: Theme.light ? 0.05 : -0.18
-            contrast: -0.1
+            blurEnabled: true; blur: 1.0; blurMax: 64
+            brightness: Theme.light ? 0.02 : -0.02
+            contrast: -0.11
+            saturation: 0.17
         }
 
-        // clock
+        // TIME — label: font_size 100, position 0,-90, valign top
         SystemClock { id: clock; precision: SystemClock.Minutes }
-        Column {
-            anchors.top: parent.top; anchors.topMargin: 90 * surf.s
+        Label {
             anchors.horizontalCenter: parent.horizontalCenter
-            spacing: 6 * surf.s
-            Label { anchors.horizontalCenter: parent.horizontalCenter; text: Qt.formatTime(clock.date, "h:mmAP")
-                    font.pixelSize: 130 * surf.s; font.weight: Font.Light; color: surf.oc(0.8) }
-            Label { anchors.horizontalCenter: parent.horizontalCenter; text: Qt.formatDate(clock.date, "dddd, d MMMM")
-                    font.pixelSize: 22 * surf.s; color: surf.oc(0.5) }
+            y: surf.px(90)
+            text: Qt.formatTime(clock.date, "h:mmAP")
+            font.pixelSize: surf.pt(100)
+            font.weight: Font.Normal
+            color: surf.oc(0.8)
         }
 
-        // greeting + password
-        Item {
+        // USER — label: font_size 25, position 0,0, centre
+        Label {
             anchors.centerIn: parent
-            width: 340 * surf.s; height: 220 * surf.s
+            text: "Hello, " + Quickshell.env("USER")
+            font.pixelSize: surf.pt(25)
+            color: surf.oc(0.8)
+        }
 
-            Label { anchors.horizontalCenter: parent.horizontalCenter; y: 0
-                    text: "Hello, " + Quickshell.env("USER"); font.pixelSize: 32 * surf.s; color: surf.oc(0.8) }
+        // INPUT FIELD — size 340,62, rounding 5, outline 2, position 0,-75
+        Rectangle {
+            id: field
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: surf.px(75)
+            width: surf.px(340); height: surf.px(62); radius: surf.px(5)
+            color: Theme.light ? Qt.rgba(1, 1, 1, 0.45) : Qt.rgba(64/255, 64/255, 64/255, 0.4)
+            border.width: Math.max(1, surf.px(2))
+            border.color: Lock.error !== "" ? surf.oc(0.9)
+                        : Theme.light ? Qt.rgba(Theme.c.accentMid.r, Theme.c.accentMid.g, Theme.c.accentMid.b, 0.8)
+                        : Qt.rgba(207/255, 207/255, 207/255, 0.6)
+            opacity: Lock.busy ? 0.5 : 1
 
-            Rectangle {
-                id: field
-                anchors.horizontalCenter: parent.horizontalCenter
-                y: 75 * surf.s
-                width: 340 * surf.s; height: 62 * surf.s; radius: 4 * surf.s
-                color: Theme.light ? Qt.rgba(1, 1, 1, 0.45) : Qt.rgba(64/255, 64/255, 64/255, 0.4)
-                border.width: 2 * surf.s
-                border.color: Lock.error !== "" ? surf.oc(0.9) : Qt.rgba(Theme.c.accentMid.r, Theme.c.accentMid.g, Theme.c.accentMid.b, 0.8)
-                opacity: Lock.busy ? 0.5 : 1
+            SequentialAnimation {
+                id: shake
+                NumberAnimation { target: field; property: "anchors.horizontalCenterOffset"; to: -surf.px(10); duration: 40 }
+                NumberAnimation { target: field; property: "anchors.horizontalCenterOffset"; to:  surf.px(10); duration: 70 }
+                NumberAnimation { target: field; property: "anchors.horizontalCenterOffset"; to: -surf.px(6);  duration: 60 }
+                NumberAnimation { target: field; property: "anchors.horizontalCenterOffset"; to:  0;           duration: 50 }
+            }
+            Connections { target: Lock; function onErrorChanged() { if (Lock.error !== "") { shake.restart(); pw.text = "" } } }
 
-                SequentialAnimation {
-                    id: shake
-                    NumberAnimation { target: field; property: "anchors.horizontalCenterOffset"; to: -10 * surf.s; duration: 40 }
-                    NumberAnimation { target: field; property: "anchors.horizontalCenterOffset"; to:  10 * surf.s; duration: 70 }
-                    NumberAnimation { target: field; property: "anchors.horizontalCenterOffset"; to:  -6 * surf.s; duration: 60 }
-                    NumberAnimation { target: field; property: "anchors.horizontalCenterOffset"; to:   0;          duration: 50 }
-                }
-                Connections { target: Lock; function onErrorChanged() { if (Lock.error !== "") { shake.restart(); pw.text = "" } } }
-
-                Row {
-                    anchors.centerIn: parent
-                    spacing: field.height * 0.2
-                    Repeater {
-                        model: Math.min(pw.text.length, 24)
-                        Rectangle { width: field.height * 0.2; height: width; radius: width / 2; color: Theme.light ? Theme.c.fg : "#c8c8c8" }
-                    }
-                }
-                Rectangle {
-                    anchors.centerIn: parent; width: 2 * surf.s; height: field.height * 0.4
-                    color: surf.oc(0.4); visible: pw.text.length === 0 && !Lock.busy
-                    SequentialAnimation on opacity { loops: Animation.Infinite; running: true
-                        NumberAnimation { to: 0; duration: 500 } NumberAnimation { to: 1; duration: 500 } }
-                }
-                TextInput {
-                    id: pw
-                    anchors.fill: parent; anchors.margins: 10 * surf.s
-                    echoMode: TextInput.Password; passwordCharacter: " "
-                    color: "transparent"; cursorVisible: false; cursorDelegate: Item {}
-                    font.family: Theme.font; font.pixelSize: 24 * surf.s
-                    enabled: !Lock.busy
-                    focus: true
-                    onAccepted: Lock.tryPassword(text)
-                    Keys.onEscapePressed: text = ""
+            // dots_size 0.2, dots_spacing 1.0, dots_center
+            Row {
+                anchors.centerIn: parent
+                spacing: field.height * 0.2
+                Repeater {
+                    model: Math.min(pw.text.length, 24)
+                    Rectangle { width: field.height * 0.2; height: width; radius: width / 2
+                                color: Theme.light ? Theme.c.fg : "#c8c8c8" }
                 }
             }
-
-            Label {
-                anchors.horizontalCenter: parent.horizontalCenter
-                y: field.y + field.height + 14 * surf.s
-                font.pixelSize: 15 * surf.s
-                color: surf.oc(Lock.error !== "" ? 0.85 : 0.45)
-                text: Lock.busy ? "Checking…" : Lock.error
+            TextInput {
+                id: pw
+                anchors.fill: parent; anchors.margins: surf.px(10)
+                echoMode: TextInput.Password; passwordCharacter: " "
+                color: "transparent"; cursorVisible: false; cursorDelegate: Item {}
+                font.family: Theme.font; font.pixelSize: surf.pt(18)
+                enabled: !Lock.busy
+                focus: true
+                onAccepted: Lock.tryPassword(text)
+                Keys.onEscapePressed: text = ""
             }
         }
-        // re-focus after anything
+
+        // fail / checking text under the field (hyprlock shows it in the field; keep it small)
+        Label {
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: field.bottom; anchors.topMargin: surf.px(14)
+            font.pixelSize: surf.pt(12)
+            color: surf.oc(Lock.error !== "" ? 0.85 : 0.45)
+            text: Lock.busy ? "Checking…" : Lock.error
+        }
+
+        // CURRENT SONG — label: font_size 16, position 0,80, valign bottom
+        readonly property var player: Mpris.players.values.find(p => p.playbackState === MprisPlaybackState.Playing) || Mpris.players.values[0] || null
+        Label {
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom; anchors.bottomMargin: surf.px(80)
+            font.pixelSize: surf.pt(16)
+            color: Qt.rgba(200/255, 200/255, 200/255, 0.75)
+            visible: text !== ""
+            text: surf.player && surf.player.trackTitle ? surf.player.trackTitle + "    " + (surf.player.trackArtist || "") : ""
+        }
+
         MouseArea { anchors.fill: parent; z: -1; onClicked: pw.forceActiveFocus() }
         Component.onCompleted: pw.forceActiveFocus()
     }

@@ -21,6 +21,11 @@ hl.layer_rule({
 	ignore_alpha = 0.7,
 })
 
+-- The Quickshell shell: same blur as the tools it replaced
+hl.layer_rule({ match = { namespace = "^hypr-powermenu$" },      blur = true, ignore_alpha = 0.7 })
+hl.layer_rule({ match = { namespace = "^hypr-notifications$" },  blur = true, ignore_alpha = 0.4 })
+hl.layer_rule({ match = { namespace = "^hypr-control-center$" }, blur = true, ignore_alpha = 0.5 })
+
 -- Rofi
 hl.layer_rule({
 	match = { namespace = "^rofi$" },

@@ -4,14 +4,19 @@ import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Hyprland
 import qs.Commons
-import qs.Bar
 import qs.Services
 
-// Fullscreen power menu (replaces wlogout): lock · logout · sleep · reboot
-// · shutdown. Same keys as the old layout: l o h r s, Escape closes.
+// Power menu — a faithful port of the wlogout layout + style:
+// five 190x174 buttons 38px apart, centred; wlogout's own PNG icons (light
+// "-rest" on the dark button, dark "-hover" on the light hover fill, mode
+// aware like wlogout.css.tpl); first button focused; keys l o h r s,
+// arrows + Enter, Escape. The backdrop is blurred by the Hyprland layer
+// rule for the "hypr-powermenu" namespace, like wlogout's was.
 Scope {
     id: scope
     property bool open: false
+    property int focused: 0
+    onOpenChanged: if (open) focused = 0
 
     IpcHandler {
         target: "powermenu"
@@ -19,12 +24,13 @@ Scope {
         function close(): void { scope.open = false }
     }
 
+    readonly property string icons: Quickshell.env("HOME") + "/.config/wlogout/icons/"
     readonly property var actions: [
-        { key: "l", icon: "󰌾", label: "Lock",     run: () => { scope.open = false; Lock.lock() } },
-        { key: "o", icon: "󰍃", label: "Logout",   run: () => Hyprland.dispatch(Hyprland.usingLua ? "hl.dsp.exit()" : "exit") },
-        { key: "h", icon: "󰤄", label: "Sleep",    run: () => { scope.open = false; Quickshell.execDetached(["systemctl", "suspend"]) } },
-        { key: "r", icon: "󰜉", label: "Reboot",   run: () => Quickshell.execDetached(["systemctl", "reboot"]) },
-        { key: "s", icon: "󰐥", label: "Shutdown", run: () => Quickshell.execDetached(["systemctl", "poweroff"]) }
+        { key: "l", icon: "lock",     run: () => { scope.open = false; Lock.lock() } },
+        { key: "o", icon: "exit",     run: () => Hyprland.dispatch(Hyprland.usingLua ? "hl.dsp.exit()" : "exit") },
+        { key: "h", icon: "sleep",    run: () => { scope.open = false; Quickshell.execDetached(["systemctl", "suspend"]) } },
+        { key: "r", icon: "reboot",   run: () => Quickshell.execDetached(["systemctl", "reboot"]) },
+        { key: "s", icon: "shutdown", run: () => Quickshell.execDetached(["systemctl", "poweroff"]) }
     ]
 
     Variants {
@@ -39,6 +45,7 @@ Scope {
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.keyboardFocus: scope.open ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
             WlrLayershell.namespace: "hypr-powermenu"
+            // window { background-color: alpha(@bg0, 0.7) }
             color: Qt.rgba(Theme.c.bg0.r, Theme.c.bg0.g, Theme.c.bg0.b, 0.7)
 
             MouseArea { anchors.fill: parent; onClicked: scope.open = false }
@@ -48,33 +55,44 @@ Scope {
                 focus: scope.open
                 Keys.onPressed: (e) => {
                     if (e.key === Qt.Key_Escape) { scope.open = false; return }
+                    if (e.key === Qt.Key_Left || (e.key === Qt.Key_Tab && e.modifiers & Qt.ShiftModifier)) { scope.focused = (scope.focused + 4) % 5; return }
+                    if (e.key === Qt.Key_Right || e.key === Qt.Key_Tab) { scope.focused = (scope.focused + 1) % 5; return }
+                    if (e.key === Qt.Key_Return || e.key === Qt.Key_Enter || e.key === Qt.Key_Space) { scope.actions[scope.focused].run(); return }
                     const a = scope.actions.find(x => x.key === e.text.toLowerCase())
                     if (a) a.run()
                 }
                 Row {
                     anchors.centerIn: parent
-                    spacing: 19
+                    spacing: 38
                     Repeater {
                         model: scope.actions
                         Rectangle {
                             id: btn
                             required property var modelData
-                            width: 130; height: 130
+                            required property int index
+                            readonly property bool hov: m.containsMouse
+                            readonly property bool foc: scope.focused === index
+                            width: 190; height: 174
                             radius: Theme.radius
-                            color: m.containsMouse ? Theme.c.fg : Theme.c.bg1
+                            // button / button:focus / button:hover from the wlogout css
+                            color: hov ? Theme.c.fg : foc ? Theme.c.bg2 : Theme.c.bg1
                             border.width: 1
-                            border.color: m.containsMouse ? Theme.c.fg : Theme.c.border
-                            Behavior on color { ColorAnimation { duration: 200 } }
-                            Column {
+                            border.color: hov ? Theme.c.fg : foc ? Theme.c.borderStrong : Theme.c.border
+                            Behavior on color { ColorAnimation { duration: 200; easing.type: Easing.OutCubic } }
+                            Behavior on border.color { ColorAnimation { duration: 200; easing.type: Easing.OutCubic } }
+                            Image {
                                 anchors.centerIn: parent
-                                spacing: 10
-                                Label { anchors.horizontalCenter: parent.horizontalCenter; text: btn.modelData.icon
-                                        font.pixelSize: 42; color: m.containsMouse ? Theme.c.bg0 : Theme.c.accentLight }
-                                Label { anchors.horizontalCenter: parent.horizontalCenter; text: btn.modelData.label
-                                        font.pixelSize: 12; color: m.containsMouse ? Theme.c.bg0 : Theme.c.accentMid }
+                                width: 52; height: 52
+                                sourceSize: Qt.size(96, 96)
+                                smooth: true
+                                // rest → light icon on dark / dark icon on light; hover → the opposite
+                                source: "file://" + scope.icons + btn.modelData.icon + "-" +
+                                        (btn.hov ? (Theme.light ? "rest" : "hover")
+                                                 : btn.foc ? (Theme.light ? "hover" : "focus")
+                                                           : (Theme.light ? "hover" : "rest")) + ".png"
                             }
-                            Label { x: 10; y: 8; text: btn.modelData.key; font.pixelSize: 11; color: m.containsMouse ? Theme.c.bg0 : Theme.c.accentDim }
                             MouseArea { id: m; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                                        onEntered: scope.focused = btn.index
                                         onClicked: btn.modelData.run() }
                         }
                     }
