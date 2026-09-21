@@ -2,6 +2,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Networking
 import qs.Commons
+import qs.Services
+import qs.Panels
 
 Pill {
     id: net
@@ -32,7 +34,7 @@ Pill {
                                    : strength > 75 ? "󰤨" : strength > 50 ? "󰤥" : strength > 25 ? "󰤢" : "󰤟"
     readonly property string text: !dev ? "offline" : wired ? (dev.address || "wired") : (network ? network.name : "wifi")
 
-    onClicked: Quickshell.execDetached(["nm-connection-editor"])
+    onClicked: Panels.toggle("network", net)
 
     Label { text: net.icon; color: net.dev ? Theme.c.accentLight : Theme.c.accentDim }
     Label {
@@ -41,4 +43,6 @@ Pill {
         text: net.text.length > 12 ? net.text.substring(0, 11) + "…" : net.text
         color: net.dev ? Theme.c.accentLight : Theme.c.accentDim
     }
+
+    NetworkPanel { anchorItem: net }
 }

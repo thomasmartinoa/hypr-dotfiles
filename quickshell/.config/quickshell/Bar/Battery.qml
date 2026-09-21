@@ -2,6 +2,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Services.UPower
 import qs.Commons
+import qs.Services
+import qs.Panels
 
 Pill {
     id: bat
@@ -18,7 +20,7 @@ Pill {
     readonly property color tone: plugged ? Theme.c.accentBright
                                  : pct <= 15 ? Theme.c.accentDim : pct <= 30 ? Theme.c.accentMid : Theme.c.accentLight
 
-    onClicked: Quickshell.execDetached([Quickshell.env("HOME") + "/.config/wlogout/launch.sh"])
+    onClicked: Panels.toggle("power", bat)
 
     Label {
         id: ic
@@ -33,4 +35,6 @@ Pill {
         }
     }
     Label { visible: bat.pillMode; text: bat.pct + "%"; color: bat.tone }
+
+    PowerPanel { anchorItem: bat }
 }

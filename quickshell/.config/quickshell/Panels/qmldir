@@ -1,0 +1,11 @@
+module Panels
+Panel 1.0 Panel.qml
+PanelHeader 1.0 PanelHeader.qml
+PanelRow 1.0 PanelRow.qml
+PanelButton 1.0 PanelButton.qml
+Slider 1.0 Slider.qml
+Toggle 1.0 Toggle.qml
+AudioPanel 1.0 AudioPanel.qml
+NetworkPanel 1.0 NetworkPanel.qml
+BluetoothPanel 1.0 BluetoothPanel.qml
+PowerPanel 1.0 PowerPanel.qml

@@ -107,12 +107,12 @@ hl.bind(
 )
 hl.bind(
 	"XF86MonBrightnessUp",
-	hl.dsp.exec_cmd("brightnessctl -d intel_backlight set 10%+"),
+	hl.dsp.exec_cmd("~/.config/hypr/scripts/brightness.sh up"),
 	{ locked = true, repeating = true }
 )
 hl.bind(
 	"XF86MonBrightnessDown",
-	hl.dsp.exec_cmd("brightnessctl -d intel_backlight set 10%-"),
+	hl.dsp.exec_cmd("~/.config/hypr/scripts/brightness.sh down"),
 	{ locked = true, repeating = true }
 )
 

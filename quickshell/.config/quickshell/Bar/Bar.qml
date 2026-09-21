@@ -50,6 +50,7 @@ Variants {
             anchors.rightMargin: win.pill ? 0 : 8
             spacing: win.pill ? 6 : 2
             Tray { visible: !win.pill }
+            Bluetooth { visible: !win.pill }    // pill skin: the tray applet covers it
             Audio {}
             Network {}
             Battery {}

@@ -2,6 +2,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Services.Pipewire
 import qs.Commons
+import qs.Services
+import qs.Panels
 
 Pill {
     id: audio
@@ -13,7 +15,7 @@ Pill {
 
     PwObjectTracker { objects: [audio.sink] }
 
-    onClicked: Quickshell.execDetached(["pavucontrol"])
+    onClicked: Panels.toggle("audio", audio)
     onRightClicked: if (ready) sink.audio.muted = !sink.audio.muted
     onScrolled: (d) => { if (ready) sink.audio.volume = Math.max(0, Math.min(1, vol + d * 0.05)) }
 
@@ -23,4 +25,6 @@ Pill {
         text: audio.muted ? "mute" : Math.round(audio.vol * 100) + "%"
         color: audio.muted ? Theme.c.accentDim : Theme.c.accentLight
     }
+
+    AudioPanel { anchorItem: audio }
 }

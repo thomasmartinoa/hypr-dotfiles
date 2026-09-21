@@ -193,6 +193,13 @@ A theme picks its skin with `bar = "pill"` in `colors.toml`; `SUPER+SHIFT+B` (or
 `qs ipc call bar style minimal|pill|auto`) overrides it for the session. `SUPER+R` restarts the shell.
 `HYPR_SHELL=waybar` in `autostart.lua` brings the old waybar back.
 
+**Panels** drop down from the bar: click the speaker for output/input volume and device pick, the
+wifi icon for networks (toggle, connect with a password prompt, right-click to forget), bluetooth
+(minimal skin; the pill skin leaves that to the tray applet) for devices, the battery for power
+profile and lock/sleep/reboot/off. Click elsewhere or press Escape to close;
+`qs ipc call panels open audio|network|bluetooth|power` from scripts. Volume and brightness show an
+**OSD** at the bottom of the screen.
+
 ---
 
 ## Theming
