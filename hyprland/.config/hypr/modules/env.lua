@@ -53,3 +53,7 @@ hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
 -- Software rendering — only useful inside a VM without GPU passthrough.
 -- hl.env("WLR_RENDERER_ALLOW_SOFTWARE", "1")
 -- hl.env("LIBGL_ALWAYS_SOFTWARE", "1")
+
+-- The theme/wallpaper scripts live in ~/.local/bin (stowed from theme/). Make
+-- sure keybinds find them regardless of what the login shell put in PATH.
+hl.env("PATH", os.getenv("HOME") .. "/.local/bin:" .. (os.getenv("PATH") or "/usr/local/bin:/usr/bin"))

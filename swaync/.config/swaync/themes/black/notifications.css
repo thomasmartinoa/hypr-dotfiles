@@ -12,9 +12,8 @@
   /*urgent:                @color6;      Urgency critical */
   /*text-selected:         @background; */
 
+  all: unset;             /* must come first: it resets every property, colour included */
   color: @text;
-
-  all: unset;
   font-size: 14px;
   font-family: "JetBrains Mono Nerd Font 10";
   transition: 200ms;
@@ -110,3 +109,18 @@
   background-color: @selected;
 }
 
+/* Text colour on every notification element, explicitly: without this the
+   cards inherit the GTK theme's label colour, which is wrong after a
+   light/dark switch (hypr-theme). */
+.notification-row .notification-background .notification,
+.notification-row .notification-background .notification .summary,
+.notification-row .notification-background .notification .body,
+.notification-row .notification-background .notification .time,
+.notification-row .notification-background .notification .app-name,
+.notification-row .notification-background .notification .notification-content label {
+  color: @text;
+}
+.notification-row .notification-background .notification .time,
+.notification-row .notification-background .notification .app-name {
+  color: alpha(@text, .6);
+}

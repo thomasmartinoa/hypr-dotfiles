@@ -21,3 +21,7 @@ nvim/.config/nvim/spell/
 
 Screenshots/*-draft.png
 Screenshots/tmp*
+
+# hypr-theme output (rendered from theme/.config/hypr-theme/templates)
+theme/.config/hypr-theme/current/
+theme/.config/hypr-theme/current.next/

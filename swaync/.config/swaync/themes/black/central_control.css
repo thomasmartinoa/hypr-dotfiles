@@ -5,9 +5,8 @@
 @define-color urgent          @critical;
 
 * {
+  all: unset;             /* must come first: it resets every property, colour included */
   color:            @text;
-
-  all: unset;
   font-size: 14px;
   font-family: "JetBrains Mono Nerd Font 10";
   transition: 200ms;
@@ -206,13 +205,18 @@ progressbar {
 /* Toggle button active state */
 .widget-buttons-grid>flowbox>flowboxchild>button:checked,
 .widget-buttons-grid>flowbox>flowboxchild>button.toggle:checked,
-.widget-buttons-grid>flowbox>flowboxchild>button.active {
+.widget-buttons-grid>flowbox>flowboxchild>button.active,
+.widget-buttons-grid>flowbox>flowboxchild>button:checked *,
+.widget-buttons-grid>flowbox>flowboxchild>button.toggle:checked *,
+.widget-buttons-grid>flowbox>flowboxchild>button.active * {
   background: @selected;
   color: @bg0;
 }
 
 .widget-buttons-grid>flowbox>flowboxchild>button:checked:hover,
-.widget-buttons-grid>flowbox>flowboxchild>button.toggle:checked:hover {
+.widget-buttons-grid>flowbox>flowboxchild>button.toggle:checked:hover,
+.widget-buttons-grid>flowbox>flowboxchild>button:checked:hover *,
+.widget-buttons-grid>flowbox>flowboxchild>button.toggle:checked:hover * {
   background: @hover;
   color: @text;
 }
@@ -438,4 +442,20 @@ picture.mpris-background {
   margin: 0;
   padding: 0;
   font-size: 0.1rem;
+}
+
+/* Text colour on every notification element, explicitly: without this the
+   cards inherit the GTK theme's label colour, which is wrong after a
+   light/dark switch (hypr-theme). */
+.notification-row .notification-background .notification,
+.notification-row .notification-background .notification .summary,
+.notification-row .notification-background .notification .body,
+.notification-row .notification-background .notification .time,
+.notification-row .notification-background .notification .app-name,
+.notification-row .notification-background .notification .notification-content label {
+  color: @text;
+}
+.notification-row .notification-background .notification .time,
+.notification-row .notification-background .notification .app-name {
+  color: alpha(@text, .6);
 }

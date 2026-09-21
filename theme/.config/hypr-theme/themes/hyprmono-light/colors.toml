@@ -1,0 +1,76 @@
+# HyprMono Light — the same monochrome rice, inverted.
+# Same keys as hyprmono; only the values and mode change.
+
+name = "HyprMono Light"
+mode = "light"
+bar  = "pill"
+
+[colors]
+bg0 = "#f4f4f4"
+bg1 = "#ebebeb"
+bg2 = "#e2e2e2"
+bg3 = "#d4d4d4"
+bg4 = "#c6c6c6"
+
+fg            = "#141414"
+accent_bright = "#000000"
+accent_light  = "#202020"
+accent_mid    = "#5e5e5e"
+accent_dim    = "#9a9a9a"
+
+active   = "#000000"
+hover    = "#333333"
+warning  = "#4a4a4a"
+critical = "#7a7a7a"
+
+grey0 = "#bdbdbd"
+grey1 = "#8f8f8f"
+grey2 = "#5e5e5e"
+
+red    = "#000000"
+orange = "#202020"
+yellow = "#383838"
+green  = "#4a4a4a"
+aqua   = "#666666"
+blue   = "#000000"
+purple = "#2e2e2e"
+
+[terminal]
+# Darker than a straight inversion of the dark ramp: on paper-white the
+# lighter greys wash out through kitty's 50% background opacity.
+background = "#f4f4f4"
+foreground = "#262626"
+cursor     = "#202020"
+selection_background = "#cfcfcf"
+selection_foreground = "#000000"
+color0  = "#e2e2e2"
+color1  = "#6e6e6e"
+color2  = "#646464"
+color3  = "#5a5a5a"
+color4  = "#505050"
+color5  = "#464646"
+color6  = "#3c3c3c"
+color7  = "#2a2a2a"
+color8  = "#8a8a8a"
+color9  = "#606060"
+color10 = "#565656"
+color11 = "#4c4c4c"
+color12 = "#424242"
+color13 = "#383838"
+color14 = "#2e2e2e"
+color15 = "#141414"
+
+[git]
+# Same hues, a step darker so they read on paper-white.
+added     = "#3f9142"
+modified  = "#b8860b"
+deleted   = "#c0392b"
+renamed   = "#2b6cb0"
+conflict  = "#b45309"
+
+[apps]
+gtk_theme        = "adw-gtk3"
+icon_theme       = "Papirus-Light"
+cursor_theme     = "default"
+qt_style         = "Adwaita"
+nvim_colorscheme = "hyprmono"

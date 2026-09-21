@@ -18,15 +18,21 @@ Item {
     height: 1080
     focus: true
 
-    // ----- palette (hypr-theme/palette.css) -----
-    readonly property color bg0:    "#0a0a0a"
-    readonly property color bg2:    "#1e1e1e"
-    readonly property color bg3:    "#282828"
-    readonly property color bg4:    "#333333"
-    readonly property color fg:     "#e8e8e8"
-    readonly property color bright: "#ffffff"
-    readonly property color mid:    "#a0a0a0"
-    readonly property color dim:    "#606060"
+    // ----- palette -----
+    // theme.conf is rewritten by hypr-theme-root-sync on every theme switch
+    // (see sddm-theme.conf.tpl); the literals are the HyprMono dark fallback.
+    function col(key, fallback) { var v = config.stringValue(key); return v && v.length > 0 ? v : fallback }
+    readonly property bool light:   config.stringValue("mode") === "light"
+    readonly property color bg0:    col("bg0",    "#0a0a0a")
+    readonly property color bg2:    col("bg2",    "#1e1e1e")
+    readonly property color bg3:    col("bg3",    "#282828")
+    readonly property color bg4:    col("bg4",    "#333333")
+    readonly property color fg:     col("fg",     "#e8e8e8")
+    readonly property color bright: col("bright", "#ffffff")
+    readonly property color mid:    col("mid",    "#a0a0a0")
+    readonly property color dim:    col("dim",    "#606060")
+    // text drawn straight on the wallpaper: white on dark themes, near-black on light
+    readonly property color onWall: light ? "#141414" : "#ffffff"
 
     // hyprlock font sizes are for 1080p-ish; scale everything from there.
     readonly property real s: Math.min(height / 1080, width / 1920)
@@ -156,7 +162,7 @@ Item {
         blur: 2.0
         blurMax: 48
         // hyprlock: brightness 0.8172, contrast 0.8916
-        brightness: -0.18
+        brightness: root.light ? 0.05 : -0.18
         contrast: -0.1
     }
 
@@ -190,14 +196,14 @@ Item {
             font.family: root.font
             font.pixelSize: 130 * root.s
             font.weight: Font.Light
-            color: Qt.rgba(1, 1, 1, 0.8)
+            color: Qt.rgba(root.onWall.r, root.onWall.g, root.onWall.b, 0.8)
         }
         Text {
             anchors.horizontalCenter: parent.horizontalCenter
             text: Qt.formatDate(clock.now, "dddd, d MMMM")
             font.family: root.font
             font.pixelSize: 22 * root.s
-            color: Qt.rgba(1, 1, 1, 0.5)
+            color: Qt.rgba(root.onWall.r, root.onWall.g, root.onWall.b, 0.5)
         }
     }
 
@@ -221,7 +227,7 @@ Item {
             Rectangle {
                 anchors.fill: parent
                 radius: 5 * root.s
-                color: Qt.rgba(1, 1, 1, greetHover.containsMouse && root.userCount > 1 ? 0.08 : 0)
+                color: Qt.rgba(root.onWall.r, root.onWall.g, root.onWall.b, greetHover.containsMouse && root.userCount > 1 ? 0.08 : 0)
                 Behavior on color { ColorAnimation { duration: 120 } }
             }
 
@@ -233,7 +239,7 @@ Item {
                     text: "Hello, " + root.currentUserPretty
                     font.family: root.font
                     font.pixelSize: 32 * root.s
-                    color: Qt.rgba(1, 1, 1, 0.8)
+                    color: Qt.rgba(root.onWall.r, root.onWall.g, root.onWall.b, 0.8)
                 }
                 Text {
                     // chevron only when there is someone to switch to
@@ -242,7 +248,7 @@ Item {
                     text: root.openPopup === "user" ? "󰅃" : "󰅀"
                     font.family: root.font
                     font.pixelSize: 22 * root.s
-                    color: Qt.rgba(1, 1, 1, 0.5)
+                    color: Qt.rgba(root.onWall.r, root.onWall.g, root.onWall.b, 0.5)
                 }
             }
 
@@ -265,11 +271,11 @@ Item {
             width: 340 * root.s
             height: 62 * root.s
             radius: 5 * root.s
-            color: Qt.rgba(64/255, 64/255, 64/255, 0.4)
+            color: root.light ? Qt.rgba(1, 1, 1, 0.45) : Qt.rgba(64/255, 64/255, 64/255, 0.4)
             border.width: 2 * root.s
-            border.color: root.errorText !== "" ? Qt.rgba(1, 1, 1, 0.9)
-                        : password.activeFocus ? Qt.rgba(207/255, 207/255, 207/255, 0.85)
-                        : Qt.rgba(207/255, 207/255, 207/255, 0.6)
+            border.color: root.errorText !== "" ? Qt.rgba(root.onWall.r, root.onWall.g, root.onWall.b, 0.9)
+                        : password.activeFocus ? Qt.rgba(root.mid.r, root.mid.g, root.mid.b, 0.95)
+                        : Qt.rgba(root.mid.r, root.mid.g, root.mid.b, 0.7)
             opacity: root.busy ? 0.5 : 1
             Behavior on border.color { ColorAnimation { duration: 120 } }
             Behavior on opacity { NumberAnimation { duration: 120 } }
@@ -294,7 +300,7 @@ Item {
                         width: field.height * 0.2
                         height: width
                         radius: width / 2
-                        color: "#c8c8c8"
+                        color: root.light ? root.fg : "#c8c8c8"
                     }
                 }
             }
@@ -304,7 +310,7 @@ Item {
                 anchors.centerIn: parent
                 width: 2 * root.s
                 height: field.height * 0.4
-                color: Qt.rgba(1, 1, 1, 0.4)
+                color: Qt.rgba(root.onWall.r, root.onWall.g, root.onWall.b, 0.4)
                 visible: password.text.length === 0 && password.activeFocus && !root.busy
                 SequentialAnimation on opacity {
                     loops: Animation.Infinite; running: true
@@ -352,7 +358,7 @@ Item {
             y: field.y + field.height + 14 * root.s
             font.family: root.font
             font.pixelSize: 15 * root.s
-            color: root.errorText !== "" ? Qt.rgba(1, 1, 1, 0.85) : Qt.rgba(1, 1, 1, 0.45)
+            color: Qt.rgba(root.onWall.r, root.onWall.g, root.onWall.b, root.errorText !== "" ? 0.85 : 0.45)
             text: root.busy ? "Logging in…"
                 : root.errorText !== "" ? root.errorText
                 : keyboard.capsLock ? "󰪛  Caps Lock is on"
@@ -484,7 +490,9 @@ Item {
             anchors.centerIn: parent
             width: 22 * root.s
             height: 22 * root.s
-            source: "icons/" + pb.icon + (pb.lit ? "-hover" : "-rest") + ".png"
+            // "-rest" is the light icon, "-hover" the dark one; pick whichever
+            // contrasts with the pill in this mode (see wlogout.css.tpl).
+            source: "icons/" + pb.icon + ((pb.lit !== root.light) ? "-hover" : "-rest") + ".png"
             sourceSize: Qt.size(96, 96)
             smooth: true
         }

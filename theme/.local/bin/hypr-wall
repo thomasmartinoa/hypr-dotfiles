@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+# hypr-wall — wallpaper for hypr-dotfiles.
+#
+#   hypr-wall set <file>   use this image (any path)
+#   hypr-wall next         cycle through the current theme's backgrounds/
+#   hypr-wall ensure       make sure the wallpaper is one of the theme's (theme switch)
+#   hypr-wall apply        re-apply the current wallpaper (session start)
+#   hypr-wall current      print the current wallpaper path
+#
+# The wallpaper is ~/.config/hypr-theme/current/background, a symlink.
+# Everything that shows a wallpaper reads that one path: awww (desktop),
+# hyprlock, and the SDDM greeter via hypr-theme-root-sync. Themes carry
+# their own backgrounds/ dir; `hypr-theme set` calls `hypr-wall next` so a
+# theme switch also switches the wallpaper (Omarchy does the same).
+
+set -euo pipefail
+
+CURRENT_DIR="$HOME/.config/hypr-theme/current"
+LINK="$CURRENT_DIR/background"
+STATE="$HOME/.local/state/hypr-theme"
+TRANSITION=(--transition-type fade --transition-duration 1 --transition-fps 60)
+
+die()  { printf 'hypr-wall: %s\n' "$*" >&2; exit 1; }
+have() { command -v "$1" >/dev/null 2>&1; }
+
+show() {
+    # Push the image to the running daemon; start it if needed.
+    [[ -e "$LINK" ]] || return 0
+    have awww || return 0
+    if ! pgrep -x awww-daemon >/dev/null 2>&1; then
+        setsid -f awww-daemon >/dev/null 2>&1
+        sleep 0.3
+    fi
+    awww img "$(readlink -f "$LINK")" --resize crop "${TRANSITION[@]}" >/dev/null 2>&1 || true
+}
+
+set_wallpaper() {
+    local img
+    img="$(realpath -e -- "$1" 2>/dev/null)" || die "no such file: $1"
+    mkdir -p "$CURRENT_DIR" "$STATE"
+    ln -nsf "$img" "$LINK"
+    # Remember the pick per theme so switching back restores it.
+    local theme; theme="$(cat "$CURRENT_DIR/theme.name" 2>/dev/null || true)"
+    [[ -n "$theme" ]] && printf '%s\n' "$img" > "$STATE/background.$theme"
+    show
+    # login screen follows (root-owned helper installed by install.sh)
+    [[ -x /usr/local/bin/hypr-theme-root-sync ]] && sudo -n /usr/local/bin/hypr-theme-root-sync >/dev/null 2>&1 || true
+}
+
+theme_backgrounds() {
+    local dir="$CURRENT_DIR/theme/backgrounds"
+    [[ -d "$dir" ]] || return 0
+    find -L "$dir" -maxdepth 1 -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) | sort
+}
+
+cmd_next() {
+    local list=() cur i n
+    mapfile -t list < <(theme_backgrounds)
+    n=${#list[@]}; (( n > 0 )) || die "current theme has no backgrounds/"
+    cur="$(readlink -f "$LINK" 2>/dev/null || true)"
+    for i in "${!list[@]}"; do
+        if [[ "${list[$i]}" == "$cur" ]]; then set_wallpaper "${list[$(( (i + 1) % n ))]}"; return; fi
+    done
+    # Not one of this theme's: restore the last pick for this theme, else the first.
+    local theme saved; theme="$(cat "$CURRENT_DIR/theme.name" 2>/dev/null || true)"
+    saved="$(cat "$STATE/background.$theme" 2>/dev/null || true)"
+    if [[ -n "$saved" && -f "$saved" ]]; then set_wallpaper "$saved"; else set_wallpaper "${list[0]}"; fi
+}
+
+cmd_ensure() {
+    # Called by `hypr-theme set`: make sure the wallpaper belongs to the
+    # current theme, without advancing if it already does.
+    local list=() cur
+    mapfile -t list < <(theme_backgrounds)
+    (( ${#list[@]} > 0 )) || return 0
+    cur="$(readlink -f "$LINK" 2>/dev/null || true)"
+    local x; for x in "${list[@]}"; do [[ "$x" == "$cur" ]] && return 0; done
+    cmd_next
+}
+
+case "${1:-}" in
+    set)     set_wallpaper "${2:-}" ;;
+    next)    cmd_next ;;
+    ensure)  cmd_ensure ;;
+    apply)   show ;;
+    current) readlink -f "$LINK" 2>/dev/null || true ;;
+    *)       sed -n '2,9p' "$0" | sed 's/^# \{0,1\}//'; exit 1 ;;
+esac
