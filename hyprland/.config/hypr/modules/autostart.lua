@@ -6,7 +6,6 @@ hl.env("HYPR_SHELL", "quickshell")
 
 hl.on("hyprland.start", function()
     hl.exec_cmd("~/.config/hypr/scripts/shell.sh start")
-    hl.exec_cmd("hypridle")
     hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
     --hl.exec_cmd("systemctl --user start hyprpolkitagent")
    -- hl.exec_cmd("xdg-desktop-portal-hyprland")

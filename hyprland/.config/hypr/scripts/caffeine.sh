@@ -1,59 +1,40 @@
 #!/usr/bin/env bash
 # caffeine.sh — keep the machine awake until you say otherwise.
 #
-# Holds a systemd-logind inhibitor for BOTH idle and sleep:
-#   idle  -> hypridle treats the session as active, so none of its listeners
-#            fire (no dim, no lock, no screen-off, no suspend)
-#   sleep -> logind refuses to suspend from any source (lid, wlogout, etc.)
-#
 # Usage: caffeine.sh [toggle|on|off|status]
-#   status prints JSON for the waybar custom/caffeine module.
 #
-# Same idea as Omarchy's stay-awake toggle, but using logind instead of
-# killing hypridle, so the brightness/keyboard listeners keep working.
+# With the shell running, the state lives there (Services/Caffeine): its idle
+# timers pause and it holds a logind sleep inhibitor. Without it (classic
+# waybar + hypridle mode) this script holds the inhibitor itself, which
+# hypridle honours. `status` prints JSON for waybar's custom module.
 
 WHO="caffeine"
-SIGNAL=9   # waybar "signal": 9  ->  pkill -RTMIN+9 waybar
+SIGNAL=9
 
-inhibit_pid() {
-    pgrep -f -- "^systemd-inhibit .*--who=$WHO( |$)" | head -n1
-}
+shell_up() { command -v qs >/dev/null 2>&1 && pgrep -x qs >/dev/null 2>&1; }
 
+inhibit_pid() { pgrep -f -- "^systemd-inhibit .*--who=$WHO( |$)" | head -n1; }
 is_on() {
-    [[ -n "$(inhibit_pid)" ]]
+    if shell_up; then [[ "$(qs ipc call caffeine status 2>/dev/null)" == "on" ]]
+    else [[ -n "$(inhibit_pid)" ]]; fi
 }
-
-refresh_bar() {
-    pkill -RTMIN+"$SIGNAL" waybar 2>/dev/null
-}
+refresh_bar() { pkill -RTMIN+"$SIGNAL" waybar 2>/dev/null; }
 
 turn_on() {
+    if shell_up; then qs ipc call caffeine on >/dev/null 2>&1; return; fi
     is_on && return
-    # setsid: own session so it survives the caller (waybar/hyprland bind)
-    # and so we can kill the whole group later.
-    setsid -f systemd-inhibit \
-        --what=idle:sleep \
-        --who="$WHO" \
-        --why="User asked to stay awake" \
-        --mode=block \
-        sleep infinity >/dev/null 2>&1
+    setsid -f systemd-inhibit --what=idle:sleep --who="$WHO" --why="User asked to stay awake" --mode=block sleep infinity >/dev/null 2>&1
     notify-send -a caffeine "Caffeine on" "Idle lock and suspend paused" 2>/dev/null
 }
-
 turn_off() {
-    local pid
-    pid="$(inhibit_pid)"
-    [[ -n "$pid" ]] || return
+    if shell_up; then qs ipc call caffeine off >/dev/null 2>&1; return; fi
+    local pid; pid="$(inhibit_pid)"; [[ -n "$pid" ]] || return
     kill -- "-$pid" 2>/dev/null || kill "$pid" 2>/dev/null
     notify-send -a caffeine "Caffeine off" "Idle lock and suspend back to normal" 2>/dev/null
 }
-
 status() {
-    if is_on; then
-        printf '{"text":"󰅶","class":"on","tooltip":"Caffeine: ON — idle lock & suspend paused\\nclick to allow idle"}\n'
-    else
-        printf '{"text":"󰾪","class":"off","tooltip":"Caffeine: off — idling normally\\nclick to stay awake"}\n'
-    fi
+    if is_on; then printf '{"text":"󰅶","class":"on","tooltip":"Caffeine: ON — idle lock & suspend paused\\nclick to allow idle"}\n'
+    else printf '{"text":"󰾪","class":"off","tooltip":"Caffeine: off — idling normally\\nclick to stay awake"}\n'; fi
 }
 
 case "${1:-toggle}" in

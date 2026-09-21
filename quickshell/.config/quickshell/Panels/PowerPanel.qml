@@ -65,9 +65,9 @@ Panel {
     Row {
         id: session
         width: parent.width; spacing: 6
-        PanelButton { width: (session.width - 18) / 4; icon: ""; text: "Lock";     onClicked: { Quickshell.execDetached(["hyprlock"]); Panels.close() } }
-        PanelButton { width: (session.width - 18) / 4; icon: "";  text: "Sleep";    onClicked: { Quickshell.execDetached(["systemctl", "suspend"]); Panels.close() } }
-        PanelButton { width: (session.width - 18) / 4; icon: "";  text: "Reboot";   onClicked: { Quickshell.execDetached(["systemctl", "reboot"]); Panels.close() } }
-        PanelButton { width: (session.width - 18) / 4; icon: "";  text: "Off";      onClicked: { Quickshell.execDetached(["systemctl", "poweroff"]); Panels.close() } }
+        PanelButton { width: (session.width - 18) / 4; icon: "󰌾"; text: "Lock";     onClicked: { Quickshell.execDetached(["hyprlock"]); Panels.close() } }
+        PanelButton { width: (session.width - 18) / 4; icon: "󰤄"; text: "Sleep";    onClicked: { Quickshell.execDetached(["systemctl", "suspend"]); Panels.close() } }
+        PanelButton { width: (session.width - 18) / 4; icon: "󰜉"; text: "Reboot";   onClicked: { Quickshell.execDetached(["systemctl", "reboot"]); Panels.close() } }
+        PanelButton { width: (session.width - 18) / 4; icon: "󰐥"; text: "Off";      onClicked: { Quickshell.execDetached(["systemctl", "poweroff"]); Panels.close() } }
     }
 }

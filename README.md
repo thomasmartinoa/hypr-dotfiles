@@ -200,6 +200,13 @@ profile and lock/sleep/reboot/off. Click elsewhere or press Escape to close;
 `qs ipc call panels open audio|network|bluetooth|power` from scripts. Volume and brightness show an
 **OSD** at the bottom of the screen.
 
+**Notifications** are the shell's too (swaync retired): popups top-right, a history behind the
+bell with do-not-disturb and clear-all. **Lock screen** (`SUPER+L`, `loginctl lock-session`, before
+sleep) is the same picture as the login screen, PAM-backed. **Power menu** (`SUPER+M`) replaces
+wlogout: lock · logout · sleep · reboot · shutdown, keys `l o h r s`. **Idle**: the shell's timers dim,
+lock, blank and suspend (Services/Idle.qml has the numbers); caffeine (`SUPER+CTRL+I`) pauses them
+and holds a logind sleep inhibitor. hypridle stays only as the logind bridge.
+
 The shell also draws the **wallpaper** (one background layer per screen, crossfade on change);
 `hypr-wall set|next` and a theme switch push the new image over IPC. In waybar mode, `awww` does it.
 
@@ -267,7 +274,7 @@ If the login screen ever comes up black, switch to a TTY (`Ctrl+Alt+F3`) and
 |---|---|
 | `SUPER` + `Return` / `E` / `B` | Terminal · file manager · browser |
 | `SUPER` + `D` / `V` | App launcher · clipboard history |
-| `SUPER` + `L` / `M` | Lock screen · logout menu |
+| `SUPER` + `L` / `M` | Lock screen · power menu |
 | `SUPER` + `R` | Restart the shell (bar + notifications) |
 | `SUPER` + `SHIFT` + `B` | Bar skin: pill ↔ minimal |
 | `SUPER` + `CTRL` + `I` | Caffeine: pause idle lock & suspend (also the ☕ in the bar) |

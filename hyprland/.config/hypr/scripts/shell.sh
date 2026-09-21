@@ -10,14 +10,17 @@ set -u
 which="${HYPR_SHELL:-quickshell}"
 
 stop() {
+    pkill -x hypridle 2>/dev/null
     pkill -x qs 2>/dev/null
     pkill -x waybar 2>/dev/null
     pkill -x swaync 2>/dev/null
 }
 
 start() {
+    pkill -x hypridle 2>/dev/null
     case "$which" in
         waybar)
+            setsid -f hypridle -c "$HOME/.config/hypr/hypridle-classic.conf" >/dev/null 2>&1
             setsid -f swaync >/dev/null 2>&1      # the shell has its own notifications
             setsid -f waybar >/dev/null 2>&1
             # the classic setup needs a wallpaper daemon; the shell draws its own
@@ -26,6 +29,7 @@ start() {
             ;;
         *)
             pkill -x awww-daemon 2>/dev/null
+            setsid -f hypridle >/dev/null 2>&1    # logind bridge only (hypridle.conf)
             setsid -f qs >/dev/null 2>&1
             ;;
     esac

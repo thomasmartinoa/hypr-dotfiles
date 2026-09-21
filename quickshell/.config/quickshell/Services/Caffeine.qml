@@ -3,27 +3,28 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Mirrors ~/.config/hypr/scripts/caffeine.sh: on when its systemd-inhibit
-// lock is held. Polled, because the lock can also be toggled from the
-// keybind; the toggle here re-checks immediately.
+// Stay awake. The shell's idle timers watch `on`; a systemd-logind sleep
+// inhibitor is held as well so nothing else (lid, other tools) suspends.
+// ~/.config/hypr/scripts/caffeine.sh is a thin wrapper over the IPC.
 Singleton {
     id: root
     property bool on: false
-    readonly property string script: Quickshell.env("HOME") + "/.config/hypr/scripts/caffeine.sh"
 
-    function refresh() { check.running = true }
-    function toggle() { toggler.running = true }
+    function toggle() { on = !on }
 
     Process {
-        id: check
-        command: ["bash", "-c", "pgrep -f '^systemd-inhibit .*--who=caffeine( |$)' >/dev/null && echo on || echo off"]
-        stdout: StdioCollector { onStreamFinished: root.on = text.trim() === "on" }
+        id: inhibit
+        running: root.on
+        command: ["systemd-inhibit", "--what=sleep:idle", "--who=caffeine", "--why=User asked to stay awake", "--mode=block", "sleep", "infinity"]
     }
-    Process {
-        id: toggler
-        command: [root.script, "toggle"]
-        onExited: root.refresh()
+    onOnChanged: Quickshell.execDetached(["notify-send", "-a", "caffeine", on ? "Caffeine on" : "Caffeine off",
+                                          on ? "Idle lock and suspend paused" : "Idle lock and suspend back to normal"])
+
+    IpcHandler {
+        target: "caffeine"
+        function toggle(): bool { root.toggle(); return root.on }
+        function on(): void { root.on = true }
+        function off(): void { root.on = false }
+        function status(): string { return root.on ? "on" : "off" }
     }
-    Timer { interval: 3000; running: true; repeat: true; onTriggered: root.refresh() }
-    Component.onCompleted: refresh()
 }
