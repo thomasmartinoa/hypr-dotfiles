@@ -584,18 +584,10 @@ chmod +x "$HOME/.config/rofi/launchers/launcher.sh" \
 # (qt*ct resolves it with QFile, which does not expand "~"), and the qt*ct GUIs
 # rewrite these files in place, which would push window geometry into git.
 step "Qt configuration"
-for v in 5 6; do
-  conf="$HOME/.config/qt${v}ct/qt${v}ct.conf"
-  tmpl="$DOTFILES_DIR/templates/qt${v}ct.conf.in"
-  [[ -r "$tmpl" ]] || { warn "missing template: templates/qt${v}ct.conf.in"; continue; }
-  rendered="$(sed "s|@HOME@|$HOME|g" "$tmpl")"
-  if [[ -e "$conf" ]] && ! diff -q <(printf '%s\n' "$rendered") "$conf" >/dev/null 2>&1; then
-    cp -- "$conf" "$conf.bak"
-    info "backed up qt${v}ct.conf → qt${v}ct.conf.bak"
-  fi
-  printf '%s\n' "$rendered" > "$conf"
-  ok "qt${v}ct.conf rendered (colour scheme: hypr-theme/current)"
-done
+# qt5ct.conf / qt6ct.conf and the colour scheme are rendered by hypr-theme
+# (templates/qt*ct.conf.tpl) and installed by its Theme step below.
+mkdir -p "$HOME/.config/qt5ct/colors" "$HOME/.config/qt6ct/colors"
+ok "qt5ct/qt6ct directories ready (config comes from hypr-theme)."
 
 # ============================================================================
 # 6. Root theming

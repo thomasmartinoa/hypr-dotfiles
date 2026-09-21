@@ -72,8 +72,12 @@ install_file() {
     # install_file <generated> <destination>. Destination is always a real
     # file: if an old stow symlink is there, replace it rather than writing
     # through it into the repo.
-    local src="$1" dst="$2"
-    mkdir -p "$(dirname "$dst")"
+    local src="$1" dst="$2" dir
+    dir="$(dirname "$dst")"
+    # A dangling directory symlink (an old stow fold of a package that no
+    # longer exists) blocks mkdir -p; replace it with a real directory.
+    [[ -L "$dir" && ! -e "$dir" ]] && rm -f "$dir"
+    mkdir -p "$dir"
     [[ -L "$dst" ]] && rm -f "$dst"
     cp -f -- "$src" "$dst"
 }
@@ -135,6 +139,15 @@ apply() {
     install_file "$CURRENT_DIR/gtkrc-2.0"          "$HOME/.gtkrc-2.0"
     install_file "$CURRENT_DIR/kde-colors"         "$HOME/.local/share/color-schemes/HyprTheme.colors"
     install_file "$CURRENT_DIR/kdeglobals"         "$HOME/.config/kdeglobals"
+    # qt5ct/qt6ct: the colour scheme goes into their colors/ dir so the GUI
+    # lists it; the .conf carries style + icon theme, which follow the mode.
+    install_file "$CURRENT_DIR/qtct-colors.conf"   "$HOME/.config/qt5ct/colors/hypr-theme.conf"
+    install_file "$CURRENT_DIR/qtct-colors.conf"   "$HOME/.config/qt6ct/colors/hypr-theme.conf"
+    install_file "$CURRENT_DIR/qt5ct.conf"         "$HOME/.config/qt5ct/qt5ct.conf"
+    install_file "$CURRENT_DIR/qt6ct.conf"         "$HOME/.config/qt6ct/qt6ct.conf"
+    # Kdenlive keeps its own ColorScheme (its "Always use dark" switch writes
+    # BreezeDark); point it at ours so it follows the theme like other KDE apps.
+    [[ -f "$HOME/.config/kdenliverc" ]] && sed -i 's/^ColorScheme=.*/ColorScheme=HyprTheme/' "$HOME/.config/kdenliverc"
 
     # GTK4 / libadwaita apps and the portal read the colour scheme from
     # gsettings, not settings.ini. Zen/Firefox follow this too.
@@ -147,11 +160,17 @@ apply() {
 
     # Running apps: reload in place where the app supports it.
     have hyprctl       && hyprctl reload >/dev/null 2>&1 || true
-    pkill -SIGUSR2 -x waybar        2>/dev/null || true   # reload config + css
     pkill -SIGUSR1 -x kitty         2>/dev/null || true   # kitty re-reads kitty.conf
-    have swaync-client && swaync-client --reload-css >/dev/null 2>&1 || true
-    # GTK3 daemons read settings.ini once at startup; the polkit agent is the
-    # one you notice (its password dialog). Restart it so it matches.
+    # GTK3 reads its theme once at startup and does not follow gsettings on
+    # Wayland (tested: neither directly nor through the settings portal), so
+    # every GTK3 daemon we own is restarted: waybar + swaync together (the
+    # bar's bell module is a swaync-client subscription) and the polkit agent.
+    if [[ -x "$HOME/.config/waybar/scripts/launch.sh" ]]; then
+        "$HOME/.config/waybar/scripts/launch.sh" >/dev/null 2>&1 || true
+    else
+        pkill -SIGUSR2 -x waybar 2>/dev/null || true
+        have swaync-client && swaync-client --reload-css >/dev/null 2>&1 || true
+    fi
     if pgrep -x polkit-gnome-au >/dev/null 2>&1; then
         pkill -x polkit-gnome-au 2>/dev/null || true
         setsid -f /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 >/dev/null 2>&1
