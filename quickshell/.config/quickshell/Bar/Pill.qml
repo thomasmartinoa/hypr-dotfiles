@@ -20,8 +20,9 @@ Rectangle {
     signal middleClicked()
     signal scrolled(int delta)
 
-    implicitWidth: inner.implicitWidth + padH * 2 + extraRight
-    implicitHeight: pillMode ? 31 : 26
+    readonly property bool vertical: Config.vertical
+    implicitWidth: vertical ? (pillMode ? 34 : 28) : inner.implicitWidth + padH * 2 + extraRight
+    implicitHeight: vertical ? inner.implicitHeight + (pillMode ? 14 : 8) : (pillMode ? 31 : 26)
     // pill skin keeps the waybar css values exactly (6px, 12px tray, bg3 border)
     radius: pillMode ? (round ? 12 : 6) : Theme.radius
     color: pillMode ? (hovered && interactive ? Theme.c.bg2 : Theme.c.bg0)
@@ -33,11 +34,23 @@ Rectangle {
     Behavior on border.color { ColorAnimation { duration: 150 } }
 
     property int gap: pillMode ? 13 : 6   // measured against waybar
-    Row {
+    Grid {
         id: inner
         anchors.verticalCenter: parent.verticalCenter
-        x: pill.padH
-        spacing: pill.gap
+        anchors.horizontalCenter: pill.vertical ? parent.horizontalCenter : undefined
+        x: pill.vertical ? 0 : pill.padH
+        // exactly as many cells as visible children: Grid pads its implicit
+        // size with spacing for every declared row/column, used or not
+        readonly property int n: {
+            let c = 0
+            for (let i = 0; i < visibleChildren.length; i++) if (visibleChildren[i].width > 0 || visibleChildren[i].height > 0) c++   // a Repeater is a 0x0 child
+            return Math.max(1, c)
+        }
+        columns: pill.vertical ? 1 : n
+        rows: pill.vertical ? n : 1
+        spacing: pill.vertical ? 4 : pill.gap
+        horizontalItemAlignment: Grid.AlignHCenter
+        verticalItemAlignment: Grid.AlignVCenter
     }
 
     MouseArea {

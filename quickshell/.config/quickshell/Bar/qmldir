@@ -11,3 +11,9 @@ CaffeineWidget 1.0 CaffeineWidget.qml
 Bell 1.0 Bell.qml
 Label 1.0 Label.qml
 Bluetooth 1.0 Bluetooth.qml
+WidgetLoader 1.0 WidgetLoader.qml
+ActiveWindow 1.0 ActiveWindow.qml
+Media 1.0 Media.qml
+SysMon 1.0 SysMon.qml
+KeyboardLayout 1.0 KeyboardLayout.qml
+CommandWidget 1.0 CommandWidget.qml

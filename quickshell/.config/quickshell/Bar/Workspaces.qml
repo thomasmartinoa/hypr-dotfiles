@@ -49,8 +49,8 @@ Pill {
             readonly property bool exists: modelData.ws !== null
             readonly property bool hov: m.containsMouse
 
-            implicitWidth: ws.pillMode ? Math.max(active ? 38 : 34, t.implicitWidth + 14) : Math.max(18, t.implicitWidth + 12)
-            implicitHeight: ws.pillMode ? 23 : 22
+            implicitWidth: ws.vertical ? (ws.pillMode ? 26 : 20) : ws.pillMode ? Math.max(active ? 38 : 34, t.implicitWidth + 14) : Math.max(18, t.implicitWidth + 12)
+            implicitHeight: ws.vertical ? (ws.pillMode ? (active ? 32 : 26) : 20) : ws.pillMode ? 23 : 22
             radius: ws.pillMode ? 5 : Theme.radiusSm
             color: ws.pillMode
                    ? (active ? Theme.c.fg : hov ? Theme.c.bg4 : urgent ? Theme.c.grey2 : Theme.c.bg2)

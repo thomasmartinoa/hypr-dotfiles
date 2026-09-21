@@ -70,16 +70,4 @@ Singleton {
         function current(): string { return root.name + " (" + root.mode + ")" }
     }
 
-    IpcHandler {
-        target: "bar"
-        function style(name: string): string {
-            if (name === "pill" || name === "minimal") root.barOverride = name
-            else if (name === "auto" || name === "") root.barOverride = ""
-            return root.barStyle
-        }
-        function toggle(): string {
-            root.barOverride = root.barStyle === "pill" ? "minimal" : "pill"
-            return root.barStyle
-        }
-    }
 }

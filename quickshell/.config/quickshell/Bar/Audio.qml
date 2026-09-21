@@ -22,7 +22,7 @@ Pill {
 
     Label { text: audio.icon; color: audio.muted ? Theme.c.accentDim : Theme.c.accentLight }
     Label {
-        visible: audio.pillMode
+        visible: audio.pillMode && !audio.vertical
         text: audio.muted ? "mute" : Math.round(audio.vol * 100) + "%"
         color: audio.muted ? Theme.c.accentDim : Theme.c.accentLight
     }

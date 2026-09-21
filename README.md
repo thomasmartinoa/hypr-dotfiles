@@ -193,6 +193,25 @@ A theme picks its skin with `bar = "pill"` in `colors.toml`; `SUPER+SHIFT+B` (or
 `qs ipc call bar style minimal|pill|auto`) overrides it for the session. `SUPER+R` restarts the shell.
 `HYPR_SHELL=waybar` in `autostart.lua` brings the old waybar back.
 
+**Move it, make it see-through, rearrange it** — the bar is configured on the bar itself, like
+Omarchy's: drag empty bar space (or press-and-hold) and let go near a screen edge to move the bar
+there (top, bottom, left, right; vertical bars go icon-only); double-click empty space on the minimal
+bar to toggle transparency. Both persist in `~/.config/hypr-theme/shell.json`, which also holds each
+skin's layout — reorder or drop widgets by editing the `left` / `center` / `right` lists, and hand
+edits apply live. Scripts: `qs ipc call bar position left`, `qs ipc call bar transparent`.
+
+Widgets: `clock` (calendar popup), `workspaces`, `tray`, `audio`, `network`, `bluetooth`, `battery`,
+`caffeine`, `bell`, `activewindow` (focused title), `media` (now playing: click play/pause, middle
+next, scroll prev/next), `sysmon` (cpu · mem, click for btop), `keyboard` (layout, click to switch),
+`spacer`. Anything else in a layout is looked up under `"modules"` as a **command module**:
+
+```json
+"modules": { "vpn": { "exec": "~/bin/vpn-status", "interval": 5, "onClick": "nm-connection-editor" } }
+```
+
+The command prints text or waybar-style JSON (`{"text":"󰌆","class":"active"}`), so old waybar
+scripts work unchanged.
+
 **Panels** drop down from the bar: click the speaker for output/input volume and device pick, the
 wifi icon for networks (toggle, connect with a password prompt, right-click to forget), bluetooth
 (minimal skin; the pill skin leaves that to the tray applet) for devices, the battery for power
