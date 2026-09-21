@@ -616,34 +616,6 @@ else
 fi
 
 # ============================================================================
-# Apps that re-exec themselves through pkexec (grub-customizer is the one here)
-# run their GUI as root. pkexec sanitises the environment, so GTK_THEME and
-# XDG_CONFIG_HOME do not survive, and root reads /root/.config — which has no
-# theme at all, hence the stock light Adwaita window. Give root its own copies.
-if [[ $SKIP_ROOT -eq 1 ]]; then
-  skip "Root theming"
-elif ! command -v pkexec >/dev/null 2>&1; then
-  skip "Root theming (no pkexec on this system)"
-else
-  step "Root theming"
-  info "For pkexec GUIs such as grub-customizer. sudo may prompt."
-  if sudo -v; then
-    sudo mkdir -p /root/.config/gtk-3.0 /root/.config/gtk-4.0 /root/.config/hypr-theme
-    # gtk.css imports ../hypr-theme/palette.css, so root needs that too.
-    sudo cp -- "$DOTFILES_DIR/theme/.config/hypr-theme/palette.css" /root/.config/hypr-theme/palette.css
-    sudo cp -- "$DOTFILES_DIR/gtk/.config/gtk-3.0/settings.ini"     /root/.config/gtk-3.0/settings.ini
-    sudo cp -- "$DOTFILES_DIR/gtk/.config/gtk-3.0/gtk.css"          /root/.config/gtk-3.0/gtk.css
-    sudo cp -- "$DOTFILES_DIR/gtk/.config/gtk-4.0/settings.ini"     /root/.config/gtk-4.0/settings.ini
-    sudo cp -- "$DOTFILES_DIR/gtk/.config/gtk-4.0/gtk.css"          /root/.config/gtk-4.0/gtk.css
-    sudo cp -- "$DOTFILES_DIR/gtk/.gtkrc-2.0"                       /root/.gtkrc-2.0
-    ok "Root GTK config installed."
-  else
-    warn "Skipped — no sudo. pkexec GUIs keep the default light theme."
-    warn "Re-run later, or pass --skip-root to silence this."
-  fi
-fi
-
-# ============================================================================
 # SDDM login screen. The theme lives in sddm/hyprmono and mirrors hyprlock.
 # Same approach as Omarchy: SDDM stays, gets a custom QML theme, and runs its
 # greeter under Hyprland (sddm/hyprland.lua) instead of X11. All of it is
@@ -668,6 +640,41 @@ else
     info "  sddm-greeter-qt6 --test-mode --theme /usr/share/sddm/themes/hyprmono"
   else
     warn "Skipped — no sudo. Login screen keeps the current SDDM theme."
+  fi
+fi
+
+# ============================================================================
+# Root + SDDM sync. Two places a theme has to reach that the user cannot
+# write: /root/.config (apps that re-exec through pkexec, e.g. grub-customizer,
+# run as root and read root's GTK config — without it they stay stock/dark)
+# and /usr/share/sddm/themes (the greeter runs as the sddm user).
+#
+# hypr-theme-root-sync copies only fixed files from ~/.config/hypr-theme/current
+# and is installed root-owned (a copy, never a symlink into $HOME), with a
+# sudoers rule for exactly that path so `hypr-theme set` can call it silently.
+if [[ $SKIP_ROOT -eq 1 ]]; then
+  skip "Root + SDDM sync"
+else
+  step "Root + SDDM sync"
+  info "Installs /usr/local/bin/hypr-theme-root-sync and its sudoers rule. sudo may prompt."
+  if sudo -v; then
+    sudo install -o root -g root -m 755 -- "$DOTFILES_DIR/theme/.config/hypr-theme/root-sync.sh" /usr/local/bin/hypr-theme-root-sync
+    _rule="$USER ALL=(root) NOPASSWD: /usr/local/bin/hypr-theme-root-sync"
+    printf '%s\n' "$_rule" | sudo tee /etc/sudoers.d/hypr-theme >/dev/null
+    sudo chmod 440 /etc/sudoers.d/hypr-theme
+    if sudo visudo -cf /etc/sudoers.d/hypr-theme >/dev/null 2>&1; then
+      ok "sudoers rule installed for $USER."
+    else
+      sudo rm -f /etc/sudoers.d/hypr-theme
+      warn "sudoers rule failed validation and was removed."
+    fi
+    if sudo /usr/local/bin/hypr-theme-root-sync >/dev/null 2>&1; then
+      ok "Theme synced to /root and SDDM."
+    else
+      warn "Sync failed — is a theme applied? (hypr-theme set hyprmono)"
+    fi
+  else
+    warn "Skipped — no sudo. pkexec GUIs keep the default theme; login screen keeps its colours."
   fi
 fi
 

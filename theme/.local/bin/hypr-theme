@@ -115,9 +115,12 @@ apply() {
     # nudge makes the switch instant.
     have qs && qs ipc call theme reload >/dev/null 2>&1 || true
 
-    # Login screen: needs root, so it is a separate, optional step.
-    if have hypr-theme-sddm-sync; then
-        hypr-theme-sddm-sync >/dev/null 2>&1 || true
+    # root's GTK config (pkexec apps like grub-customizer) and the SDDM theme
+    # need root. install.sh installs the helper + a sudoers rule for exactly
+    # it; `sudo -n` never prompts, so this is silent where that is missing.
+    if [[ -x /usr/local/bin/hypr-theme-root-sync ]]; then
+        sudo -n /usr/local/bin/hypr-theme-root-sync >/dev/null 2>&1 \
+            || printf 'hypr-theme: root/sddm sync skipped (run ./install.sh to set up the sudo rule)\n' >&2
     fi
 }
 
