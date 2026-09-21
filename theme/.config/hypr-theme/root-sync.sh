@@ -45,11 +45,32 @@ put "$home/.config/gtk-4.0/gtk.css" /root/.config/gtk-4.0/gtk.css
 sddm=/usr/share/sddm/themes/hyprmono
 if [[ -d "$sddm" ]]; then
     put "$cur/sddm-theme.conf" "$sddm/theme.conf"
-    # current/background is a symlink set by hypr-wall (always a PNG, the
-    # theme's theme.conf references background.png).
+    # current/background is a symlink set by hypr-wall. Copy it under its own
+    # extension and point theme.conf at that name.
     if [[ -e "$cur/background" ]]; then
-        put "$(readlink -f "$cur/background")" "$sddm/background.png"
+        real="$(readlink -f "$cur/background")"; ext="${real##*.}"; ext="${ext,,}"
+        case "$ext" in
+            png|jpg|jpeg|webp)
+                put "$real" "$sddm/background.$ext"
+                sed -i "s|^background=.*|background=background.$ext|" "$sddm/theme.conf"
+                ;;
+        esac
     fi
 fi
 
-echo "synced theme for root and sddm"
+# ---- Chromium-family browsers (chromium / chrome / brave) ----
+# They follow dark/light from the portal on their own; the managed policy
+# only sets the toolbar colour so the frame matches the rice (Omarchy does
+# the same). Written only where a browser is installed.
+bg="$(sed -n 's/^@define-color bg0 \(#[0-9a-fA-F]*\);.*/\1/p' "$cur/palette.css")"
+if [[ "$bg" =~ ^#[0-9a-fA-F]{6}$ ]]; then
+    for pair in chromium:/etc/chromium google-chrome-stable:/etc/opt/chrome brave:/etc/brave; do
+        bin="${pair%%:*}"; dir="${pair#*:}"
+        command -v "$bin" >/dev/null 2>&1 || continue
+        install -d -m 755 -o root -g root "$dir/policies/managed"
+        printf '{ "BrowserThemeColor": "%s" }\n' "$bg" > "$dir/policies/managed/hypr-theme-color.json"
+        chmod 644 "$dir/policies/managed/hypr-theme-color.json"
+    done
+fi
+
+echo "synced theme for root, sddm and browsers"

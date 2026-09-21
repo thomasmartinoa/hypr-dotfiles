@@ -23,11 +23,13 @@ Template syntax — one tag per colour, Omarchy-style:
     {{ mix bg0 fg 20% }}         a colour 20% of the way from bg0 to fg
     {{ dark "1" "0" }}           first value if mode = dark, else second
     {{ mode }} {{ name }} {{ bar }}   plain strings from the top level
+    {{ home }}                   $HOME, for absolute url() paths in CSS
     {{ gtk_theme }}              anything under [apps] / [terminal] / [colors]
 
 Filters chain: {{ mix bg0 fg 20% | hypr 0.5 }}.
 """
 
+import os
 import re
 import sys
 import tomllib
@@ -65,6 +67,7 @@ class Renderer:
         for k in ("name", "mode", "bar"):
             if k in theme:
                 self.vars[k] = str(theme[k])
+        self.vars["home"] = os.environ.get("HOME", "")
         for section in ("colors", "terminal", "apps"):
             for k, v in theme.get(section, {}).items():
                 self.vars[k] = str(v)
