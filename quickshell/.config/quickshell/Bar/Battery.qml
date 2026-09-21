@@ -10,9 +10,11 @@ Pill {
     readonly property int pct: dev ? Math.round(dev.percentage * 100) : 0
     readonly property bool charging: dev && dev.state === UPowerDeviceState.Charging
     readonly property bool full: dev && dev.state === UPowerDeviceState.FullyCharged
-    readonly property bool plugged: charging || full || (dev && dev.state === UPowerDeviceState.PendingCharge)
+    readonly property bool idleOnAc: dev && dev.state === UPowerDeviceState.PendingCharge
+    readonly property bool plugged: charging || full || idleOnAc
     readonly property var icons: ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂀", "󰂂", "󰁹"]
-    readonly property string icon: charging ? "󰂄" : plugged ? "󰚥" : icons[Math.min(10, Math.floor(pct / 10))]
+    // same rules as the waybar config: charging glyph, plug only when idle on AC, else the level
+    readonly property string icon: charging ? "󰂄" : idleOnAc ? "󰚥" : icons[Math.min(10, Math.floor(pct / 10))]
     readonly property color tone: plugged ? Theme.c.accentBright
                                  : pct <= 15 ? Theme.c.accentDim : pct <= 30 ? Theme.c.accentMid : Theme.c.accentLight
 

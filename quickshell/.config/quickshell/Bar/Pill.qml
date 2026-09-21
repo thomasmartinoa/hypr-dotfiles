@@ -10,7 +10,7 @@ Rectangle {
     property bool pillMode: Theme.barStyle === "pill"
     property bool hovered: mouse.containsMouse
     property bool interactive: true
-    property int padH: pillMode ? 12 : 7
+    property int padH: pillMode ? 10 : 7
     property int padV: pillMode ? 2 : 0
     property bool round: false        // the tray pill in the classic look
 
@@ -20,7 +20,7 @@ Rectangle {
     signal scrolled(int delta)
 
     implicitWidth: inner.implicitWidth + padH * 2
-    implicitHeight: pillMode ? 30 : 26
+    implicitHeight: pillMode ? 28 : 26
     radius: pillMode ? (round ? 12 : 6) : 4
     color: pillMode ? (hovered && interactive ? Theme.c.bg2 : Theme.c.bg0)
                     : (hovered && interactive ? Theme.c.bg2 : "transparent")
@@ -29,7 +29,7 @@ Rectangle {
     Behavior on color { ColorAnimation { duration: 150 } }
     Behavior on border.color { ColorAnimation { duration: 150 } }
 
-    property int gap: pillMode ? 8 : 6
+    property int gap: pillMode ? 17 : 6   // waybar formats had two spaces between icon and text
     Row {
         id: inner
         anchors.centerIn: parent

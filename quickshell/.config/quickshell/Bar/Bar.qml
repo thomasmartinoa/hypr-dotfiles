@@ -19,7 +19,7 @@ Variants {
 
         anchors { top: true; left: true; right: true }
         margins { top: pill ? 5 : 0; left: pill ? 6 : 0; right: pill ? 6 : 0 }
-        implicitHeight: pill ? 36 : 26
+        implicitHeight: pill ? 34 : 26
         color: pill ? "transparent" : Theme.c.bg0
         WlrLayershell.namespace: "hypr-bar"
 
@@ -29,7 +29,7 @@ Variants {
         Row {
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
-            anchors.leftMargin: win.pill ? 0 : 8
+            anchors.leftMargin: win.pill ? 6 : 8     // waybar: every module had margin-left 6px
             spacing: win.pill ? 6 : 2
             Clock { visible: win.pill }
             Workspaces {}

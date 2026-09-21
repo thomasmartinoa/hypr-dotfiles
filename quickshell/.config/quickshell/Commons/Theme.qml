@@ -35,7 +35,7 @@ Singleton {
 
     readonly property string font: "JetBrainsMono Nerd Font Propo"
     // GTK's "12px" in the old waybar css rendered at ~15 logical px; match it.
-    readonly property int fontSize: barStyle === "pill" ? 15 : 13
+    readonly property int fontSize: barStyle === "pill" ? 12 : 12
 
     function parse() {
         try {

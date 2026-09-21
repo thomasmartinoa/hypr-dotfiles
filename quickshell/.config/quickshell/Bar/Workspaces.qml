@@ -7,8 +7,8 @@ import qs.Commons
 // minimal: Omarchy — plain numbers 1..5 (always) + any others, active shown as 󱓻
 Pill {
     id: ws
-    padH: pillMode ? 3 : 4
-    property int gap: pillMode ? 4 : 2
+    padH: pillMode ? 6 : 4
+    gap: pillMode ? 7 : 2
     padV: 0
     interactive: false
     onScrolled: (d) => Hyprland.dispatch("workspace " + (d > 0 ? "e-1" : "e+1"))
@@ -42,8 +42,8 @@ Pill {
             readonly property bool exists: modelData.ws !== null
             readonly property bool hov: m.containsMouse
 
-            implicitWidth: ws.pillMode ? Math.max(active ? 34 : 26, t.implicitWidth + 16) : Math.max(18, t.implicitWidth + 12)
-            implicitHeight: ws.pillMode ? 24 : 22
+            implicitWidth: ws.pillMode ? Math.max(active ? 37 : 27, t.implicitWidth + 14) : Math.max(18, t.implicitWidth + 12)
+            implicitHeight: ws.pillMode ? 20 : 22
             radius: ws.pillMode ? 5 : 4
             color: ws.pillMode
                    ? (active ? Theme.c.fg : hov ? Theme.c.bg4 : urgent ? Theme.c.grey2 : Theme.c.bg2)

@@ -37,7 +37,8 @@ Pill {
     Label { text: net.icon; color: net.dev ? Theme.c.accentLight : Theme.c.accentDim }
     Label {
         visible: net.pillMode
-        text: net.text.length > 16 ? net.text.substring(0, 15) + "…" : net.text
+        // waybar's max-length 16 counted the icon and two spaces too
+        text: net.text.length > 12 ? net.text.substring(0, 11) + "…" : net.text
         color: net.dev ? Theme.c.accentLight : Theme.c.accentDim
     }
 }
