@@ -1,14 +1,16 @@
 import QtQuick
 import qs.Commons
 import qs.Services
+import qs.Panels
+import qs.Notifications
 
 Pill {
-    onClicked: Swaync.toggle()
-    onRightClicked: Swaync.toggleDnd()
+    id: bell
+    onClicked: Panels.toggle("notifications", bell)
+    onRightClicked: Notifs.toggleDnd()
     Label {
-        text: Swaync.dnd ? (Swaync.count > 0 ? "󰂠" : "󰪓")
-            : Swaync.inhibited ? (Swaync.count > 0 ? "󰂛" : "󰪑")
-            : (Swaync.count > 0 ? "󱅫" : "󰂜")
-        color: Theme.c.accentLight
+        text: Notifs.dnd ? (Notifs.count > 0 ? "󰂠" : "󰪓") : (Notifs.count > 0 ? "󱅫" : "󰂜")
+        color: Notifs.dnd ? Theme.c.accentDim : Theme.c.accentLight
     }
+    NotificationCenter { anchorItem: bell }
 }

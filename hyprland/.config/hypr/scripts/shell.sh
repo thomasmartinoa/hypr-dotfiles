@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shell.sh — start or restart the desktop shell (bar + notifications).
+# shell.sh — start or restart the desktop shell (bar, notifications, wallpaper).
 #
 #   shell.sh start      at session start (autostart.lua)
 #   shell.sh restart    SUPER+R, and after a theme switch
@@ -16,9 +16,9 @@ stop() {
 }
 
 start() {
-    setsid -f swaync >/dev/null 2>&1
     case "$which" in
         waybar)
+            setsid -f swaync >/dev/null 2>&1      # the shell has its own notifications
             setsid -f waybar >/dev/null 2>&1
             # the classic setup needs a wallpaper daemon; the shell draws its own
             pgrep -x awww-daemon >/dev/null 2>&1 || setsid -f awww-daemon >/dev/null 2>&1

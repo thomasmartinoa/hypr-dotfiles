@@ -173,8 +173,7 @@ apply() {
     # The Quickshell bar recolours itself (it watches colors.json); only the
     # GTK3 pieces need a restart. With the classic waybar bar, both.
     if pgrep -x qs >/dev/null 2>&1; then
-        pkill -x swaync 2>/dev/null || true
-        setsid -f swaync >/dev/null 2>&1
+        : # the shell owns bar, notifications and wallpaper and recolours itself
     elif [[ -x "$HOME/.config/hypr/scripts/shell.sh" ]]; then
         "$HOME/.config/hypr/scripts/shell.sh" restart >/dev/null 2>&1 || true
     fi
