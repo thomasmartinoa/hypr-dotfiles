@@ -30,9 +30,10 @@ Singleton {
                     right:  ["sysmon", "tray", "bluetooth", "audio", "network", "battery", "caffeine", "bell"]
                 }
             },
-            // command modules referenced by id from a layout:
-            //   "modules": { "vpn": { "exec": "~/bin/vpn-status", "interval": 5, "onClick": "nm-connection-editor" } }
-            // the command prints text or waybar JSON: {"text":"󰌆","tooltip":"Work VPN","class":"active"}
+            // user modules referenced by id from a layout:
+            //   "vpn":   { "exec": "~/bin/vpn-status", "interval": 5, "onClick": "nm-connection-editor" }
+            //            (prints text or waybar JSON: {"text":"󰌆","class":"active"})
+            //   "agent": { "qml": "~/.config/hypr-theme/plugins/agent.qml" }   (any QML Item; import qs.Bar for Pill)
             modules: {}
         }
     })

@@ -1,8 +1,10 @@
 import QtQuick
+import Quickshell
 import qs.Commons
 
 // Maps a layout entry (an id from shell.json) to a widget. Unknown ids are
-// looked up in shell.json "modules" as command modules.
+// looked up in shell.json "modules": a "qml" file (plugin widget) or an
+// "exec" command module.
 Loader {
     id: loader
     property string widgetId: ""
@@ -22,8 +24,18 @@ Loader {
         case "sysmon":       return sysmon
         case "keyboard":     return keyboard
         case "spacer":       return spacer
-        default:             return Config.moduleDef(widgetId) ? command : null
+        default: {
+            const d = Config.moduleDef(widgetId)
+            if (!d) return null
+            return d.qml ? null : command
         }
+        }
+    }
+    // a "qml" module points at a file with any Item as its root (a Pill works well)
+    source: {
+        const d = Config.moduleDef(widgetId)
+        if (!d || !d.qml) return ""
+        return "file://" + String(d.qml).replace(/^~/, Quickshell.env("HOME"))
     }
     Component { id: clock;        Clock {} }
     Component { id: workspaces;   Workspaces {} }

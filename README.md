@@ -210,7 +210,12 @@ next, scroll prev/next), `sysmon` (cpu · mem, click for btop), `keyboard` (layo
 ```
 
 The command prints text or waybar-style JSON (`{"text":"󰌆","class":"active"}`), so old waybar
-scripts work unchanged.
+scripts work unchanged. A module can be a **QML plugin** instead: `{ "qml": "~/.config/hypr-theme/plugins/agent.qml" }`
+— any Item, with `import qs.Bar` for the `Pill` container and `import qs.Commons` for `Theme`.
+
+**Launcher** (`SUPER+D`): the rofi drun window rebuilt in the shell — same chip, search and
+two-column icon list — with fuzzy matching and a launch history so frequent apps rise. rofi stays
+for the clipboard menu and as the fallback.
 
 **Panels** drop down from the bar: click the speaker for output/input volume and device pick, the
 wifi icon for networks (toggle, connect with a password prompt, right-click to forget), bluetooth
@@ -298,7 +303,7 @@ If the login screen ever comes up black, switch to a TTY (`Ctrl+Alt+F3`) and
 | Keys | Action |
 |---|---|
 | `SUPER` + `Return` / `E` / `B` | Terminal · file manager · browser |
-| `SUPER` + `D` / `V` | App launcher · clipboard history |
+| `SUPER` + `D` / `V` | App launcher (shell) · clipboard history (rofi) |
 | `SUPER` + `L` / `M` | Lock screen · power menu |
 | `SUPER` + `R` | Restart the shell (bar + notifications) |
 | `SUPER` + `SHIFT` + `B` | Bar skin: pill ↔ minimal |
