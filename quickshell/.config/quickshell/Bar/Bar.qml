@@ -33,6 +33,7 @@ Scope {
             else if (name === "auto" || name === "") Theme.barOverride = ""
             return Theme.barStyle
         }
+        function current(): string { return Theme.barStyle }
         function toggle(): string { Theme.barOverride = Theme.barStyle === "pill" ? "minimal" : "pill"; return Theme.barStyle }
         function position(edge: string): string { Config.setPosition(edge); return Config.position }
         function transparent(): bool { Config.toggleTransparent(); return Config.transparent }

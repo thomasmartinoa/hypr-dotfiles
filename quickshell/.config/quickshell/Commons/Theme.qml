@@ -21,7 +21,10 @@ Singleton {
     // A theme sets its preference in colors.toml; `qs ipc call bar style X`
     // overrides it for this session.
     property string themeBarStyle: "pill"
-    property string barOverride: ""
+    // the skin you picked (SUPER+SHIFT+B, the menu) is saved in shell.json as
+    // bar.skin so it survives restarts; "" = follow the theme's preference
+    property string barOverride: Config.skin
+    onBarOverrideChanged: if (barOverride !== Config.skin) Config.set("bar.skin", barOverride)
     readonly property string barStyle: barOverride !== "" ? barOverride : themeBarStyle
 
     // Defaults = HyprMono dark, so the shell renders before the file loads.

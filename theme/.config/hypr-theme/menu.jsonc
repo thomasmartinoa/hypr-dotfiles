@@ -21,7 +21,6 @@
   "setup":   {"icon":"\udb81\udc93","label":"Setup","description":"settings config"},
   "agents":  {"icon":"󰚩","label":"Agents","description":"ai claude codex"},
   "learn":   {"icon":"󰧑","label":"Learn","description":"help docs keys"},
-  "update":  {"icon":"\udb81\udc50","label":"Update","description":"restart reload refresh"},
   "remind":  {"icon":"󰢌","label":"Reminder"},
   "system":  {"icon":"\udb81\udc25","label":"System","description":"power"},
 
@@ -60,6 +59,8 @@
   "setup.bluetooth":   {"icon":"󰂯","label":"Bluetooth","action":"qs ipc call panels open bluetooth"},
   "setup.audio":       {"icon":"󰕾","label":"Audio","description":"volume sound output","action":"qs ipc call panels open audio"},
   "setup.power":       {"icon":"󰂄","label":"Power profile","action":"qs ipc call panels open power"},
+  "setup.restart":     {"icon":"\udb81\udc53","label":"Restart shell","description":"bar reload refresh","action":"~/.config/hypr/scripts/shell.sh restart"},
+  "setup.doctor":      {"icon":"\udb81\udee0","label":"Diagnostics","description":"doctor logs health","action":"hypr-float 'hypr-doctor --print | less -R'"},
   "setup.defaults":    {"icon":"\udb80\udd2c","label":"Defaults"},
   "setup.defaults.agent":    {"icon":"󰚩","label":"Coding agent","value":"agent","provider":"agents.default"},
   "setup.defaults.terminal": {"icon":"\udb80\udd8d","label":"Terminal","value":"terminal"},
@@ -86,13 +87,6 @@
   "learn.quickshell": {"icon":"\udb80\ude19","label":"Quickshell docs","action":"xdg-open https://quickshell.org/docs/"},
 
 
-  // Update / restart
-  "update.system":  {"icon":"\udb81\udc50","label":"System update","action":"hypr-float hypr-pkg -Syu"},
-  "update.shell":   {"icon":"󰑓","label":"Restart shell","action":"~/.config/hypr/scripts/shell.sh restart"},
-  "update.hypr":    {"icon":"\udb81\udc53","label":"Reload Hyprland","action":"hyprctl reload"},
-  "update.theme":   {"icon":"󰸌","label":"Re-apply theme","action":"hypr-theme reload"},
-  "update.stow":    {"icon":"\udb80\udf39","label":"Re-link dotfiles (stow)","action":"hypr-float 'cd ~/hypr-dotfiles && stow --restow -t ~ alacritty gtk hyprland kittyterminal nvim quickshell rofi starship swaync theme waybar wlogout zsh'"},
-  "update.doctor":  {"icon":"󰋠","label":"Diagnostics (hypr-doctor)","action":"hypr-float 'hypr-doctor --print | less -R'"},
 
   // Reminder
   "remind.set":   {"icon":"󰢌","label":"Set a reminder","description":"timer notify","input":"minutes message  (e.g. 15 pick up jack)","action":"hypr-remind {}"},

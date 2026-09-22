@@ -232,9 +232,8 @@ function that returns `{name, plan, limits}`.
 wallpaper, light/dark, bar skin/position/transparency/widgets, look & feel) · Toggle (caffeine, do
 not disturb, night light, bar, battery %, gaps, window transparency) · Setup (monitors, keybindings,
 input, autostart, window rules and shell.json open in the editor and are validated on save; Wi-Fi,
-Bluetooth, audio, power; default agent/terminal/browser) · Agents · Learn (keybindings read live from
-`binds.lua`, README, wikis, about) · Update (system, shell, Hyprland, theme, stow, doctor) ·
-Reminder (`15 pick up jack`) · System. Type to search every entry from anywhere (the section shows
+Bluetooth, audio, power; restart shell, diagnostics; default agent/terminal/browser) · Agents · Learn (keybindings read live from
+`binds.lua`, README, wikis, about) · Reminder (`15 pick up jack`) · System. Type to search every entry from anywhere (the section shows
 on the right), `↑↓`, `Enter`, `Backspace`/`←` up, `→` in, `Esc`. ✓ and values are live.
 `SUPER+CTRL+O` opens Toggle; `qs ipc call menu toggle`, `menu open|run <id>` from scripts. It is
 data: [`menu.jsonc`](theme/.config/hypr-theme/menu.jsonc) (documented at the top); your own
@@ -340,7 +339,7 @@ If the login screen ever comes up black, switch to a TTY (`Ctrl+Alt+F3`) and
 |---|---|
 | `SUPER` + `Return` / `E` / `B` | Terminal · file manager · browser |
 | `SUPER` + `D` / `V` | App launcher · clipboard history |
-| `SUPER` + `SPACE` | The menu (style, toggles, setup, agents, learn, update, reminders, system) |
+| `SUPER` + `SPACE` | The menu (style, toggles, setup, agents, learn, reminders, system) |
 | `SUPER` + `CTRL` + `O` | The menu, opened on Toggle |
 | `SUPER` + `L` / `M` | Lock screen · power menu |
 | `SUPER` + `R` | Restart the shell (bar + notifications) |

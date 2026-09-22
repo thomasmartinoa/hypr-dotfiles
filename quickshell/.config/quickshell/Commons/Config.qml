@@ -16,6 +16,7 @@ Singleton {
         bar: {
             position: "top",                 // top | bottom | left | right
             transparent: false,              // minimal skin only
+            skin: "",                        // pill | minimal | "" = the theme's choice
             hidden: false,                   // Menu › Toggle › Bar
             battery: true,                   // show the percentage next to the battery glyph
             layout: {
@@ -48,6 +49,7 @@ Singleton {
     readonly property bool vertical: position === "left" || position === "right"
     readonly property bool transparent: !!(bar && bar.transparent)
     readonly property bool hidden: !!(bar && bar.hidden)
+    readonly property string skin: (bar && (bar.skin === "pill" || bar.skin === "minimal")) ? bar.skin : ""
     readonly property bool batteryPercent: !(bar && bar.battery === false)
 
     function layoutFor(style, section) {
