@@ -35,7 +35,6 @@ hl.bind(mainMod .. " + SHIFT + B", hl.dsp.exec_cmd("qs ipc call bar toggle"))   
 hl.bind(mainMod .. " + CTRL + I", hl.dsp.exec_cmd("~/.config/hypr/scripts/caffeine.sh toggle")) -- stay awake toggle
 hl.bind(mainMod .. " + CTRL + SHIFT + space", hl.dsp.exec_cmd("hypr-theme-menu theme"))      -- theme picker
 hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("hypr-theme-menu wallpaper"))               -- wallpaper picker
-hl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd("hypr-theme toggle"))                -- dark <-> light
 hl.bind(mainMod .. " + CTRL + space", hl.dsp.exec_cmd("hypr-wall next"))                 -- next wallpaper
 hl.bind(mainMod .. " + SHIFT + CTRL + A", hl.dsp.exec_cmd("hypr-agent launch"))          -- default coding agent
 hl.bind(mainMod .. " + space", hl.dsp.exec_cmd("qs ipc call menu toggle"))              -- the menu

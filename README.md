@@ -228,7 +228,7 @@ provider in [`agents/usage.py`](theme/.config/hypr-theme/agents/usage.py); anoth
 function that returns `{name, plan, limits}`.
 
 **The menu** (`SUPER+SPACE`): one search line and a list, nothing else. Apps · Style (theme,
-wallpaper, light/dark, bar skin/position/transparency/widgets, look & feel) · Toggle (caffeine, do
+wallpaper, bar skin/position/transparency/widgets, look & feel) · Toggle (caffeine, do
 not disturb, night light, bar, battery %, gaps, window transparency) · Setup (monitors, keybindings,
 input, autostart, window rules and shell.json open in the editor and are validated on save; Wi-Fi,
 Bluetooth, audio, power; restart shell, diagnostics; default agent/terminal/browser) · Agents · Learn (keybindings read live from
@@ -280,7 +280,6 @@ gitignored.
 ```sh
 hypr-theme list            # available themes, * = current
 hypr-theme set hyprmono    # apply one
-hypr-theme toggle          # dark <-> light          (SUPER+SHIFT+T)
 hypr-theme-menu            # theme picker            (SUPER+CTRL+SHIFT+SPACE)
 hypr-theme-menu wallpaper  # wallpaper picker        (SUPER+SHIFT+W)
 ```
@@ -351,7 +350,6 @@ If the login screen ever comes up black, switch to a TTY (`Ctrl+Alt+F3`) and
 | `SUPER` + `SHIFT` + `B` | Bar skin: pill ↔ minimal |
 | `SUPER` + `CTRL` + `I` | Caffeine: pause idle lock & suspend (also the ☕ in the bar) |
 | `SUPER` + `CTRL` + `SHIFT` + `SPACE` / `SHIFT` + `W` | Theme picker · wallpaper picker |
-| `SUPER` + `SHIFT` + `T` | Dark ↔ light |
 | `SUPER` + `CTRL` + `SPACE` | Next wallpaper |
 | `SUPER` + `SHIFT` + `CTRL` + `A` | Launch the default coding agent (`hypr-agent default <name>`) |
 | `SUPER` + `Q` / `T` / `F` | Close · float · fullscreen |

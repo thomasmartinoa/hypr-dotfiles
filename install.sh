@@ -728,8 +728,8 @@ head2 "Worth doing first"
 item "${C_TXT}monitors.lua${C_RST} is hardcoded to one eDP-1 at 2560x1440@165Hz, scale 1.6."
 item "Run ${C_TXT}hyprctl monitors${C_RST} and edit it to match your display."
 item "${C_TXT}hypr-theme set <name>${C_RST} re-renders and re-applies everything;"
-item "SUPER+SHIFT+T toggles dark/light. GTK3 and Qt apps need a restart to"
-item "follow a switch — the README has the live/restart table."
+item "the picker (SUPER+CTRL+SHIFT+SPACE) switches themes. GTK3 and Qt apps need"
+item "a restart to follow a switch — the README has the live/restart table."
 
 printf '\n'; rule
 

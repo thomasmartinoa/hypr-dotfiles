@@ -27,7 +27,6 @@
   // Style
   "style.theme":      {"icon":"󰸌","label":"Theme","value":"theme","action":"hypr-theme-menu theme"},
   "style.wallpaper":  {"icon":"\udb80\ude1f","label":"Wallpaper","value":"wallpaper","action":"hypr-theme-menu wallpaper"},
-  "style.mode":       {"icon":"󰔎","label":"Light mode","description":"dark light toggle","checked":"light","action":"hypr-theme toggle","keep":true},
   "style.bar":        {"icon":"󰍜","label":"Bar"},
   "style.bar.pill":     {"icon":"󰊠","label":"Pill skin","description":"classic waybar look","checked":"bar.pill","action":"qs ipc call bar style pill","keep":true},
   "style.bar.minimal":  {"icon":"󰇘","label":"Minimal skin","description":"omarchy flat","checked":"bar.minimal","action":"qs ipc call bar style minimal","keep":true},
