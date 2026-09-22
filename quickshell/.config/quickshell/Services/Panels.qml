@@ -17,7 +17,10 @@ Singleton {
     }
     function close() { open = ""; item = null }
 
-    // name -> anchor item, so panels can be opened from IPC / keybinds too
+    // name -> anchor item, so panels can be opened from IPC / keybinds too.
+    // Always the newest instance: changing the bar layout rebuilds its
+    // widgets, and a stale entry here points at a destroyed item, which
+    // leaves `qs ipc call panels open <name>` opening nothing.
     property var registry: ({})
     function register(name, anchor) { registry[name] = anchor }
 
@@ -28,6 +31,7 @@ Singleton {
         function open(name: string): string {
             const a = root.registry[name]
             if (!a) return "unknown panel: " + name
+            try { void a.width } catch (e) { return "panel not on the bar: " + name }
             root.toggle(name, a)
             return root.open
         }

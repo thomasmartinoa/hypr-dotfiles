@@ -3,33 +3,35 @@ import Quickshell
 import Quickshell.Io
 import qs.Commons
 
-// CPU and memory use; click opens btop.
+// CPU, memory and GPU use; click opens btop. The numbers come from
+// Services/sysmon.sh (one process per poll); the GPU half only appears when
+// a card reports its load — a sleeping laptop dGPU is left alone.
 Pill {
     id: sm
     property int cpu: 0
     property int mem: 0
+    property int gpu: -1
     property var last: null
     onClicked: Quickshell.execDetached(["kitty", "--class", "btop", "-e", "btop"])
     Process {
         id: rd
-        command: ["bash", "-c", "head -1 /proc/stat; grep -E '^(MemTotal|MemAvailable)' /proc/meminfo"]
+        command: ["bash", Quickshell.shellPath("Services/sysmon.sh")]
         stdout: StdioCollector {
             onStreamFinished: {
-                const lines = text.trim().split("\n")
-                const c = lines[0].split(/\s+/).slice(1).map(Number)
-                const idle = c[3] + c[4], total = c.reduce((a, b) => a + b, 0)
-                if (sm.last) {
-                    const dt = total - sm.last.total, di = idle - sm.last.idle
-                    if (dt > 0) sm.cpu = Math.round(100 * (1 - di / dt))
+                let sawGpu = false
+                for (const line of text.trim().split("\n")) {
+                    const f = line.split(" ")
+                    if (f[0] === "cpu") {
+                        const idle = +f[1], total = +f[2]
+                        if (sm.last) {
+                            const dt = total - sm.last.total, di = idle - sm.last.idle
+                            if (dt > 0) sm.cpu = Math.round(100 * (1 - di / dt))
+                        }
+                        sm.last = { total: total, idle: idle }
+                    } else if (f[0] === "mem") sm.mem = +f[1]
+                    else if (f[0] === "gpu") { sm.gpu = +f[1]; sawGpu = true }
                 }
-                sm.last = { total: total, idle: idle }
-                let tot = 0, avail = 0
-                for (const l of lines.slice(1)) {
-                    const m = l.match(/^(\w+):\s+(\d+)/)
-                    if (!m) continue
-                    if (m[1] === "MemTotal") tot = +m[2]; else if (m[1] === "MemAvailable") avail = +m[2]
-                }
-                if (tot > 0) sm.mem = Math.round(100 * (1 - avail / tot))
+                if (!sawGpu) sm.gpu = -1
             }
         }
     }
@@ -39,4 +41,6 @@ Pill {
     Label { visible: !sm.vertical; text: sm.cpu + "%"; color: Theme.c.accentLight }
     Label { visible: !sm.vertical; text: "󰘚"; color: sm.mem > 85 ? sm.hot : Theme.c.accentLight }
     Label { visible: !sm.vertical; text: sm.mem + "%"; color: Theme.c.accentLight }
+    Label { visible: !sm.vertical && sm.gpu >= 0; text: "󰢮"; color: sm.gpu > 85 ? sm.hot : Theme.c.accentLight }
+    Label { visible: !sm.vertical && sm.gpu >= 0; text: sm.gpu + "%"; color: Theme.c.accentLight }
 }

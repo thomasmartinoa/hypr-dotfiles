@@ -30,7 +30,7 @@ Singleton {
                 minimal: {
                     left:   ["workspaces", "activewindow"],
                     center: ["media", "clock"],
-                    right:  ["sysmon", "agents", "tray", "bluetooth", "audio", "network", "battery", "caffeine", "bell"]
+                    right:  ["tray", "sysmon", "agents", "bluetooth", "audio", "network", "battery", "caffeine", "bell"]
                 }
             },
             // user modules referenced by id from a layout:

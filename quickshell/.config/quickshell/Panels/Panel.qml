@@ -20,13 +20,23 @@ PopupWindow {
     implicitWidth: panelWidth
     implicitHeight: card.implicitHeight
 
+    // open away from the bar's edge, so a bottom bar drops its panels upward
+    // and a side bar opens them inward instead of off the screen
+    readonly property int gap: Theme.barStyle === "pill" ? 10 : 12
+    readonly property int awayFromBar: Config.position === "bottom" ? Edges.Top
+                                     : Config.position === "left"   ? Edges.Right
+                                     : Config.position === "right"  ? Edges.Left
+                                                                    : Edges.Bottom
     anchor.item: anchorItem
-    anchor.edges: Edges.Bottom
-    anchor.gravity: Edges.Bottom
-    anchor.margins.top: Theme.barStyle === "pill" ? 4 : 6
-    anchor.adjustment: PopupAdjustment.SlideX
+    anchor.edges: awayFromBar
+    anchor.gravity: awayFromBar
+    anchor.margins.top:    Config.position === "top"    ? gap : 0
+    anchor.margins.bottom: Config.position === "bottom" ? gap : 0
+    anchor.margins.left:   Config.position === "left"   ? gap : 0
+    anchor.margins.right:  Config.position === "right"  ? gap : 0
+    anchor.adjustment: Config.vertical ? PopupAdjustment.SlideY : PopupAdjustment.SlideX
 
-    Component.onCompleted: if (!Panels.registry[name]) Panels.register(name, anchorItem)
+    Component.onCompleted: Panels.register(name, anchorItem)
 
     HyprlandFocusGrab {
         windows: [popup, anchorItem.QsWindow.window]

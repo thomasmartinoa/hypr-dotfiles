@@ -124,6 +124,12 @@ caffeine dnd laptop widget.<id>`) or from `hypr-menu-data` (`state()` in
 `theme/.local/bin/hypr-menu-data`; add a key there for a new toggle). Dynamic
 row lists are `provider`s in the same script. `qs ipc call menu run <id>`
 runs an entry from a keybind; `menu open <id>` opens a section. Rendering is
-`Services/Menu.qml` + `Menu/MenuWindow.qml`. Long-running or interactive
+`Services/Menu.qml` + `Menu/MenuWindow.qml`.
+
+A panel registers its anchor in `Panels.registry` when it is created, and the
+bar rebuilds its widgets whenever the layout changes — so the registry always
+takes the newest instance, or `qs ipc call panels open <name>` opens a panel
+attached to a destroyed item and nothing appears. Panels open away from the
+bar's edge (`Panel.awayFromBar`), so a bottom or side bar still shows them. Long-running or interactive
 actions go through `hypr-float <cmd>` (floating terminal); config edits through
 `hypr-edit <file>` (validates Hyprland Lua on close).

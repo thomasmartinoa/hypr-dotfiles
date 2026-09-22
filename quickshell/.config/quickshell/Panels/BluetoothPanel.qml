@@ -40,7 +40,7 @@ Panel {
         title: "Bluetooth"
         showToggle: true
         toggle.on: p.on
-        onToggled: (on) => { if (p.adapter) p.adapter.enabled = on }
+        onToggled: (on) => Bt.power(on)
     }
 
     Column {
