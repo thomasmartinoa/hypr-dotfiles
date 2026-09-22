@@ -157,7 +157,7 @@ Singleton {
     }
     onRowsChanged: if (selected >= rows.length) selected = Math.max(0, rows.length - 1)
     readonly property string crumb: inputRow ? inputRow.label : path === "" ? "Menu" : crumbFor(path + ".x")
-    readonly property string placeholder: inputRow ? inputRow.input : path === "" ? "Search everything…" : "Search…"
+    readonly property string placeholder: inputRow ? inputRow.input : "Search"
 
     // ---- actions ---------------------------------------------------------
     function run(cmd) { Quickshell.execDetached(["sh", "-c", cmd]) }

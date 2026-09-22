@@ -21,10 +21,8 @@
   "setup":   {"icon":"\udb81\udc93","label":"Setup","description":"settings config"},
   "agents":  {"icon":"󰚩","label":"Agents","description":"ai claude codex"},
   "learn":   {"icon":"󰧑","label":"Learn","description":"help docs keys"},
-  "install": {"icon":"󰉉","label":"Install","description":"packages software"},
   "update":  {"icon":"\udb81\udc50","label":"Update","description":"restart reload refresh"},
   "remind":  {"icon":"󰢌","label":"Reminder"},
-  "about":   {"icon":"\udb80\udefc","label":"About","provider":"about"},
   "system":  {"icon":"\udb81\udc25","label":"System","description":"power"},
 
   // Style
@@ -84,12 +82,9 @@
   "learn.readme":   {"icon":"\udb80\ude19","label":"Rice README","action":"hypr-float nvim -R ~/hypr-dotfiles/README.md"},
   "learn.hyprland": {"icon":"\udb81\uddb0","label":"Hyprland wiki","action":"xdg-open https://wiki.hypr.land/"},
   "learn.arch":     {"icon":"󰣇","label":"Arch wiki","action":"xdg-open https://wiki.archlinux.org/"},
+  "learn.about":     {"icon":"\udb80\udefc","label":"About this rice","description":"version uptime kernel","provider":"about"},
   "learn.quickshell": {"icon":"\udb80\ude19","label":"Quickshell docs","action":"xdg-open https://quickshell.org/docs/"},
 
-  // Install / remove: the rice's package list, ✓ = installed (select to remove)
-  "install.rice":   {"icon":"󰏗","label":"Rice packages","description":"install remove","provider":"packages"},
-  "install.any":    {"icon":"󰐕","label":"Any package…","description":"aur pacman yay","input":"package name","action":"hypr-float hypr-pkg {}"},
-  "install.update": {"icon":"\udb81\udc50","label":"Update everything","action":"hypr-float hypr-pkg -Syu"},
 
   // Update / restart
   "update.system":  {"icon":"\udb81\udc50","label":"System update","action":"hypr-float hypr-pkg -Syu"},

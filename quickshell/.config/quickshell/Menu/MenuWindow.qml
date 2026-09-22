@@ -5,9 +5,11 @@ import qs.Commons
 import qs.Bar
 import qs.Services
 
-// The menu overlay: the launcher's card, a breadcrumb chip, a search box
-// that searches every leaf from anywhere, and ten rows. ↑↓ / Tab move,
-// Enter opens or runs, Backspace on an empty box goes up, 1–9 jump, Esc.
+// The menu overlay, kept minimal: one search line (a dim breadcrumb in
+// front of it when inside a section), compact single-line rows, nothing
+// else. ↑↓ / Tab move, Enter opens or runs, → opens, Backspace/← on an
+// empty box goes up, Esc closes. Searching lists every leaf; the section a
+// result belongs to is shown dimly on the right.
 Variants {
     model: Quickshell.screens
     PanelWindow {
@@ -22,10 +24,10 @@ Variants {
         WlrLayershell.namespace: "hypr-menu"
         color: "transparent"
 
-        readonly property int rowsMax: 11
+        readonly property int rowH: 34
+        readonly property int rowsMax: 10
         readonly property var rows: Menu.rows
-        // the card fits its rows (at least three), like a menu should
-        readonly property int rowsShown: Math.max(3, Math.min(rowsMax, rows.length))
+        readonly property int rowsShown: Math.max(2, Math.min(rowsMax, rows.length))
         onVisibleChanged: if (visible) { input.text = ""; input.forceActiveFocus() }
         Connections { target: Menu
             function onPathChanged() { input.text = "" }
@@ -37,33 +39,38 @@ Variants {
         Rectangle {
             id: card
             anchors.centerIn: parent
-            width: 620
-            height: 14 + 30 + 6 + win.rowsShown * 38 + (win.rowsShown - 1) * 2 + 14
+            anchors.verticalCenterOffset: -40
+            width: 520
+            height: 10 + 36 + 6 + win.rowsShown * win.rowH + 10
             Behavior on height { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
             radius: Theme.radius
-            color: Theme.alpha(Theme.c.bg0, 0.74)
-            border.width: 1; border.color: Theme.alpha(Theme.c.accentLight, 0.17)
+            color: Theme.alpha(Theme.c.bg0, 0.8)
+            border.width: 1; border.color: Theme.c.border
 
+            // search line: [breadcrumb ›] input
             Item {
                 id: bar
-                x: 14; y: 14; width: parent.width - 28; height: 30
-                Rectangle {
-                    id: chip
+                x: 10; y: 10; width: parent.width - 20; height: 36
+                Label {
+                    id: crumb
+                    anchors.left: parent.left; anchors.leftMargin: 8
                     anchors.verticalCenter: parent.verticalCenter
-                    width: crumb.implicitWidth + 20; height: 26; radius: Theme.radiusSm
-                    color: Theme.c.accentLight
-                    Label { id: crumb; anchors.centerIn: parent; text: Menu.crumb; font.pixelSize: 12; font.weight: Font.DemiBold; color: Theme.c.bg0 }
+                    visible: Menu.crumb !== "Menu"
+                    text: Menu.crumb + "  ›"
+                    font.pixelSize: 12; color: Theme.c.accentMid
                     MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: Menu.up() }
                 }
                 TextInput {
                     id: input
-                    anchors.left: chip.right; anchors.leftMargin: 12
-                    anchors.right: parent.right; anchors.rightMargin: 6
+                    anchors.left: crumb.visible ? crumb.right : parent.left
+                    anchors.leftMargin: 8
+                    anchors.right: parent.right; anchors.rightMargin: 8
                     anchors.verticalCenter: parent.verticalCenter
                     font.family: Theme.font; font.pixelSize: 13; color: Theme.c.accentBright
                     focus: true
-                    onTextChanged: { if (!Menu.inputRow) { Menu.query = text; card.selectedReset() } }
-                    Label { visible: !input.text; anchors.verticalCenter: parent.verticalCenter; text: Menu.placeholder; font.pixelSize: 13; color: Theme.c.accentMid }
+                    onTextChanged: { if (!Menu.inputRow) { Menu.query = text; Menu.selected = 0 } }
+                    Label { visible: !input.text; anchors.verticalCenter: parent.verticalCenter
+                            text: Menu.inputRow ? Menu.placeholder : "Search"; font.pixelSize: 13; color: Theme.c.accentDim }
                     Keys.onPressed: (e) => {
                         const n = win.rows.length
                         if (e.key === Qt.Key_Escape) { if (Menu.inputRow || input.text !== "") Menu.up(); else Menu.close(); e.accepted = true; return }
@@ -71,28 +78,22 @@ Variants {
                             if (Menu.inputRow) Menu.submitInput(input.text); else if (n) Menu.activate(win.rows[Menu.selected])
                             e.accepted = true; return
                         }
-                        if (e.key === Qt.Key_Backspace && input.text === "") { Menu.up(); e.accepted = true; return }
+                        if ((e.key === Qt.Key_Backspace || e.key === Qt.Key_Left) && input.text === "") { Menu.up(); e.accepted = true; return }
                         if (e.key === Qt.Key_Right && !Menu.inputRow && n && win.rows[Menu.selected].sub) { Menu.activate(win.rows[Menu.selected]); e.accepted = true; return }
-                        if (e.key === Qt.Key_Left && !Menu.inputRow && input.text === "") { Menu.up(); e.accepted = true; return }
                         if (n === 0 || Menu.inputRow) return
                         if (e.key === Qt.Key_Down || e.key === Qt.Key_Tab) { Menu.selected = (Menu.selected + 1) % n; e.accepted = true }
                         else if (e.key === Qt.Key_Up || e.key === Qt.Key_Backtab) { Menu.selected = (Menu.selected + n - 1) % n; e.accepted = true }
-                        else if (input.text === "" && e.key >= Qt.Key_1 && e.key <= Qt.Key_9) {
-                            const i = e.key - Qt.Key_1
-                            if (i < n) { Menu.selected = i; Menu.activate(win.rows[i]) }
-                            e.accepted = true
-                        }
                     }
                 }
             }
-            function selectedReset() { Menu.selected = 0 }
+            Rectangle { x: 10; y: bar.y + bar.height; width: parent.width - 20; height: 1; color: Theme.c.bg3 }
 
             ListView {
                 id: list
-                x: 14; y: bar.y + bar.height + 6
-                width: parent.width - 28
-                height: win.rowsShown * 38 + (win.rowsShown - 1) * 2
-                clip: true; spacing: 2
+                x: 10; y: bar.y + bar.height + 6
+                width: parent.width - 20
+                height: win.rowsShown * win.rowH
+                clip: true; spacing: 0
                 model: win.rows
                 currentIndex: Menu.selected
                 onCurrentIndexChanged: positionViewAtIndex(currentIndex, ListView.Contain)
@@ -101,50 +102,40 @@ Variants {
                     required property var modelData
                     required property int index
                     readonly property bool sel: index === Menu.selected
-                    width: list.width; height: 38
-                    radius: Theme.radius
+                    width: list.width; height: win.rowH
+                    radius: Theme.radiusSm
                     color: sel ? Theme.c.bg2 : "transparent"
-                    Rectangle { visible: row.sel; width: 3; height: parent.height; radius: 1; color: Theme.c.accentBright }
-                    Label {
-                        id: num
-                        visible: Menu.query === "" && row.index < 9
-                        x: 12; anchors.verticalCenter: parent.verticalCenter
-                        text: row.index + 1; font.pixelSize: 10; color: Theme.c.accentDim
-                    }
                     Label {
                         id: ic
-                        x: 30; anchors.verticalCenter: parent.verticalCenter; width: 22
-                        text: row.modelData.icon; font.pixelSize: 15
+                        x: 10; anchors.verticalCenter: parent.verticalCenter; width: 18
+                        text: row.modelData.icon; font.pixelSize: 13
                         color: row.sel ? Theme.c.accentBright : Theme.c.accentMid
                         horizontalAlignment: Text.AlignHCenter
                     }
-                    Column {
+                    Label {
                         anchors.left: ic.right; anchors.leftMargin: 10
                         anchors.right: right.left; anchors.rightMargin: 10
                         anchors.verticalCenter: parent.verticalCenter
-                        spacing: 0
-                        Label { width: parent.width; elide: Text.ElideRight; text: row.modelData.label; font.pixelSize: 13
-                                color: row.sel ? Theme.c.accentBright : Theme.c.fg }
-                        Label { visible: row.modelData.crumb !== "" && Menu.query !== ""; width: parent.width; elide: Text.ElideRight
-                                text: row.modelData.crumb; font.pixelSize: 10; color: Theme.c.accentMid }
+                        elide: Text.ElideRight
+                        text: row.modelData.label; font.pixelSize: 12
+                        color: row.sel ? Theme.c.accentBright : Theme.c.fg
                     }
                     Row {
                         id: right
-                        anchors.right: parent.right; anchors.rightMargin: 12; anchors.verticalCenter: parent.verticalCenter
-                        spacing: 8
+                        anchors.right: parent.right; anchors.rightMargin: 10; anchors.verticalCenter: parent.verticalCenter
+                        spacing: 10
+                        Label { visible: Menu.query !== "" && row.modelData.crumb !== ""; text: row.modelData.crumb; font.pixelSize: 11; color: Theme.c.accentDim
+                                elide: Text.ElideRight; width: Math.min(implicitWidth, 150) }
                         Label { visible: row.modelData.value !== ""; text: row.modelData.value; font.pixelSize: 11; color: Theme.c.accentMid
-                                elide: Text.ElideRight; width: Math.min(implicitWidth, 220) }
-                        Label { visible: row.modelData.checked === true; text: "󰄬"; font.pixelSize: 14; color: Theme.c.accentBright }
-                        Label { visible: row.modelData.checked === false && row.modelData.value === ""; text: ""; width: 0 }
-                        Label { visible: row.modelData.sub; text: "󰅂"; font.pixelSize: 14; color: Theme.c.accentDim }
-                        Label { visible: row.modelData.input !== ""; text: "󰌌"; font.pixelSize: 13; color: Theme.c.accentDim }
+                                elide: Text.ElideRight; width: Math.min(implicitWidth, 170) }
+                        Label { visible: row.modelData.checked === true; text: "󰄬"; font.pixelSize: 13; color: Theme.c.accentBright }
+                        Label { visible: row.modelData.sub; text: "󰅂"; font.pixelSize: 13; color: Theme.c.accentDim }
                     }
                     MouseArea { anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                                 onEntered: Menu.selected = row.index; onClicked: Menu.activate(row.modelData) }
                 }
-                Label { visible: win.rows.length === 0 && !Menu.inputRow; anchors.centerIn: parent; text: "nothing matches"; font.pixelSize: 12; color: Theme.c.accentMid }
-                Label { visible: !!Menu.inputRow; anchors.centerIn: parent; width: parent.width - 40; wrapMode: Text.Wrap; horizontalAlignment: Text.AlignHCenter
-                        text: Menu.inputRow ? "type, then Enter  ·  Esc back" : ""; font.pixelSize: 12; color: Theme.c.accentMid }
+                Label { visible: win.rows.length === 0 && !Menu.inputRow; anchors.centerIn: parent; text: "nothing found"; font.pixelSize: 12; color: Theme.c.accentDim }
+                Label { visible: !!Menu.inputRow; anchors.centerIn: parent; text: "Enter to set"; font.pixelSize: 12; color: Theme.c.accentDim }
             }
         }
     }
