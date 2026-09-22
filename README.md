@@ -318,7 +318,8 @@ Shipped themes: `hyprmono` (dark), `hyprmono-light`, and two hued ones — `catp
 VS Code) and `golden-evening` (umber / cream / gold sampled from the sunset oil painting that is
 its wallpaper; nvim uses `gruvbox`, the closest stock warm scheme), plus `alpine-dusk` — the
 palette [Aether](https://github.com/omacom/aether) auto-detects from a snow-peak photo (every hue
-is a shade of the sky). It also carries the **Aether way** of colouring apps from a palette, for
+is a shade of the sky), and `tokyo-night` — the official Tokyo Night (night) palette with blue
+accents and magenta hover, nvim `tokyonight-night`, over a neon Shinjuku rooftop wallpaper. Alpine-dusk also carries the **Aether way** of colouring apps from a palette, for
 comparison with the rice's own mapping: nvim `nvim_colorscheme = "aether"` builds
 [aether.nvim](https://github.com/omacom/aether.nvim) from the theme; VS Code gets a second entry
 "Hypr Theme (Aether)" (Ctrl+K Ctrl+T); btop gets `hypr-theme-aether` (Esc → Options → Color

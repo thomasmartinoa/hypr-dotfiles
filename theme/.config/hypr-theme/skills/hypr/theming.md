@@ -49,6 +49,9 @@ plus any key from `[terminal]`, `[git]`, `[apps]`.
      `red orange yellow green aqua blue purple` + `warning critical` carry the *real* colours
      (in mono themes they are greys). `[terminal]` is the palette's official 16-colour set.
      Copy `themes/catppuccin-mocha/` as the starting point instead of hyprmono.
+     Official palettes are usually already on disk: `~/.local/share/nvim/lazy/<scheme>/extras/kitty/*.conf`
+     (tokyonight, catppuccin) is the exact 16-colour set and `lua/<scheme>/colors/*.lua` the ramp — read
+     those instead of guessing hex values from memory.
 3. Wallpaper: put one or more images in `backgrounds/` named `1-<slug>.png`, `2-…`.
    Match the mood (dark theme → dark image, light → bright). Prefer ≥ 2560 px wide,
    non-busy, so lock/login text stays readable over the blur. If downloading, use a
