@@ -8,6 +8,7 @@
 
 name = "Catppuccin Mocha"
 mode = "dark"
+hued = true         # real colours everywhere a stock theme would use them (btop boxes, graphs…)
 bar  = "pill"
 
 [colors]

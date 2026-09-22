@@ -38,15 +38,25 @@ plus any key from `[terminal]`, `[git]`, `[apps]`.
      Light themes fail here first — the previous light theme needed its greys darkened.
    - `[terminal]` 16 colours are a grey ramp too; keep `background` = bg0-ish and
      `foreground` readable through kitty's translucency (light: darker than you think).
-   - `[git]` keeps real hues. `[apps]` names the GTK/Qt/icon/cursor themes and `nvim_colorscheme`.
+   - `[git]` keeps real hues. `[apps]` names the GTK/Qt/icon/cursor themes and `nvim_colorscheme`
+     (any installed scheme works — LazyVim already ships `catppuccin-*` and `tokyonight-*`;
+     `hyprmono` is the generated grey one; check `ls ~/.local/share/nvim/lazy/` before naming another).
    - `bar = "pill"|"minimal"` is the skin the theme prefers.
+   - **Hued theme** (Catppuccin, Gruvbox, Nord …): `hued = true` at the top, the ramp uses the
+     palette's own surface/text steps (Mocha: crust→mantle→base→surface0→surface1, text/subtext/
+     overlay), `accent_bright`/`active` = the palette's accent (Mocha: lavender), and the hue keys
+     `red orange yellow green aqua blue purple` + `warning critical` carry the *real* colours
+     (in mono themes they are greys). `[terminal]` is the palette's official 16-colour set.
+     Copy `themes/catppuccin-mocha/` as the starting point instead of hyprmono.
 3. Wallpaper: put one or more images in `backgrounds/` named `1-<slug>.png`, `2-…`.
    Match the mood (dark theme → dark image, light → bright). Prefer ≥ 2560 px wide,
    non-busy, so lock/login text stays readable over the blur. If downloading, use a
    source that allows reuse (Unsplash / Pexels / Wikimedia) and note the URL in a
    `backgrounds/SOURCES` file.
 4. `hypr-theme set <id>` — it appears in the carousel (`SUPER+CTRL+SHIFT+SPACE`) automatically.
-5. **Verify in every surface** (verify.md): bar (both skins: `qs ipc call bar toggle`),
+5. **Verify in every surface** (verify.md). For btop use `hypr-float kitty --class check -e btop`
+   (a tiled kitty next to other windows is < 80×24 and btop only prints "Terminal size too
+   small"). `hypr-wall next` cycles to the theme's other backgrounds. Verify: bar (both skins: `qs ipc call bar toggle`),
    launcher `SUPER+D`, clipboard, notification (`qs ipc call notifications test`),
    panels (audio/network/power/agents), picker, power menu, lock screen (careful —
    see SKILL rule 5; the SDDM Main.qml uses the same geometry, so a screenshot of
@@ -54,6 +64,21 @@ plus any key from `[terminal]`, `[git]`, `[apps]`.
    a Qt app (qt6ct-aware, restart it), VS Code. Fix any unreadable text by adjusting
    the ramp, not one app.
 6. Commit `themes/<id>/` (+ README if you add anything user-facing).
+
+## Hued vs monochrome in templates
+
+`{{ hued <a> <b> }}` renders `a` when the theme has `hued = true`, else `b`; only the chosen
+side is resolved. Use it wherever a stock upstream theme would put a colour — one hue per
+btop box, green→yellow→red temperature gradients, lock `fail_color` red, `check_color`
+green — with the grey the mono themes had before as `b`. Check with a render diff that the
+mono themes did not move:
+
+```bash
+cd ~/.config/hypr-theme; for t in hyprmono hyprmono-light; do
+  python3 render.py themes/$t templates /tmp/$t-after >/dev/null; done   # vs a copy made before
+```
+The shell (Quickshell) reads only the ramp from `colors.json`; it never uses `warning`/
+`critical`, so a hued theme colours the bar through `accent_bright`/`active` only.
 
 ## Change one app for every theme
 

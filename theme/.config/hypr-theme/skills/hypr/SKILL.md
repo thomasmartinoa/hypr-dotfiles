@@ -86,13 +86,20 @@ Commands you will use (all `--help`/header-documented — read the script if uns
    `~/.config/btop/themes/hypr-theme.theme`, `/usr/share/**`, `/etc/**`
    (except through install.sh). They are rendered from `templates/*.tpl` —
    change the template (all themes) or `colors.toml` (one theme).
-2. **Monochrome is the design.** Greys only, except the `[git]` hues in
-   colors.toml (added/modified/deleted must read at a glance). A new theme may
-   be tinted (warm/cool greys) but stays a single-hue ramp. Corners 4px
-   (`Theme.radius`), 1px subtle border (`Theme.c.border`) everywhere.
+2. **Monochrome is the *hyprmono* design, not a law.** The two `hyprmono*`
+   themes are greys only (plus the `[git]` hues). A theme the user names after
+   a real palette (Catppuccin, Gruvbox, Nord, …) is **hued**: set `hued = true`
+   in its colors.toml, use that palette's official colours, and colour each
+   app the way its stock upstream theme does (btop boxes/gradients, nvim's own
+   scheme, lock fail = red). Templates branch with `{{ hued <colour> <grey> }}`
+   so the mono themes stay pixel-identical — never make a mono theme hued to
+   get a colour through. Corners 4px (`Theme.radius`), 1px border
+   (`Theme.c.border`) everywhere, in every theme.
 3. **Both modes, always.** Anything visual is checked on `hyprmono` (dark)
    and `hyprmono-light` — `hypr-theme set <id>` swaps live; put the user's
-   theme back when done (`hypr-theme current` first).
+   theme back when done (`hypr-theme current` first). A template change is
+   also checked on one hued theme (`catppuccin-mocha`). When the request *was*
+   "make me theme X", leave X applied at the end.
 4. **Look at it.** Every visual change ends with a screenshot you actually
    read (verify.md). "It should work" is not done.
 5. **Do not break the session.** Never `pkill -f qs|quickshell|hypr` (matches

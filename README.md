@@ -309,7 +309,8 @@ official Mocha palette with lavender accents and the real pastel syntax in nvim 
 and VS Code.
 
 To make a theme: copy `themes/hyprmono/`, edit `colors.toml` (`mode = "light"` flips GTK/Qt/nvim to
-their light variants), run `hypr-theme set <name>`. Templates use `{{ bg0 }}`, filters like
+their light variants; `hued = true` for a real palette — templates branch with
+`{{ hued colour grey }}` so mono themes stay grey), run `hypr-theme set <name>`. Templates use `{{ bg0 }}`, filters like
 `{{ bg0 | rgba 0.6 }}` / `{{ bg0 | hypr }}`, and `{{ mix bg0 fg 20% }}` — see
 [`render.py`](theme/.config/hypr-theme/render.py).
 

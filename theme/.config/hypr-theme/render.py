@@ -22,6 +22,9 @@ Template syntax — one tag per colour, Omarchy-style:
     {{ bg0 | hypr 0.66 }}        rgba(0a0a0aa8)
     {{ mix bg0 fg 20% }}         a colour 20% of the way from bg0 to fg
     {{ dark "1" "0" }}           first value if mode = dark, else second
+    {{ hued blue grey1 }}        first value if the theme sets hued = true, else second
+                                 (only the chosen side is resolved, so a hued theme may
+                                 define extra hue keys and use them there)
     {{ mode }} {{ name }} {{ bar }}   plain strings from the top level
     {{ home }}                   $HOME, for absolute url() paths in CSS
     {{ gtk_theme }}              anything under [apps] / [terminal] / [colors]
@@ -68,6 +71,8 @@ class Renderer:
         for k in ("name", "mode", "bar"):
             if k in theme:
                 self.vars[k] = str(theme[k])
+        self.hued = bool(theme.get("hued", False))
+        self.vars["hued"] = "true" if self.hued else "false"
         self.vars["home"] = os.environ.get("HOME", "")
         for section in ("colors", "terminal", "apps", "git"):
             for k, v in theme.get(section, {}).items():
@@ -100,6 +105,9 @@ class Renderer:
         if head == "light":
             toks = re.findall(r'"[^"]*"|\S+', text)[1:]
             return self.value(toks[0]) if self.mode == "light" else self.value(toks[1])
+        if head == "hued":
+            toks = re.findall(r'"[^"]*"|\S+', text)[1:]
+            return self.value(toks[0]) if self.hued else self.value(toks[1])
         if len(parts) != 1:
             raise ValueError(f"bad expression {text!r}")
         return self.value(head)

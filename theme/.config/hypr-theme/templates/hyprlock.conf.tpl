@@ -5,5 +5,5 @@ $muted_color  = {{ mix accent_light accent_mid 37% | rgba 0.75 }}
 $outer_color  = {{ mix accent_light accent_mid 27% | rgba 0.6 }}
 $inner_color  = {{ grey0 | rgba 0.4 }}
 $font_color   = {{ mix accent_light accent_mid 37% | rgba 1.0 }}
-$check_color  = {{ accent_mid | rgba 0.8 }}
-$fail_color   = {{ accent_bright | rgba 0.9 }}
+$check_color  = {{ hued green accent_mid | rgba 0.8 }}
+$fail_color   = {{ hued red accent_bright | rgba 0.9 }}

@@ -24,7 +24,8 @@ sleep 1.5 between opening and capturing (animations, async images)
 ```
 Open a real app for app theming: `kitty --class check -e btop &`, `thunar &`,
 then `hyprctl dispatch focuswindow class:check`; close it after (`hyprctl
-dispatch closewindow class:check`).
+dispatch closewindow class:check` closes **one** window — loop it, or use
+`hyprctl clients -j` addresses, and confirm nothing with class `check` is left).
 
 ## The checklist for "check the rice" / a new theme
 
@@ -34,7 +35,8 @@ picker (theme + wallpaper), power menu, kitty with fastfetch, btop, nvim,
 Thunar, one Qt app, VS Code, the lock screen (rule 5 in SKILL.md — a lock
 capture needs the user present; the SDDM greeter shares its layout).
 
-Flag: text below ~3:1 contrast, colour that is not grey (except git), corners
+Flag: text below ~3:1 contrast, colour that is not grey in a mono theme (except git) or
+a grey where the stock upstream theme has a colour in a hued theme (btop boxes, lock fail), corners
 not 4px / missing 1px border, glyph boxes (font), clipped or overlapping
 text, anything that differs between the two themes in *layout*.
 
