@@ -295,6 +295,7 @@ does not pick up gsettings on Wayland — verified, including via the settings p
 | | Firefox chrome + about: pages (userChrome/userContent, read at start) |
 | VS Code, Electron apps such as Claude (portal) | Alacritty (reads its import at start) |
 | Neovim (every running instance), btop (SIGUSR2) | pkexec apps like grub-customizer |
+| Chromium (its own `--set-theme-color` flags, Aether/Omarchy style) | |
 | Shell state colours (battery, sysmon, critical notifications) | |
 
 Firefox: `hypr-theme set` drops `userChrome.css`/`userContent.css` into every profile in
@@ -315,7 +316,13 @@ shell, `hypr-theme-menu --rofi`.
 Shipped themes: `hyprmono` (dark), `hyprmono-light`, and two hued ones — `catppuccin-mocha`
 (official Mocha palette, lavender accents, the real pastel syntax in nvim `catppuccin-mocha` and
 VS Code) and `golden-evening` (umber / cream / gold sampled from the sunset oil painting that is
-its wallpaper; nvim uses `gruvbox`, the closest stock warm scheme).
+its wallpaper; nvim uses `gruvbox`, the closest stock warm scheme), plus `alpine-dusk` — the
+palette [Aether](https://github.com/omacom/aether) auto-detects from a snow-peak photo (every hue
+is a shade of the sky). It also carries the **Aether way** of colouring apps from a palette, for
+comparison with the rice's own mapping: nvim `nvim_colorscheme = "aether"` builds
+[aether.nvim](https://github.com/omacom/aether.nvim) from the theme; VS Code gets a second entry
+"Hypr Theme (Aether)" (Ctrl+K Ctrl+T); btop gets `hypr-theme-aether` (Esc → Options → Color
+theme). Both are rendered for every theme from `templates/*-aether*.tpl`.
 
 To make a theme: copy `themes/hyprmono/`, edit `colors.toml` (`mode = "light"` flips GTK/Qt/nvim to
 their light variants; `hued = true` for a real palette — templates branch with

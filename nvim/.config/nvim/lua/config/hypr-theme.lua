@@ -24,6 +24,14 @@ function M.apply()
     require("hyprmono").load(t.palette)
     return
   end
+  if t.colorscheme == "aether" and t.aether then
+    -- omacom/aether.nvim built from the palette, the way Aether/Omarchy do it
+    local ok_a, aether = pcall(require, "aether")
+    if ok_a then
+      aether.load({ colors = t.aether })
+      return
+    end
+  end
   local ok = pcall(vim.cmd.colorscheme, t.colorscheme)
   if not ok then
     vim.notify("hypr-theme: colorscheme '" .. tostring(t.colorscheme) .. "' not installed", vim.log.levels.WARN)

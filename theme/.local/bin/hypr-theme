@@ -100,6 +100,8 @@ apply_vscode() {
     ui=$([[ "$(theme_mode "$CURRENT_DIR/theme")" == light ]] && echo vs || echo vs-dark)
     mkdir -p "$ext/themes"
     ln -sfn "$CURRENT_DIR/vscode-theme.json" "$ext/themes/hypr-theme.json"
+    # second entry: the same palette mapped the way Aether does it (Ctrl+K Ctrl+T to compare)
+    ln -sfn "$CURRENT_DIR/vscode-theme-aether.json" "$ext/themes/hypr-theme-aether.json"
     cat > "$ext/package.json" <<JSON
 {
     "name": "hypr-theme",
@@ -109,7 +111,10 @@ apply_vscode() {
     "version": "1.0.0",
     "engines": { "vscode": "^1.70.0" },
     "categories": ["Themes"],
-    "contributes": { "themes": [{ "label": "Hypr Theme", "uiTheme": "$ui", "path": "./themes/hypr-theme.json" }] }
+    "contributes": { "themes": [
+        { "label": "Hypr Theme", "uiTheme": "$ui", "path": "./themes/hypr-theme.json" },
+        { "label": "Hypr Theme (Aether)", "uiTheme": "$ui", "path": "./themes/hypr-theme-aether.json" }
+    ] }
 }
 JSON
     # register in extensions.json (what --install-extension would write)
@@ -203,6 +208,7 @@ apply() {
     # btop: its theme goes into its themes/ dir and is selected in btop.conf
     # (created if btop has never been run; otherwise just the theme line).
     install_file "$CURRENT_DIR/btop.theme"         "$HOME/.config/btop/themes/hypr-theme.theme"
+    install_file "$CURRENT_DIR/btop-aether.theme"  "$HOME/.config/btop/themes/hypr-theme-aether.theme"   # Aether's mapping, for comparison
     apply_btop "$HOME/.config/btop/btop.conf"
     # Kdenlive keeps its own ColorScheme (its "Always use dark" switch writes
     # BreezeDark); point it at ours so it follows the theme like other KDE apps.
@@ -244,6 +250,14 @@ apply() {
     done
     apply_vscode "$HOME/.vscode/extensions" "$HOME/.config/Code/User/settings.json"
     apply_firefox
+    # Chromium: the Aether/Omarchy way — Chromium's own flags set the built-in
+    # theme colour and colour scheme (persisted in the profile; a running
+    # instance picks it up, otherwise it applies on the next start).
+    if have chromium; then
+        setsid -f chromium --no-startup-window \
+            --set-color-scheme="$mode" \
+            --set-theme-color="$(tr -d ' ' < "$CURRENT_DIR/chromium.theme")" >/dev/null 2>&1 || true
+    fi
 
     # quickshell (when the shell exists): it watches colors.json itself, but a
     # nudge makes the switch instant.
