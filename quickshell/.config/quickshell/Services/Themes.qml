@@ -2,6 +2,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import qs.Commons
 
 // Theme catalogue from `hypr-theme json`, plus the picker's state.
 // A theme is any folder in ~/.config/hypr-theme/themes with a colors.toml,
@@ -33,6 +34,8 @@ Singleton {
         stdout: StdioCollector { onStreamFinished: { try { root.themes = JSON.parse(text) } catch (e) { console.warn("Themes: " + e) } } }
     }
     Component.onCompleted: refresh()
+    // a theme switch re-renders colors.json (Theme reloads it) → re-read the catalogue
+    Connections { target: Theme; function onNameChanged() { root.refresh() } function onModeChanged() { root.refresh() } }
 
     IpcHandler {
         target: "picker"
