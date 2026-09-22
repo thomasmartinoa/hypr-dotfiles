@@ -266,10 +266,12 @@ does not pick up gsettings on Wayland — verified, including via the settings p
 | Neovim (every running instance) | pkexec apps like grub-customizer |
 | Login screen, `/root` GTK config (root sync) | |
 
-The **picker** is an image grid in the shell: every folder in `themes/` with a `colors.toml` is a
-tile drawn in its own colours (wallpaper, mock bar, palette swatches, dark/light badge) — drop a
-theme in and it appears. Arrows or hjkl, Enter applies, type to filter, Esc. The same grid picks
-wallpapers (the current theme's first, then the rest). Without the shell, `hypr-theme-menu --rofi`.
+The **picker** is an Omarchy-style carousel in the shell: the selected theme is shown large as a
+live mock desktop in its own colours (wallpaper, bar in its skin, a window, a terminal with the
+palette), the others as dimmed slices to either side that slide as you move. Every folder in
+`themes/` with a `colors.toml` appears. ← → or h l, wheel, Home/End, Enter applies, type to filter,
+Esc. The same carousel picks wallpapers (the current theme's first, then the rest). Without the
+shell, `hypr-theme-menu --rofi`.
 
 To make a theme: copy `themes/hyprmono/`, edit `colors.toml` (`mode = "light"` flips GTK/Qt/nvim to
 their light variants), run `hypr-theme set <name>`. Templates use `{{ bg0 }}`, filters like
