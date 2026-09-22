@@ -269,8 +269,8 @@ does not pick up gsettings on Wayland — verified, including via the settings p
 The **picker** is an Omarchy-style carousel in the shell: the selected theme is shown large as a
 live mock desktop in its own colours (wallpaper, bar in its skin, a window, a terminal with the
 palette), the others as dimmed slices to either side that slide as you move. Every folder in
-`themes/` with a `colors.toml` appears. ← → or h l, wheel, Home/End, Enter applies, type to filter,
-Esc. The same carousel picks wallpapers (the current theme's first, then the rest). Without the
+`themes/` with a `colors.toml` appears. Nothing is written under it — ← → or h l, wheel, Home/End,
+Enter applies, type to filter (the filter is the only text shown), Esc. The same carousel picks wallpapers (the current theme's first, then the rest). Without the
 shell, `hypr-theme-menu --rofi`.
 
 To make a theme: copy `themes/hyprmono/`, edit `colors.toml` (`mode = "light"` flips GTK/Qt/nvim to

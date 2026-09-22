@@ -4,8 +4,10 @@ import Quickshell
 import Quickshell.Io
 
 // Clipboard history via cliphist (wl-paste --watch cliphist store runs at
-// login). Image entries get a thumbnail rendered with ffmpeg into
-// ~/.cache/cliphist-thumbs — the same cache the rofi script used.
+// login). The list is read by Services/cliplist.py — one process for all
+// entries, ~50ms — and kept up to date as the clipboard changes. Image
+// entries get a thumbnail rendered with ffmpeg into ~/.cache/cliphist-thumbs
+// — the same cache the rofi script used.
 Singleton {
     id: root
     property bool open: false
@@ -23,19 +25,7 @@ Singleton {
     Process {
         id: list
         // one JSON object per line: id, preview, and for images the thumbnail path (rendered if missing)
-        command: ["bash", "-c", `
-mkdir -p "$C"; find "$C" -type f -mtime +14 -delete 2>/dev/null
-cliphist list | head -n 80 | while IFS=$'\\t' read -r id preview; do
-  if [[ "$preview" == *"binary data"* ]]; then
-    thumb="$C/$id.png"
-    [[ -s "$thumb" ]] || cliphist decode "$id" 2>/dev/null | ffmpeg -y -loglevel error -i - -vf "scale=72:-1" "$thumb" 2>/dev/null
-    meta="$preview"
-    if [[ "$preview" =~ binary\\ data\\ ([0-9.]+\\ [KMG]iB)\\ ([a-z]+)\\ ([0-9]+x[0-9]+) ]]; then meta="\${BASH_REMATCH[2]}  ·  \${BASH_REMATCH[3]}  ·  \${BASH_REMATCH[1]}"; fi
-    printf '{"id":%s,"image":true,"thumb":"%s","preview":%s}\\n' "$id" "$thumb" "$(printf '%s' "$meta" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))')"
-  else
-    printf '{"id":%s,"image":false,"preview":%s}\\n' "$id" "$(printf '%s' "$preview" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))')"
-  fi
-done`]
+        command: ["python3", Quickshell.shellPath("Services/cliplist.py"), "80"]
         environment: ({ C: root.cache })
         stdout: StdioCollector {
             onStreamFinished: {
@@ -45,6 +35,18 @@ done`]
             }
         }
     }
+
+    // Keep the list warm: every clipboard change re-reads it (shortly after,
+    // so `wl-paste --watch cliphist store` has stored it), so opening the
+    // history is instant instead of waiting for cliphist.
+    Process {
+        id: watch
+        running: true
+        command: ["wl-paste", "--watch", "echo", "changed"]
+        stdout: SplitParser { onRead: changed.restart() }
+    }
+    Timer { id: changed; interval: 150; onTriggered: root.refresh() }
+    Component.onCompleted: refresh()
 
     IpcHandler {
         target: "clipboard"

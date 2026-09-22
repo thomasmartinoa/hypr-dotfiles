@@ -9,7 +9,8 @@ import qs.Services
 // middle, the rest as tall dimmed slices to either side, all sliding as
 // the selection moves. Themes are previewed live in their own colours
 // (ThemePreview); wallpapers are just the image.
-// ← → (h l), Home/End, scroll; Enter applies; Esc; type to filter.
+// ← → (h l), Home/End, scroll; Enter applies; Esc; type to filter. No
+// text under it — the picture is the whole UI.
 Variants {
     model: Quickshell.screens
     PanelWindow {
@@ -78,7 +79,7 @@ Variants {
             Item {
                 id: carousel
                 anchors.horizontalCenter: parent.horizontalCenter
-                y: (parent.height - win.bigH) / 2 - 30
+                y: (parent.height - win.bigH) / 2
                 width: win.bigW + 2 * win.sidesEach * win.step
                 height: win.bigH
                 readonly property real bigX: (width - win.bigW) / 2
@@ -145,33 +146,13 @@ Variants {
                 }
             }
 
-            // label + hints under the expanded item
-            Column {
+            // nothing under the carousel; only the filter shows while you type
+            Label {
+                visible: win.filter !== ""
                 anchors.top: carousel.bottom; anchors.topMargin: 18
                 anchors.horizontalCenter: parent.horizontalCenter
-                spacing: 6
-                Row {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    spacing: 10
-                    Label {
-                        text: win.items[win.selected] ? (win.themeMode ? win.items[win.selected].name : win.items[win.selected].path.split("/").pop()) : ""
-                        font.pixelSize: 16; font.weight: Font.Bold; color: Theme.c.accentBright
-                    }
-                    Rectangle {
-                        visible: win.themeMode && win.items[win.selected] !== undefined
-                        anchors.verticalCenter: parent.verticalCenter
-                        width: badge.implicitWidth + 12; height: 18; radius: 3
-                        color: Theme.c.bg2; border.width: 1; border.color: Theme.c.border
-                        Label { id: badge; anchors.centerIn: parent; font.pixelSize: 10
-                                text: win.items[win.selected] ? win.items[win.selected].mode + (win.items[win.selected].current ? " · current" : "") : ""; color: Theme.c.accentMid }
-                    }
-                }
-                Label {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    text: win.filter !== "" ? "󰍉  " + win.filter
-                        : (win.selected + 1) + " / " + win.items.length + "   ·   󰁍 󰁔  move   ·   Enter  apply   ·   type to filter   ·   Esc"
-                    font.pixelSize: 11; color: win.filter !== "" ? Theme.c.fg : Theme.c.accentMid
-                }
+                text: "\u{f0349}  " + win.filter
+                font.pixelSize: 13; color: Theme.c.fg
             }
         }
     }
