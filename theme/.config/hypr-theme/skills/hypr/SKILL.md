@@ -77,7 +77,7 @@ Commands you will use (all `--help`/header-documented — read the script if uns
 | `hyprctl reload && hyprctl configerrors` | after ANY Hyprland change; must print nothing |
 | `hypr-agent list / default / launch / usage / skills install` | coding agents |
 | `hypr-doctor [--print]` | diagnostics bundle (see diagnose.md) |
-| `hypr-text-size <px>` · `hypr-scale <n>` | apparent text size (shell + GTK + terminals) and monitor scale |
+| `hypr-font set <family>` · `hypr-text-size <px>` · `hypr-scale <n>` | desktop font, apparent text size (shell + GTK + terminals) and monitor scale |
 | `qs ipc call menu open|run|search <id>` · `hypr-float <cmd>` · `hypr-edit <file>` · `hypr-toggle gaps|opacity` · `hypr-nightlight` · `hypr-remind` · `hypr-default` · `hypr-pkg` | menu actions, usable from anywhere |
 
 ## 3. Rules that keep the rice intact

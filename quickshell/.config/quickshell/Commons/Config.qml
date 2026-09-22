@@ -41,7 +41,7 @@ Singleton {
         },
         // apparent text size in px (hypr-text-size); every size in the shell
         // is derived from it through Theme.fs()
-        font: { size: 12 },
+        font: { size: 12, family: "" },   // "" = the rice's own font
         // coding agents (hypr-agent): which one SUPER+SHIFT+CTRL+A and the bar launch
         agents: { default: "" }
     })
@@ -53,6 +53,7 @@ Singleton {
     readonly property bool transparent: !!(bar && bar.transparent)
     readonly property bool hidden: !!(bar && bar.hidden)
     readonly property int fontSize: (data.font && data.font.size >= 8 && data.font.size <= 24) ? data.font.size : 12
+    readonly property string fontFamily: (data.font && data.font.family) ? data.font.family : ""
     readonly property string skin: (bar && (bar.skin === "pill" || bar.skin === "minimal")) ? bar.skin : ""
     readonly property bool batteryPercent: !(bar && bar.battery === false)
 

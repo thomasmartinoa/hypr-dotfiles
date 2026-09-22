@@ -48,7 +48,8 @@ Singleton {
     // colours in `c` are strings (JSON); use this for translucent variants
     function alpha(col, a) { const q = Qt.color(col); return Qt.rgba(q.r, q.g, q.b, a) }
 
-    readonly property string font: "JetBrainsMono Nerd Font Propo"
+    // `hypr-font set <family>` writes shell.json; "" keeps the rice's own
+    readonly property string font: Config.fontFamily !== "" ? Config.fontFamily : "JetBrainsMono Nerd Font Propo"
     // GTK's "12px" in the old waybar css rendered at ~15 logical px; match it.
     // one knob for text size: `hypr-text-size <px>` writes shell.json, this
     // scales every size in the shell from the 12px design baseline

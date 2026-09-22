@@ -238,13 +238,18 @@ on the right), `↑↓`, `Enter`, `Backspace`/`←` up, `→` in, `Esc`. ✓ and
 data: [`menu.jsonc`](theme/.config/hypr-theme/menu.jsonc) (documented at the top); your own
 entries go in `~/.config/hypr-theme/menu.local.jsonc`, merged by id and hot-reloaded.
 
-**Text size and display scale.** `hypr-text-size <9–20>` is one knob for apparent text size: the
+**Font, text size and display scale.** `hypr-font list|set <family>` picks the typeface for the
+whole desktop from what is installed (monospace families plus the Nerd Font *Propo* cuts the bar is
+drawn with): the shell follows live, terminals get the non-Propo cut through their include, and a
+fontconfig rule points everything resolving `monospace` (Qt, GTK, TUIs) at it.
+
+ `hypr-text-size <9–20>` is one knob for apparent text size: the
 shell (every size derives from it), GTK apps (`text-scaling-factor`, quantized so the interface font
 lands on a whole point size) and the terminals (a per-machine include, so the repo's own font
 settings stay put). `hypr-scale <n>|up|down` sets the focused monitor's scale, rounded to a value
 Hyprland accepts for that mode, applied live with `hyprctl eval` and written back into
-`modules/monitors.lua`. Both are in the menu under Style, both modelled on Omarchy's
-`display text size` / `monitor scaling`.
+`modules/monitors.lua`. All three are in the menu under Style — Font lists what you have installed with the current one
+ticked — modelled on Omarchy's `font set` / `display text size` / `monitor scaling`.
 
 **`/hypr` — the rice as an agent skill.** One skill (no menu of commands to learn): say what
 you want — *"make a warm dark theme called ember"*, *"add a widget that shows my power draw"*,

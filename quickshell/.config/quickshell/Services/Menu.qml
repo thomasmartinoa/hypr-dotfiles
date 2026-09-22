@@ -113,7 +113,7 @@ Singleton {
         if (name === "agents.default") return (data.agents || []).map(a => ({ id: "agent." + a.id, icon: a.icon, label: a.label, description: "", action: "hypr-agent default " + a.id,
                                                                             keep: true, input: "", provider: "", sub: false, checked: a.checked, value: "", crumb: "" }))
         return (data[name] || []).map(r => ({ id: name + "." + r.id, icon: r.icon || "", label: r.label, description: r.description || "", action: r.action || "",
-                                              keep: !!r.action && name === "packages", input: "", provider: "", sub: false,
+                                              keep: !!r.keep, input: "", provider: "", sub: false,
                                               checked: r.checked === undefined ? null : r.checked, value: r.value || "", crumb: "" }))
     }
     function crumbFor(id) {

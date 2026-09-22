@@ -29,6 +29,6 @@ theme/.config/hypr-theme/shell.json
 # more per-machine state that lives next to it (~/.config/hypr-theme is the stow link)
 theme/.config/hypr-theme/menu.local.jsonc
 theme/.config/hypr-theme/defaults/
-theme/.config/hypr-theme/text-size/
+theme/.config/hypr-theme/ui/
 __pycache__/
 *.pyc

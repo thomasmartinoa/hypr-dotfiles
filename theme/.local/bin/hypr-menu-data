@@ -7,6 +7,7 @@ object, in one process (the menu runs it every time it opens).
                 "terminal": "kitty", "browser": "zen-browser", "agent": "claude" },
     "agents":      [ {id, label, icon, action, checked} ],
     "keybindings": [ {id, label, value, description} ],
+    "fonts":       [ {id, label, checked, action, keep} ],
     "reminders":   [ {id, label} ],
     "about":       [ {id, label, value} ]
   }
@@ -49,6 +50,7 @@ def state():
         "terminal": read(f"{HOME}/.config/hypr-theme/defaults/terminal", "kitty"),
         "browser": read(f"{HOME}/.config/hypr-theme/defaults/browser", "zen-browser"),
         "agent": sh("hypr-agent default"),
+        "font": sh("hypr-font").replace(" (default)", ""),
         "textsize": sh("hypr-text-size").splitlines()[0].split(":")[1].strip().split()[0] if shutil.which("hypr-text-size") else "12",
         "scale": (sh("hyprctl monitors -j | jq -r '.[] | select(.focused) | .scale'") or "").rstrip("0").rstrip(".") or "1",
         "wallpaper": os.path.basename(os.path.realpath(f"{HOME}/.config/hypr-theme/current/background")),
@@ -112,6 +114,18 @@ def keybindings():
     return rows
 
 
+def fonts():
+    cur = sh("hypr-font")
+    out = []
+    for f in sh("hypr-font list", timeout=6).splitlines():
+        f = f.strip()
+        if not f:
+            continue
+        out.append({"id": f, "label": f, "icon": "\U000F031A", "checked": f == cur,
+                    "action": "hypr-font set " + json.dumps(f), "keep": True})
+    return out
+
+
 def reminders():
     out = []
     for line in sh("hypr-remind show").splitlines():
@@ -136,7 +150,7 @@ def about():
 
 def main():
     st = state()
-    print(json.dumps({"state": st, "agents": agents(st["agent"]), "keybindings": keybindings(),
+    print(json.dumps({"state": st, "agents": agents(st["agent"]), "keybindings": keybindings(), "fonts": fonts(),
                       "reminders": reminders(), "about": about()}))
 
 

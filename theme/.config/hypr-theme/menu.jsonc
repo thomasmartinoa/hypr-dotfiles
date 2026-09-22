@@ -36,6 +36,7 @@
   "style.bar.right":    {"icon":"󰁔","label":"Right","checked":"bar.right","action":"qs ipc call bar position right","keep":true},
   "style.bar.transparent": {"icon":"󰂵","label":"Transparent (minimal skin)","checked":"bar.transparent","action":"qs ipc call bar transparent","keep":true},
   "style.bar.widgets":  {"icon":"󰕰","label":"Widgets","description":"enable disable modules","provider":"widgets"},
+  "style.font":       {"icon":"\udb80\udf1a","label":"Font","description":"typeface family monospace","value":"font","provider":"fonts"},
   "style.text":       {"icon":"\udb84\udd7d","label":"Text size","description":"font size scale bigger smaller","value":"textsize"},
   "style.text.10":    {"icon":"\udb84\udd7d","label":"10 px","checked":"textsize:10","action":"hypr-text-size 10","keep":true},
   "style.text.11":    {"icon":"\udb84\udd7d","label":"11 px","checked":"textsize:11","action":"hypr-text-size 11","keep":true},

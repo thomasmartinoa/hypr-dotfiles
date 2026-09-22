@@ -122,6 +122,15 @@ If the app needs a file at a fixed path, add an `install_file` line in
 4. If the app is worth having on a fresh machine, add it to `PKGS_REPO` in install.sh.
 5. Verify dark + light with screenshots; add a README row.
 
+## Font, text size, scale
+
+These are the user's, not a theme's: `hypr-font set <family>` (families from
+`hypr-font list`), `hypr-text-size <9-20>` and `hypr-scale <n>`. They write
+`shell.json` (`font.family`, `font.size`) and render
+`~/.config/hypr-theme/ui/{kitty.conf,alacritty.toml}` plus a fontconfig rule;
+a theme must never set them. In QML, sizes go through `Theme.fs(px)` and the
+family through `Theme.font`.
+
 ## Wallpapers
 
 `hypr-wall set <path>` / `next` — the shell draws it (`Wallpaper` service, crossfade),
