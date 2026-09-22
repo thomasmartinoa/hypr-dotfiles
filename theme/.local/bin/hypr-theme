@@ -134,6 +134,28 @@ JSON
     sed -i -E 's|("workbench.colorTheme"[[:space:]]*:[[:space:]]*")[^"]*(")|\1Hypr Theme\2|' "$settings"
 }
 
+apply_btop() {
+    local conf="$1"
+    mkdir -p "$(dirname "$conf")"
+    if [[ ! -f "$conf" ]]; then
+        cat > "$conf" <<CONF
+#? Config file for btop v. 1.4 — seeded by hypr-theme; btop rewrites it on exit.
+color_theme = "hypr-theme"
+theme_background = False
+truecolor = True
+rounded_corners = True
+CONF
+        return 0
+    fi
+    if grep -q '^color_theme' "$conf"; then
+        sed -i 's/^color_theme *=.*/color_theme = "hypr-theme"/' "$conf"
+    else
+        printf 'color_theme = "hypr-theme"\n' >> "$conf"
+    fi
+    # keep the terminal's translucent background rather than a solid box
+    sed -i 's/^theme_background *=.*/theme_background = False/' "$conf"
+}
+
 apply() {
     local mode gtk_theme icon_theme
     mode="$(theme_mode "$CURRENT_DIR/theme")"
@@ -152,6 +174,10 @@ apply() {
     install_file "$CURRENT_DIR/qtct-colors.conf"   "$HOME/.config/qt6ct/colors/hypr-theme.conf"
     install_file "$CURRENT_DIR/qt5ct.conf"         "$HOME/.config/qt5ct/qt5ct.conf"
     install_file "$CURRENT_DIR/qt6ct.conf"         "$HOME/.config/qt6ct/qt6ct.conf"
+    # btop: its theme goes into its themes/ dir and is selected in btop.conf
+    # (created if btop has never been run; otherwise just the theme line).
+    install_file "$CURRENT_DIR/btop.theme"         "$HOME/.config/btop/themes/hypr-theme.theme"
+    apply_btop "$HOME/.config/btop/btop.conf"
     # Kdenlive keeps its own ColorScheme (its "Always use dark" switch writes
     # BreezeDark); point it at ours so it follows the theme like other KDE apps.
     [[ -f "$HOME/.config/kdenliverc" ]] && sed -i 's/^ColorScheme=.*/ColorScheme=HyprTheme/' "$HOME/.config/kdenliverc"
@@ -168,6 +194,7 @@ apply() {
     # Running apps: reload in place where the app supports it.
     have hyprctl       && hyprctl reload >/dev/null 2>&1 || true
     pkill -SIGUSR1 -x kitty         2>/dev/null || true   # kitty re-reads kitty.conf
+    pkill -SIGUSR2 -x btop          2>/dev/null || true   # btop re-reads config + theme
     # GTK3 reads its theme once at startup and does not follow gsettings on
     # Wayland (tested: neither directly nor through the settings portal), so
     # every GTK3 daemon we own is restarted: waybar + swaync together (the

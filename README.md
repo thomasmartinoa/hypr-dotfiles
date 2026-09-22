@@ -263,7 +263,7 @@ does not pick up gsettings on Wayland — verified, including via the settings p
 | Hyprland borders, wallpaper, kitty, rofi, wlogout | Qt apps (qt5ct/qt6ct is read at start) |
 | GTK4 / libadwaita apps, Zen / Firefox (portal) | Kdenlive and other KDE apps (kdeglobals) |
 | VS Code, Electron apps such as Claude (portal) | Alacritty (reads its import at start) |
-| Neovim (every running instance) | pkexec apps like grub-customizer |
+| Neovim (every running instance), btop (SIGUSR2) | pkexec apps like grub-customizer |
 | Login screen, `/root` GTK config (root sync) | |
 
 The **picker** is an Omarchy-style carousel in the shell: the selected theme is shown large as a
