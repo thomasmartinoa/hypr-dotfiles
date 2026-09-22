@@ -42,7 +42,7 @@ else
 fi
 
 STEP_N=0
-STEP_TOTAL=8
+STEP_TOTAL=9
 
 banner() {
   printf '%s\n' ""
@@ -606,6 +606,26 @@ else
     ok "Theme '$_theme' rendered and applied."
   else
     warn "hypr-theme failed — run: hypr-theme set hyprmono"
+  fi
+fi
+
+# ============================================================================
+# Shell odds and ends: the Quickshell shell owns notifications, so the
+# swaync user unit must not be D-Bus-activated behind its back (it is, on
+# every login, and then fails five times); and the /hypr agent skill is
+# linked into Claude Code / Codex / the generic ~/.agents dir so
+# `/hypr <request>` works in any coding agent.
+step "Shell"
+if [[ $DRY_RUN -eq 1 ]]; then
+  info "Would mask the swaync user unit and link the /hypr skill (hypr-agent skills install)."
+else
+  if command -v swaync >/dev/null 2>&1; then
+    systemctl --user mask swaync.service >/dev/null 2>&1 && ok "swaync user unit masked (the shell is the notification daemon)."
+  fi
+  if "$HOME/.local/bin/hypr-agent" skills install >/dev/null 2>&1; then
+    ok "/hypr skill linked for coding agents ($(ls -d "$HOME"/.claude/skills "$HOME"/.agents/skills 2>/dev/null | tr '\n' ' '))."
+  else
+    warn "Skill link failed — run: hypr-agent skills install"
   fi
 fi
 

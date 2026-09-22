@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+# hypr-doctor — a diagnostics bundle for this rice, no sudo, no prompts.
+#
+#   hypr-doctor            write ~/.local/state/hypr-theme/doctor.txt and print its path
+#   hypr-doctor --print    print the bundle to stdout instead
+#
+# Meant for `/hypr` (the agent skill) and for pasting into a bug report.
+# Everything here is read-only.
+set -uo pipefail
+OUT="$HOME/.local/state/hypr-theme/doctor.txt"
+[[ "${1:-}" == "--print" ]] && OUT=/dev/stdout || mkdir -p "$(dirname "$OUT")"
+
+have() { command -v "$1" >/dev/null 2>&1; }
+sec()  { printf '\n== %s ==\n' "$*"; }
+run()  { # run <label> <cmd...>: print the command's output, never fail the script
+    printf -- '-- %s\n' "$1"; shift
+    if have "$1"; then timeout 10 "$@" 2>&1 | head -n 60 || true; else printf '(%s not installed)\n' "$1"; fi
+}
+
+{
+printf 'hypr-doctor  %s  %s@%s\n' "$(date -Is)" "$USER" "$(cat /etc/hostname 2>/dev/null)"
+
+sec "Versions"
+run "kernel" uname -r
+run "hyprland" hyprctl version
+run "quickshell" qs --version
+run "pacman: rice packages" pacman -Q hyprland quickshell kitty sddm mesa nvidia-utils nvidia-open-dkms linux-firmware 2>&1
+run "rice" git -C "$HOME/hypr-dotfiles" log --oneline -3
+run "rice: uncommitted" git -C "$HOME/hypr-dotfiles" status --short
+
+sec "Hardware"
+run "cpu" sh -c "lscpu | grep -E 'Model name|^CPU\(s\)|MHz' "
+run "gpu(s)" sh -c "lspci -nnk | grep -A3 -E 'VGA|3D' | grep -E 'VGA|3D|driver'"
+run "gpu power state" sh -c "for c in /sys/class/drm/card*/device/power_state; do printf '%s: ' \"\$c\"; cat \"\$c\"; done"
+run "memory" free -h
+run "disk" df -h / /home "$HOME"
+run "thermal" sh -c "for z in /sys/class/thermal/thermal_zone*; do printf '%s %s°C\n' \"\$(cat \$z/type)\" \"\$((\$(cat \$z/temp)/1000))\"; done"
+run "battery" sh -c "for b in /sys/class/power_supply/BAT*; do printf '%s: %s%% %s, health %s%%\n' \"\$(basename \$b)\" \"\$(cat \$b/capacity)\" \"\$(cat \$b/status)\" \"\$(( 100 * \$(cat \$b/energy_full 2>/dev/null || cat \$b/charge_full) / \$(cat \$b/energy_full_design 2>/dev/null || cat \$b/charge_full_design) ))\"; done"
+run "power profile" powerprofilesctl get
+run "inhibitors" systemd-inhibit --list --no-pager
+run "uptime/load" uptime
+
+sec "Display"
+run "monitors" sh -c "hyprctl monitors -j | jq -r '.[] | \"\\(.name) \\(.width)x\\(.height)@\\(.refreshRate|floor) scale \\(.scale) at \\(.x),\\(.y) vrr=\\(.vrr)\"'"
+run "config errors" hyprctl configerrors
+run "layers" sh -c "hyprctl layers -j | jq -r '.. | .namespace? // empty' | sort | uniq -c"
+run "env" sh -c "env | grep -E '^(XDG_SESSION_TYPE|XDG_CURRENT_DESKTOP|QT_QPA_PLATFORMTHEME|QT_QPA_PLATFORM|GTK_THEME|HYPR_SHELL|WLR_|__GLX|LIBVA)' | sort"
+
+sec "Shell"
+run "processes" sh -c "pgrep -a -x qs; pgrep -a -x wl-paste; pgrep -a -x polkit-gnome-au; pgrep -a -x hypridle; pgrep -a -x waybar; pgrep -a -x swaync"
+run "shell log: warnings/errors (last 40)" sh -c "qs log 2>/dev/null | grep -E 'WARN|ERROR|error' | grep -v desktopentry | tail -n 40"
+run "shell.json" sh -c "jq -c '.bar | {position, transparent, layout: (.layout|keys)}' '$HOME/.config/hypr-theme/shell.json'"
+run "ipc targets" sh -c "qs ipc show 2>/dev/null | grep '^target' | tr '\n' ' '; echo"
+
+sec "Theme"
+run "current" hypr-theme current
+run "current/ files" sh -c "ls '$HOME/.config/hypr-theme/current' | tr '\n' ' '; echo"
+run "gtk3 settings" sh -c "grep -E 'gtk-(theme|icon-theme)-name' '$HOME/.config/gtk-3.0/settings.ini'"
+run "gsettings" sh -c "gsettings get org.gnome.desktop.interface color-scheme; gsettings get org.gnome.desktop.interface gtk-theme"
+run "font" sh -c "fc-list : family | grep -i 'JetBrainsMono Nerd Font Propo' | head -1 || echo MISSING"
+run "wallpaper" hypr-wall current
+run "root sync" sh -c "ls -la /usr/local/bin/hypr-theme-root-sync /etc/sudoers.d/hypr-theme 2>&1"
+
+sec "Links (stow)"
+run "config links" sh -c "for p in hypr quickshell hypr-theme kitty gtk-3.0 nvim; do printf '%-12s ' \"\$p\"; readlink -f \"$HOME/.config/\$p\"; done; for p in .local .local/bin .local/share; do printf '%-12s ' \"\$p\"; [[ -L \"$HOME/\$p\" ]] && echo 'SYMLINK (stow folded!)' || echo dir; done"
+run "bin" sh -c "ls -la '$HOME/.local/bin' | grep -E 'hypr-' "
+
+sec "System health"
+run "failed units (system)" systemctl --failed --no-pager --no-legend
+run "failed units (user)" systemctl --user --failed --no-pager --no-legend
+run "journal errors this boot (last 40)" journalctl -b -p err --no-pager -n 40 -o short
+run "kernel: oom / gpu / firmware" sh -c "journalctl -k -b --no-pager | grep -iE 'oom|out of memory|nvrm|amdgpu.*error|i915.*error|firmware.*fail' | tail -n 20"
+run "crashes" coredumpctl list --no-pager --since "-7d"
+run "last upgrades" sh -c "grep -E 'upgraded|installed|removed' /var/log/pacman.log | tail -n 25"
+run "top cpu" sh -c "ps -eo pcpu,pmem,rss,comm --sort=-pcpu | head -n 8"
+run "top mem" sh -c "ps -eo pmem,rss,comm --sort=-pmem | head -n 8"
+
+sec "Network / audio"
+run "network" sh -c "nmcli -t -f DEVICE,TYPE,STATE,CONNECTION device; nmcli radio"
+run "audio" sh -c "wpctl status | sed -n '/Sinks/,/Sources/p' | head -n 15"
+run "bluetooth" sh -c "bluetoothctl show | grep -E 'Powered|Name'"
+
+sec "Agents"
+run "agents" hypr-agent list
+run "skills" hypr-agent skills status
+} > "$OUT" 2>&1
+
+[[ "$OUT" == /dev/stdout ]] || printf '%s\n' "$OUT"

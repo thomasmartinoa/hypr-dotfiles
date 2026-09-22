@@ -12,6 +12,7 @@ which="${HYPR_SHELL:-quickshell}"
 stop() {
     pkill -x hypridle 2>/dev/null
     pkill -x qs 2>/dev/null
+    pkill -f '^/usr/bin/wl-paste --watch echo' 2>/dev/null   # the shell's clipboard watcher (Services/Clip)
     pkill -x waybar 2>/dev/null
     pkill -x swaync 2>/dev/null
 }

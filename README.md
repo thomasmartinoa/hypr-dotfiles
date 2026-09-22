@@ -228,6 +228,17 @@ agent's local login (`~/.claude/.credentials.json`) and never writes to it. Clau
 provider in [`agents/usage.py`](theme/.config/hypr-theme/agents/usage.py); another agent is one
 function that returns `{name, plan, limits}`.
 
+**`/hypr` — the rice as an agent skill.** One skill (no menu of commands to learn): say what
+you want — *"make a warm dark theme called ember"*, *"add a widget that shows my power draw"*,
+*"bind SUPER+N to a scratchpad"*, *"diagnose my pc"*, *"check the rice in light mode"* — and it
+reads the matching guide ([`skills/hypr/`](theme/.config/hypr-theme/skills/hypr/): theming,
+plugins, hyprland, diagnose, verify), follows the house rules (edit the repo not `current/`,
+monochrome, both modes, screenshot-verify, never break the session, keep `install.sh` honest)
+and commits. Linked into Claude Code (`/hypr …`), Codex, OpenCode, Gemini, Pi and `~/.agents`
+by `hypr-agent skills install` (install.sh does it). `hypr-doctor` is its no-sudo diagnostics
+bundle — versions, GPU, monitors, config errors, shell log, failed units, journal errors,
+crashes, thermal/battery, stow links, theme state — also handy to paste into a bug report.
+
 **Panels** drop down from the bar: click the speaker for output/input volume and device pick, the
 wifi icon for networks (toggle, connect with a password prompt, right-click to forget), bluetooth
 (minimal skin; the pill skin leaves that to the tray applet) for devices, the battery for power

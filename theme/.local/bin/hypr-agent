@@ -6,6 +6,8 @@
 #   hypr-agent launch [name]      open the agent in a terminal (default agent if no name)
 #   hypr-agent usage-update       refresh ~/.local/state/hypr-theme/agents.json (bar + panel data)
 #   hypr-agent usage              print that data
+#   hypr-agent skills install     link the /hypr skill into every agent's skills dir
+#   hypr-agent skills status      where it is linked
 #
 # The default lives in ~/.config/hypr-theme/shell.json under "agents".
 set -euo pipefail
@@ -13,6 +15,10 @@ set -euo pipefail
 CONF="$HOME/.config/hypr-theme/shell.json"
 STATE="$HOME/.local/state/hypr-theme/agents.json"
 COLLECT="$HOME/.config/hypr-theme/agents/usage.py"
+SKILLS="$HOME/.config/hypr-theme/skills"
+# where each agent looks for skills; the generic ~/.agents one covers the rest
+SKILL_DIRS=("$HOME/.claude/skills" "$HOME/.agents/skills" "$HOME/.codex/skills"
+            "$HOME/.config/opencode/skills" "$HOME/.gemini/config/skills" "$HOME/.pi/agent/skills")
 # command → label; anything on PATH from this list is offered
 KNOWN=(claude:"Claude Code" codex:"Codex" opencode:"OpenCode" gemini:"Gemini CLI" copilot:"GitHub Copilot"
        crush:"Crush" grok:"Grok" pi:"Pi" ori:"Ori" aider:"Aider" goose:"Goose")
@@ -63,6 +69,34 @@ case "${1:-}" in
     usage)
         [[ -f "$STATE" ]] || python3 "$COLLECT"
         if have jq; then jq . "$STATE"; else cat "$STATE"; fi ;;
+    skills)
+        case "${2:-status}" in
+            install)
+                # one symlink per skill folder, in every agent's skills dir. Claude
+                # and the generic dir always; the others only once that agent has
+                # a home (so we do not litter ~ with dirs for agents never used).
+                for skill in "$SKILLS"/*/; do
+                    name="$(basename "$skill")"
+                    for d in "${SKILL_DIRS[@]}"; do
+                        case "$d" in
+                            "$HOME/.claude/skills"|"$HOME/.agents/skills") ;;
+                            *) [[ -d "$(dirname "$d")" ]] || continue ;;
+                        esac
+                        mkdir -p "$d"
+                        [[ -e "$d/$name" && ! -L "$d/$name" ]] && { printf 'skip %s (not a link)\n' "$d/$name"; continue; }
+                        ln -sfn "${skill%/}" "$d/$name" && printf 'linked %s -> %s\n' "$d/$name" "${skill%/}"
+                    done
+                done ;;
+            status)
+                for skill in "$SKILLS"/*/; do
+                    name="$(basename "$skill")"
+                    for d in "${SKILL_DIRS[@]}"; do
+                        [[ -L "$d/$name" ]] && printf '%s -> %s\n' "$d/$name" "$(readlink "$d/$name")"
+                    done
+                done
+                true ;;
+            *) die "skills install|status" ;;
+        esac ;;
     *)
         sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'; exit 1 ;;
 esac
