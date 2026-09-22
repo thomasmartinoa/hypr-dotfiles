@@ -11,3 +11,4 @@ singleton Themes 1.0 Themes.qml
 singleton Apps 1.0 Apps.qml
 singleton Clip 1.0 Clip.qml
 singleton Agents 1.0 Agents.qml
+singleton Menu 1.0 Menu.qml

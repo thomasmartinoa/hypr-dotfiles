@@ -28,6 +28,7 @@ hl.layer_rule({ match = { namespace = "^hypr-control-center$" }, blur = true, ig
 hl.layer_rule({ match = { namespace = "^hypr-picker$" },         blur = true, ignore_alpha = 0.7 })
 hl.layer_rule({ match = { namespace = "^hypr-launcher$" },       blur = true, ignore_alpha = 0.5, animation = "popin 65%" })
 hl.layer_rule({ match = { namespace = "^hypr-clipboard$" },      blur = true, ignore_alpha = 0.5, animation = "popin 65%" })
+hl.layer_rule({ match = { namespace = "^hypr-menu$" },           blur = true, ignore_alpha = 0.5, animation = "popin 65%" })
 
 -- Rofi
 hl.layer_rule({
@@ -39,6 +40,15 @@ hl.layer_rule({
 --------------------
 ---- WINDOW RULES --
 --------------------
+
+-- floating terminal for menu actions (hypr-float): centred, roomy
+hl.window_rule({
+	name = "hypr-float",
+	match = { class = "^hypr-float$" },
+	float = true,
+	center = true,
+	size = { "60%", "60%" },
+})
 
 hl.window_rule({
 	name = "idle-inhibit-fullscreen",

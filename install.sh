@@ -16,7 +16,7 @@ PKGS_REPO=(
   xdg-desktop-portal-hyprland polkit-gnome qt5ct qt6ct power-profiles-daemon
   kitty alacritty zsh starship
   neovim fastfetch btop eza
-  grim slurp wl-clipboard cliphist playerctl brightnessctl batsignal ffmpeg
+  grim slurp wl-clipboard cliphist playerctl brightnessctl batsignal ffmpeg hyprsunset
   thunar pavucontrol networkmanager nm-connection-editor
   ttf-jetbrains-mono-nerd inter-font papirus-icon-theme adw-gtk-theme stow
   # theme engine: renderer, JSON edits, gsettings schema, portal settings backend

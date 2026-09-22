@@ -108,3 +108,22 @@ Save → hot-reload; check `qs log` for `WARN`/`ERROR` mentioning your file.
 New files, qmldir edits or persistent weirdness → `shell.sh restart` (wait ~3 s).
 Then screenshot the bar in **both skins** (`qs ipc call bar toggle`) and both
 themes, and the panel open (`qs ipc call panels open <name>`) — verify.md.
+
+## The menu (SUPER+SPACE)
+
+`~/.config/hypr-theme/menu.jsonc` defines the tree (the header documents every
+field); `menu.local.jsonc` next to it overlays by id and is hot-reloaded, so a
+new entry for something you built is one line:
+
+```jsonc
+{ "toggle.vpn": {"icon":"󰌆","label":"VPN","checked":"vpn","action":"~/bin/vpn toggle","keep":true} }
+```
+
+`checked`/`value`/`when` read state keys from the shell (`theme light bar.*
+caffeine dnd laptop widget.<id>`) or from `hypr-menu-data` (`state()` in
+`theme/.local/bin/hypr-menu-data`; add a key there for a new toggle). Dynamic
+row lists are `provider`s in the same script. `qs ipc call menu run <id>`
+runs an entry from a keybind; `menu open <id>` opens a section. Rendering is
+`Services/Menu.qml` + `Menu/MenuWindow.qml`. Long-running or interactive
+actions go through `hypr-float <cmd>` (floating terminal); config edits through
+`hypr-edit <file>` (validates Hyprland Lua on close).

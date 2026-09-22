@@ -36,6 +36,8 @@ Scope {
         function toggle(): string { Theme.barOverride = Theme.barStyle === "pill" ? "minimal" : "pill"; return Theme.barStyle }
         function position(edge: string): string { Config.setPosition(edge); return Config.position }
         function transparent(): bool { Config.toggleTransparent(); return Config.transparent }
+        function visible(): bool { Config.set("bar.hidden", !Config.hidden); return !Config.hidden }
+        function battery(): bool { Config.set("bar.battery", !Config.batteryPercent); return Config.batteryPercent }
     }
 
     Variants {
@@ -48,6 +50,7 @@ Scope {
             PanelWindow {
                 id: win
                 screen: perScreen.modelData
+                visible: !Config.hidden
 
                 readonly property bool pill: Theme.barStyle === "pill"
                 readonly property string pos: Config.position

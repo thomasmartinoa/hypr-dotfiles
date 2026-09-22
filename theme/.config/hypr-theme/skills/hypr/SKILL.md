@@ -57,6 +57,7 @@ anything; otherwise just do it.
 │   ├── templates/*.tpl              one per app, rendered by render.py
 │   ├── current/  → GENERATED. never edit; re-render with `hypr-theme reload`
 │   ├── shell.json                   shell settings (bar position/skin layouts, modules, agents.default)
+│   ├── menu.jsonc (+ menu.local.jsonc)   the SUPER+SPACE menu tree — see plugins.md
 │   ├── agents/usage.py  skills/hypr/  plugins/  root-sync.sh
 ├── theme/.local/bin/  hypr-theme  hypr-wall  hypr-theme-menu  hypr-agent  hypr-doctor
 ├── sddm/  gtk/  nvim/  kittyterminal/  alacritty/  zsh/  starship/
@@ -70,12 +71,13 @@ Commands you will use (all `--help`/header-documented — read the script if uns
 | `hypr-theme list / current / set <id> / toggle / next / reload / json` | apply a theme everywhere (renders templates → current/, installs GTK/Qt/KDE/btop files, reloads kitty/hyprland/nvim/shell, root+SDDM sync) |
 | `hypr-wall set <path> / next / current / ensure` | wallpaper (shell layer; also lock + SDDM) |
 | `hypr-theme-menu theme|wallpaper` | open the carousel picker |
-| `qs ipc call <target> <fn> [args]` | talk to the running shell. Targets: `bar theme wallpaper picker launcher clipboard notifications panels powermenu lock caffeine osd agents` (`qs ipc show` lists functions) |
+| `qs ipc call <target> <fn> [args]` | talk to the running shell. Targets: `bar theme wallpaper picker launcher clipboard notifications panels powermenu lock caffeine osd agents menu` (`qs ipc show` lists functions) |
 | `qs log` | the shell's log (QML errors show here) |
 | `~/.config/hypr/scripts/shell.sh restart` | restart the shell (needed after new files/qmldir changes; hot-reload can serve stale code) |
 | `hyprctl reload && hyprctl configerrors` | after ANY Hyprland change; must print nothing |
 | `hypr-agent list / default / launch / usage / skills install` | coding agents |
 | `hypr-doctor [--print]` | diagnostics bundle (see diagnose.md) |
+| `qs ipc call menu open|run|search <id>` · `hypr-float <cmd>` · `hypr-edit <file>` · `hypr-toggle gaps|opacity` · `hypr-nightlight` · `hypr-remind` · `hypr-default` · `hypr-pkg` | menu actions, usable from anywhere |
 
 ## 3. Rules that keep the rice intact
 

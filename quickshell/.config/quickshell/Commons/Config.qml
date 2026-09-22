@@ -16,6 +16,8 @@ Singleton {
         bar: {
             position: "top",                 // top | bottom | left | right
             transparent: false,              // minimal skin only
+            hidden: false,                   // Menu › Toggle › Bar
+            battery: true,                   // show the percentage next to the battery glyph
             layout: {
                 // the classic bar, exactly as waybar had it
                 pill: {
@@ -45,6 +47,8 @@ Singleton {
     readonly property string position: (bar && bar.position) || "top"
     readonly property bool vertical: position === "left" || position === "right"
     readonly property bool transparent: !!(bar && bar.transparent)
+    readonly property bool hidden: !!(bar && bar.hidden)
+    readonly property bool batteryPercent: !(bar && bar.battery === false)
 
     function layoutFor(style, section) {
         const l = bar && bar.layout && bar.layout[style]

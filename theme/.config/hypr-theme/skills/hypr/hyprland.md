@@ -13,6 +13,11 @@ modules/decorations.lua  hl.config({ general = {...}, decoration = {...}, animat
 modules/windowrules.lua  hl.window_rule({ match = {...}, ... }), hl.layer_rule({ match = { namespace = "^hypr-x$" }, blur = true, ignore_alpha = 0.5 })
 ```
 
+There is no `hyprctl keyword` with the Lua parser ("keyword can't work with
+non-legacy parsers"): a live, temporary change is `hyprctl eval 'hl.config({
+general = { gaps_in = 0 } })'` and `hyprctl reload` restores the config
+(`hypr-toggle gaps|opacity` does exactly this).
+
 After **every** change: `hyprctl reload && hyprctl configerrors` — it must
 print nothing. A Lua error leaves Hyprland on the previous config, so the
 change silently does not apply; `configerrors` is the only way to know.

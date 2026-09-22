@@ -228,6 +228,19 @@ agent's local login (`~/.claude/.credentials.json`) and never writes to it. Clau
 provider in [`agents/usage.py`](theme/.config/hypr-theme/agents/usage.py); another agent is one
 function that returns `{name, plan, limits}`.
 
+**The menu** (`SUPER+SPACE`): everything in one place, Omarchy-style. Apps · Style (theme,
+wallpaper, light/dark, bar skin/position/transparency/widgets, edit look) · Toggle (caffeine, do not
+disturb, night light, bar, battery %, gaps, window transparency) · Setup (monitors, keybindings,
+input, autostart, window rules and shell.json open in the editor and are validated on save; Wi-Fi,
+Bluetooth, audio and power panels; default agent/terminal/browser) · Agents · Learn (a searchable
+keybinding list read live from `binds.lua`, README, wikis) · Install (the rice's packages, ✓ =
+installed, select to remove; any package) · Update (system, shell, Hyprland, theme, stow, doctor) ·
+Reminder (`15 pick up jack`) · About · System. Type to search every entry from anywhere (the row
+shows where it lives), `↑↓`/`Tab`, `Enter`, `Backspace` up, `1–9` jump, `Esc`. ✓ and values are
+live. `SUPER+CTRL+O` opens Toggle directly; `qs ipc call menu open|run <id>` from scripts. It is
+data: [`menu.jsonc`](theme/.config/hypr-theme/menu.jsonc) (documented at the top); your own
+entries go in `~/.config/hypr-theme/menu.local.jsonc`, merged by id and hot-reloaded.
+
 **`/hypr` — the rice as an agent skill.** One skill (no menu of commands to learn): say what
 you want — *"make a warm dark theme called ember"*, *"add a widget that shows my power draw"*,
 *"bind SUPER+N to a scratchpad"*, *"diagnose my pc"*, *"check the rice in light mode"* — and it
@@ -328,6 +341,8 @@ If the login screen ever comes up black, switch to a TTY (`Ctrl+Alt+F3`) and
 |---|---|
 | `SUPER` + `Return` / `E` / `B` | Terminal · file manager · browser |
 | `SUPER` + `D` / `V` | App launcher · clipboard history |
+| `SUPER` + `SPACE` | The menu (everything: style, toggles, setup, agents, learn, install, update, reminders, system) |
+| `SUPER` + `CTRL` + `O` | The menu, opened on Toggle |
 | `SUPER` + `L` / `M` | Lock screen · power menu |
 | `SUPER` + `R` | Restart the shell (bar + notifications) |
 | `SUPER` + `SHIFT` + `B` | Bar skin: pill ↔ minimal |

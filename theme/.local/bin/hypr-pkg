@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# hypr-pkg <args...> — package manager front: yay/paru if present, else sudo pacman.
+if command -v yay >/dev/null 2>&1; then h=yay; elif command -v paru >/dev/null 2>&1; then h=paru; else h="sudo pacman"; fi
+[[ "${1:-}" == -* ]] || set -- -S "$@"
+exec $h "$@"

@@ -1,0 +1,162 @@
+#!/usr/bin/env python3
+"""hypr-menu-data — dynamic rows and live state for the shell's menu, as one JSON
+object, in one process (the menu runs it every time it opens).
+
+  {
+    "state":  { "nightlight": true, "gaps": true, "opacity": true, "hibernate": true,
+                "terminal": "kitty", "browser": "zen-browser", "agent": "claude" },
+    "agents":      [ {id, label, icon, action, checked} ],
+    "keybindings": [ {id, label, value, description} ],
+    "packages":    [ {id, label, checked, action} ],
+    "reminders":   [ {id, label} ],
+    "about":       [ {id, label, value} ]
+  }
+"""
+import json, os, re, shutil, subprocess, sys, time
+
+HOME = os.path.expanduser("~")
+REPO = os.path.join(HOME, "hypr-dotfiles")
+
+
+def sh(cmd, timeout=3):
+    try:
+        return subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=timeout).stdout.strip()
+    except Exception:
+        return ""
+
+
+def read(path, default=""):
+    try:
+        return open(path).read().strip()
+    except OSError:
+        return default
+
+
+def state():
+    gaps = sh("hyprctl getoption general:gaps_in -j")
+    opac = sh("hyprctl getoption decoration:active_opacity -j")
+    try:
+        gaps_on = json.loads(gaps).get("css", "") != "0 0 0 0"
+    except Exception:
+        gaps_on = True
+    try:
+        opac_on = json.loads(opac).get("float", 1.0) < 0.999
+    except Exception:
+        opac_on = True
+    hib = "disk" in read("/sys/power/state") and bool(sh("swapon --show --noheadings"))
+    return {
+        "nightlight": bool(sh("pgrep -x hyprsunset")),
+        "gaps": gaps_on, "opacity": opac_on, "hibernate": hib,
+        "terminal": read(f"{HOME}/.config/hypr-theme/defaults/terminal", "kitty"),
+        "browser": read(f"{HOME}/.config/hypr-theme/defaults/browser", "zen-browser"),
+        "agent": sh("hypr-agent default"),
+        "wallpaper": os.path.basename(os.path.realpath(f"{HOME}/.config/hypr-theme/current/background")),
+    }
+
+
+AGENT_ICONS = {"claude": "󰛄", "codex": "", "opencode": "", "gemini": "󰊭", "copilot": ""}
+
+
+def agents(default):
+    out = []
+    for line in sh("hypr-agent list").splitlines():
+        m = re.match(r"[* ] +(\S+)\s+(.*?)(?: \(default\))?$", line)
+        if not m:
+            continue
+        cmd, label = m.group(1), m.group(2)
+        out.append({"id": cmd, "label": label, "icon": AGENT_ICONS.get(cmd, "󰚩"),
+                    "action": f"hypr-agent launch {cmd}", "checked": cmd == default})
+    return out
+
+
+def keybindings():
+    """Rows from modules/binds.lua: key, the trailing `-- comment` (or what it runs)."""
+    src = read(f"{REPO}/hyprland/.config/hypr/modules/binds.lua")
+    rows, i = [], 0
+    while True:
+        i = src.find("hl.bind(", i)
+        if i < 0:
+            break
+        # skip a commented-out bind
+        ls = src.rfind("\n", 0, i) + 1
+        if src[ls:i].lstrip().startswith("--"):
+            i += 8; continue
+        # balance parentheses to find the call's end
+        depth, j = 0, i + 7
+        while j < len(src):
+            if src[j] == "(": depth += 1
+            elif src[j] == ")":
+                depth -= 1
+                if depth == 0: break
+            j += 1
+        args = src[i + 8:j]
+        le = src.find("\n", j)
+        tail = src[j + 1:le if le > 0 else None]
+        cm = re.search(r"--\s*(.*)$", tail)
+        m = re.match(r'\s*(mainMod\s*\.\.\s*)?"([^"]+)"', args)
+        if not m:
+            i = j; continue
+        key = ("SUPER" + m.group(2)) if m.group(1) else m.group(2)
+        if key.endswith("+ "):          # the workspace loop: `" + " .. key` — listed by hand below
+            i = j; continue
+        if cm:
+            label = cm.group(1).strip()
+        else:
+            w = re.search(r'exec_cmd\(\s*(?:"|\[\[)?([^"\]\n]+)', args)
+            label = (w.group(1) if w else re.sub(r"^\s*[^,]+,\s*", "", args)).strip()
+            label = re.sub(r"^~/.config/hypr/scripts/", "", label).replace("hl.dsp.", "")
+        rows.append({"id": key, "label": label[:60], "value": key.replace(" + ", "+"), "description": args[:80], "icon": "\U000F030C"})
+        i = j
+    rows += [{"id": "ws", "label": "Switch to workspace N (SHIFT: move window there)", "value": "SUPER+1…0", "description": "workspace"}]
+    return rows
+
+
+def packages():
+    src = read(f"{REPO}/install.sh")
+    names = []
+    for var in ("PKGS_REPO", "PKGS_AUR"):
+        m = re.search(var + r"=\((.*?)\)", src, re.S)
+        if m:
+            body = re.sub(r"#[^\n]*", "", m.group(1))
+            names += body.split()
+    installed = set(sh("pacman -Qq", timeout=5).split())
+    helper = "yay" if shutil.which("yay") else "paru" if shutil.which("paru") else "sudo pacman"
+    out = []
+    for n in sorted(set(names)):
+        have = n in installed
+        out.append({"id": n, "label": n, "checked": have,
+                    "action": f"hypr-float {helper} -R{'ns' if helper == 'sudo pacman' else 'ns'} {n}" if have
+                              else f"hypr-float {helper} -S {n}"})
+    return out
+
+
+def reminders():
+    out = []
+    for line in sh("hypr-remind show").splitlines():
+        out.append({"id": line, "label": line, "icon": "󰢌"})
+    return out or [{"id": "none", "label": "No reminders", "icon": "󰢌"}]
+
+
+def about():
+    commit = sh(f"git -C {REPO} log -1 --format='%h  %s'")
+    branch = sh(f"git -C {REPO} rev-parse --abbrev-ref HEAD")
+    up = sh("uptime -p").replace("up ", "")
+    return [
+        {"id": "rice", "label": "HyprMono rice", "value": f"{branch} · {commit[:40]}", "icon": "\U000F0313"},
+        {"id": "theme", "label": "Theme", "value": sh("hypr-theme current"), "icon": "󰸌"},
+        {"id": "host", "label": "Machine", "value": f"{os.environ.get('USER','')}@{read('/etc/hostname')}", "icon": "󰟀"},
+        {"id": "kernel", "label": "Kernel", "value": sh("uname -r"), "icon": "\U000F033D"},
+        {"id": "hypr", "label": "Hyprland", "value": sh("hyprctl version -j | jq -r .tag"), "icon": "\U000F05B0"},
+        {"id": "qs", "label": "Quickshell", "value": re.sub(r" *\(.*", "", sh("qs --version")).replace("quickshell ", ""), "icon": "\U000F0219"},
+        {"id": "uptime", "label": "Uptime", "value": up, "icon": "󰔟"},
+    ]
+
+
+def main():
+    st = state()
+    print(json.dumps({"state": st, "agents": agents(st["agent"]), "keybindings": keybindings(),
+                      "packages": packages(), "reminders": reminders(), "about": about()}))
+
+
+if __name__ == "__main__":
+    main()

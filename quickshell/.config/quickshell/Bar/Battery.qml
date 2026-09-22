@@ -34,7 +34,7 @@ Pill {
             onRunningChanged: if (!running) ic.opacity = 1
         }
     }
-    Label { visible: bat.pillMode && !bat.vertical; text: bat.pct + "%"; color: bat.tone }
+    Label { visible: bat.pillMode && !bat.vertical && Config.batteryPercent; text: bat.pct + "%"; color: bat.tone }
 
     PowerPanel { anchorItem: bat }
 }

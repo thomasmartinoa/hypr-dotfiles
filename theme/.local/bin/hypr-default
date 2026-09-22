@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# hypr-default <terminal|browser|agent> [name] — show or set a default app.
+# Stored in ~/.config/hypr-theme/defaults/<kind>; binds.lua reads terminal
+# and browser from there (SUPER+Return, SUPER+B); agent is hypr-agent's.
+kind="${1:?usage: hypr-default terminal|browser|agent [name]}"; name="${2:-}"
+dir="$HOME/.config/hypr-theme/defaults"
+case "$kind" in
+    agent) exec hypr-agent default $name ;;
+    terminal|browser) ;;
+    *) echo "unknown kind: $kind" >&2; exit 1 ;;
+esac
+if [[ -z "$name" ]]; then
+    cat "$dir/$kind" 2>/dev/null || { [[ $kind == terminal ]] && echo kitty || echo zen-browser; }
+else
+    command -v "$name" >/dev/null 2>&1 || { echo "$name is not installed" >&2; exit 1; }
+    mkdir -p "$dir"; printf '%s\n' "$name" > "$dir/$kind"
+    hyprctl reload >/dev/null 2>&1
+    echo "default $kind: $name"
+fi

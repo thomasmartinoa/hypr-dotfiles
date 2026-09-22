@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# hypr-remind <minutes> [message]   a desktop notification in N minutes (systemd user timer)
+# hypr-remind show                  list pending reminders
+# hypr-remind clear                 cancel them all
+# The first argument can also be the whole "15 pick up jack" string (the menu passes it).
+set -u
+case "${1:-}" in
+    show)
+        systemctl --user list-timers --all --no-legend 2>/dev/null | awk '$0 ~ /hypr-remind-/ { print }' | while read -r line; do
+            unit="$(grep -o 'hypr-remind-[^ ]*\.timer' <<<"$line")"
+            when="$(awk '{print $1" "$2" "$3" "$4}' <<<"$line")"
+            msg="$(systemctl --user show "$unit" -p Description --value 2>/dev/null)"
+            printf '%s  —  %s\n' "$when" "${msg#hypr-remind: }"
+        done
+        exit 0 ;;
+    clear)
+        for u in $(systemctl --user list-units --all --no-legend 'hypr-remind-*' 2>/dev/null | awk '{print $1}'); do systemctl --user stop "$u" 2>/dev/null; done
+        notify-send -a reminder "Reminders cleared"; exit 0 ;;
+    ""|-h|--help) sed -n '2,5p' "$0"; exit 1 ;;
+esac
+set -- $*                       # "15 pick up jack" → 15 pick up jack
+mins="$1"; shift; msg="${*:-Reminder}"
+[[ "$mins" =~ ^[0-9]+$ ]] || { notify-send -a reminder "Reminder" "usage: <minutes> [message]"; exit 1; }
+id="hypr-remind-$(date +%s)"
+systemd-run --user --quiet --unit="$id" --description="hypr-remind: $msg" --on-active="${mins}m" \
+    --setenv=WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-}" --setenv=DBUS_SESSION_BUS_ADDRESS="${DBUS_SESSION_BUS_ADDRESS:-}" \
+    notify-send -a reminder -u critical "Reminder" "$msg" \
+  && notify-send -a reminder "Reminder set" "in $mins min: $msg"

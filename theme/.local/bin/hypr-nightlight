@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# hypr-nightlight toggle|on|off|status — warm screen tint via hyprsunset.
+TEMP="${HYPR_NIGHTLIGHT_TEMP:-4000}"
+on()  { pgrep -x hyprsunset >/dev/null || setsid -f hyprsunset -t "$TEMP" >/dev/null 2>&1; }
+off() { pkill -x hyprsunset 2>/dev/null; }
+case "${1:-toggle}" in
+    on) on ;; off) off ;;
+    toggle) if pgrep -x hyprsunset >/dev/null; then off; else on; fi ;;
+    status) pgrep -x hyprsunset >/dev/null && echo on || echo off ;;
+    *) echo "usage: hypr-nightlight toggle|on|off|status" >&2; exit 1 ;;
+esac

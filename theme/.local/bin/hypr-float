@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# hypr-float <command...> — run a command in a floating, centred terminal
+# (class hypr-float; the window rule is in modules/windowrules.lua). The
+# terminal stays open on failure so the output can be read; Enter closes.
+[[ $# -gt 0 ]] || { echo "usage: hypr-float <command...>" >&2; exit 1; }
+term="${TERMINAL:-kitty}"
+script="$*; s=\$?; printf '\n[exit %s] press Enter to close' \"\$s\"; read -r"
+case "$term" in
+    kitty)     exec setsid -f kitty --class hypr-float --title "$1" -e bash -lc "$script" ;;
+    alacritty) exec setsid -f alacritty --class hypr-float --title "$1" -e bash -lc "$script" ;;
+    *)         exec setsid -f "$term" -e bash -lc "$script" ;;
+esac

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# hypr-edit <file> — open a config file in $EDITOR in a floating terminal;
+# Hyprland Lua files are validated after the editor closes.
+f="${1:?usage: hypr-edit <file>}"; f="${f/#\~/$HOME}"
+ed="${EDITOR:-nvim}"
+check=':'
+[[ "$f" == *.lua && "$f" == *"/hypr/"* ]] && check='hyprctl reload >/dev/null; e=$(hyprctl configerrors); [[ -z "$e" || "$e" == *"No errors"* ]] && echo "hyprland config ok" || { echo "$e"; exit 1; }'
+exec hypr-float "$ed '$f' && $check"

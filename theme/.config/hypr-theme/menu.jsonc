@@ -1,0 +1,114 @@
+{
+  // The menu (SUPER+SPACE). Keys are ids; a dot makes a child: "style.bar.top"
+  // sits under "style.bar" under "style". Fields:
+  //   icon, label      the row. description: extra words the search matches.
+  //   action           shell command, run detached. Omit → the row opens its children.
+  //   keep             true: the menu stays open after the action (toggles) and re-reads state.
+  //   checked          state key → ✓ when true ("!key" negates). value: state key shown as text.
+  //   when             state key → the row is hidden when false.
+  //   input            the search box becomes an input; Enter runs action with {} replaced.
+  //   provider         rows come from hypr-menu-data: agents, keybindings, packages,
+  //                    reminders, about — or from the shell: widgets.
+  //   close            false: an action row that keeps the menu open without re-reading state.
+  // State keys come from the shell (theme, light, bar.*, caffeine, dnd, laptop, widget.*)
+  // and from hypr-menu-data (nightlight, gaps, opacity, hibernate, terminal, browser, agent).
+  // A file next to this one, menu.local.jsonc, overlays it by id (same fields; new ids
+  // append). Whole-line // comments only.
+
+  "apps":    {"icon":"󰀻","label":"Apps","description":"launcher applications","action":"qs ipc call launcher toggle"},
+  "style":   {"icon":"\udb80\udfd8","label":"Style"},
+  "toggle":  {"icon":"󰔎","label":"Toggle"},
+  "setup":   {"icon":"\udb81\udc93","label":"Setup","description":"settings config"},
+  "agents":  {"icon":"󰚩","label":"Agents","description":"ai claude codex"},
+  "learn":   {"icon":"󰧑","label":"Learn","description":"help docs keys"},
+  "install": {"icon":"󰉉","label":"Install","description":"packages software"},
+  "update":  {"icon":"\udb81\udc50","label":"Update","description":"restart reload refresh"},
+  "remind":  {"icon":"󰢌","label":"Reminder"},
+  "about":   {"icon":"\udb80\udefc","label":"About","provider":"about"},
+  "system":  {"icon":"\udb81\udc25","label":"System","description":"power"},
+
+  // Style
+  "style.theme":      {"icon":"󰸌","label":"Theme","value":"theme","action":"hypr-theme-menu theme"},
+  "style.wallpaper":  {"icon":"\udb80\ude1f","label":"Wallpaper","value":"wallpaper","action":"hypr-theme-menu wallpaper"},
+  "style.mode":       {"icon":"󰔎","label":"Light mode","description":"dark light toggle","checked":"light","action":"hypr-theme toggle","keep":true},
+  "style.bar":        {"icon":"󰍜","label":"Bar"},
+  "style.bar.pill":     {"icon":"󰊠","label":"Pill skin","description":"classic waybar look","checked":"bar.pill","action":"qs ipc call bar style pill","keep":true},
+  "style.bar.minimal":  {"icon":"󰇘","label":"Minimal skin","description":"omarchy flat","checked":"bar.minimal","action":"qs ipc call bar style minimal","keep":true},
+  "style.bar.top":      {"icon":"󰁝","label":"Top","checked":"bar.top","action":"qs ipc call bar position top","keep":true},
+  "style.bar.bottom":   {"icon":"󰁅","label":"Bottom","checked":"bar.bottom","action":"qs ipc call bar position bottom","keep":true},
+  "style.bar.left":     {"icon":"󰁍","label":"Left","checked":"bar.left","action":"qs ipc call bar position left","keep":true},
+  "style.bar.right":    {"icon":"󰁔","label":"Right","checked":"bar.right","action":"qs ipc call bar position right","keep":true},
+  "style.bar.transparent": {"icon":"󰂵","label":"Transparent (minimal skin)","checked":"bar.transparent","action":"qs ipc call bar transparent","keep":true},
+  "style.bar.widgets":  {"icon":"󰕰","label":"Widgets","description":"enable disable modules","provider":"widgets"},
+  "style.look":       {"icon":"\udb87\udc0f","label":"Edit look & feel","description":"gaps borders rounding animations blur","action":"hypr-edit ~/.config/hypr/modules/decorations.lua"},
+
+  // Toggle
+  "toggle.caffeine":   {"icon":"󰅶","label":"Caffeine","description":"stay awake idle","checked":"caffeine","action":"qs ipc call caffeine toggle","keep":true},
+  "toggle.dnd":        {"icon":"󰂛","label":"Do not disturb","description":"notifications silence","checked":"dnd","action":"qs ipc call notifications dnd","keep":true},
+  "toggle.nightlight": {"icon":"󰖔","label":"Night light","description":"warm blue light","checked":"nightlight","action":"hypr-nightlight toggle","keep":true},
+  "toggle.bar":        {"icon":"󰍜","label":"Bar","checked":"!bar.hidden","action":"qs ipc call bar visible","keep":true},
+  "toggle.battery":    {"icon":"󰁹","label":"Battery percentage","when":"laptop","checked":"bar.battery","action":"qs ipc call bar battery","keep":true},
+  "toggle.gaps":       {"icon":"\udb82\udf96","label":"Window gaps","checked":"gaps","action":"hypr-toggle gaps","keep":true},
+  "toggle.opacity":    {"icon":"󱡓","label":"Window transparency","checked":"opacity","action":"hypr-toggle opacity","keep":true},
+
+  // Setup — the Lua files open in the editor and are validated on save
+  "setup.monitors":    {"icon":"󰍹","label":"Monitors","description":"display scale","action":"hypr-edit ~/.config/hypr/modules/monitors.lua"},
+  "setup.keybindings": {"icon":"\udb80\udf0c","label":"Keybindings","action":"hypr-edit ~/.config/hypr/modules/binds.lua"},
+  "setup.input":       {"icon":"\udb80\udf7d","label":"Input","description":"keyboard touchpad mouse","action":"hypr-edit ~/.config/hypr/modules/decorations.lua"},
+  "setup.autostart":   {"icon":"󰐥","label":"Autostart","action":"hypr-edit ~/.config/hypr/modules/autostart.lua"},
+  "setup.rules":       {"icon":"󱂬","label":"Window rules","action":"hypr-edit ~/.config/hypr/modules/windowrules.lua"},
+  "setup.shell":       {"icon":"󰒓","label":"Shell settings","description":"shell.json bar layout","action":"hypr-edit ~/.config/hypr-theme/shell.json"},
+  "setup.wifi":        {"icon":"󰤨","label":"Wi-Fi","action":"qs ipc call panels open network"},
+  "setup.bluetooth":   {"icon":"󰂯","label":"Bluetooth","action":"qs ipc call panels open bluetooth"},
+  "setup.audio":       {"icon":"󰕾","label":"Audio","description":"volume sound output","action":"qs ipc call panels open audio"},
+  "setup.power":       {"icon":"󰂄","label":"Power profile","action":"qs ipc call panels open power"},
+  "setup.defaults":    {"icon":"\udb80\udd2c","label":"Defaults"},
+  "setup.defaults.agent":    {"icon":"󰚩","label":"Coding agent","value":"agent","provider":"agents.default"},
+  "setup.defaults.terminal": {"icon":"\udb80\udd8d","label":"Terminal","value":"terminal"},
+  "setup.defaults.terminal.kitty":     {"icon":"\udb80\udd8d","label":"kitty","checked":"terminal:kitty","action":"hypr-default terminal kitty","keep":true},
+  "setup.defaults.terminal.alacritty": {"icon":"\udb80\udd8d","label":"alacritty","checked":"terminal:alacritty","action":"hypr-default terminal alacritty","keep":true},
+  "setup.defaults.browser":  {"icon":"󰖟","label":"Browser","value":"browser"},
+  "setup.defaults.browser.zen":      {"icon":"󰖟","label":"Zen","checked":"browser:zen-browser","action":"hypr-default browser zen-browser","keep":true},
+  "setup.defaults.browser.firefox":  {"icon":"󰈹","label":"Firefox","checked":"browser:firefox","action":"hypr-default browser firefox","keep":true},
+  "setup.defaults.browser.chromium": {"icon":"\udb81\uddcd","label":"Chromium","checked":"browser:chromium","action":"hypr-default browser chromium","keep":true},
+
+  // Agents
+  "agents.launch":  {"icon":"󱚝","label":"Launch default agent","value":"agent","action":"hypr-agent launch"},
+  "agents.list":    {"icon":"󰚩","label":"Launch…","provider":"agents"},
+  "agents.usage":   {"icon":"󰄉","label":"Usage & limits","action":"qs ipc call panels open agents"},
+  "agents.default": {"icon":"\udb80\udd2c","label":"Default agent","value":"agent","provider":"agents.default"},
+  "agents.skills":  {"icon":"󰘦","label":"Link /hypr skill into agents","action":"hypr-float hypr-agent skills install"},
+
+  // Learn
+  "learn.keys":     {"icon":"\udb80\udf0c","label":"Keybindings","description":"shortcuts keys","provider":"keybindings"},
+  "learn.readme":   {"icon":"\udb80\ude19","label":"Rice README","action":"hypr-float nvim -R ~/hypr-dotfiles/README.md"},
+  "learn.hyprland": {"icon":"\udb81\uddb0","label":"Hyprland wiki","action":"xdg-open https://wiki.hypr.land/"},
+  "learn.arch":     {"icon":"󰣇","label":"Arch wiki","action":"xdg-open https://wiki.archlinux.org/"},
+  "learn.quickshell": {"icon":"\udb80\ude19","label":"Quickshell docs","action":"xdg-open https://quickshell.org/docs/"},
+
+  // Install / remove: the rice's package list, ✓ = installed (select to remove)
+  "install.rice":   {"icon":"󰏗","label":"Rice packages","description":"install remove","provider":"packages"},
+  "install.any":    {"icon":"󰐕","label":"Any package…","description":"aur pacman yay","input":"package name","action":"hypr-float hypr-pkg {}"},
+  "install.update": {"icon":"\udb81\udc50","label":"Update everything","action":"hypr-float hypr-pkg -Syu"},
+
+  // Update / restart
+  "update.system":  {"icon":"\udb81\udc50","label":"System update","action":"hypr-float hypr-pkg -Syu"},
+  "update.shell":   {"icon":"󰑓","label":"Restart shell","action":"~/.config/hypr/scripts/shell.sh restart"},
+  "update.hypr":    {"icon":"\udb81\udc53","label":"Reload Hyprland","action":"hyprctl reload"},
+  "update.theme":   {"icon":"󰸌","label":"Re-apply theme","action":"hypr-theme reload"},
+  "update.stow":    {"icon":"\udb80\udf39","label":"Re-link dotfiles (stow)","action":"hypr-float 'cd ~/hypr-dotfiles && stow --restow -t ~ alacritty gtk hyprland kittyterminal nvim quickshell rofi starship swaync theme waybar wlogout zsh'"},
+  "update.doctor":  {"icon":"󰋠","label":"Diagnostics (hypr-doctor)","action":"hypr-float 'hypr-doctor --print | less -R'"},
+
+  // Reminder
+  "remind.set":   {"icon":"󰢌","label":"Set a reminder","description":"timer notify","input":"minutes message  (e.g. 15 pick up jack)","action":"hypr-remind {}"},
+  "remind.show":  {"icon":"󰃰","label":"Pending","provider":"reminders"},
+  "remind.clear": {"icon":"󰃢","label":"Clear all","action":"hypr-remind clear"},
+
+  // System
+  "system.lock":      {"icon":"\udb80\udf3e","label":"Lock","action":"~/.config/hypr/scripts/lock.sh"},
+  "system.suspend":   {"icon":"󰒲","label":"Suspend","description":"sleep","action":"systemctl suspend"},
+  "system.hibernate": {"icon":"󰤁","label":"Hibernate","when":"hibernate","action":"systemctl hibernate"},
+  "system.logout":    {"icon":"󰍃","label":"Logout","action":"hyprctl dispatch exit"},
+  "system.reboot":    {"icon":"󰜉","label":"Reboot","action":"systemctl reboot"},
+  "system.shutdown":  {"icon":"󰐥","label":"Shutdown","description":"power off","action":"systemctl poweroff"}
+}
