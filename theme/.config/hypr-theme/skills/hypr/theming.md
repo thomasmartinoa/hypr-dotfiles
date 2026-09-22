@@ -124,3 +124,15 @@ If the app needs a file at a fixed path, add an `install_file` line in
 `hypr-wall set <path>` / `next` — the shell draws it (`Wallpaper` service, crossfade),
 the lock screen blurs it, SDDM gets a copy via root-sync. Any theme's
 `backgrounds/` are offered in the picker (`SUPER+SHIFT+W`), current theme first.
+
+## Aether (the Omarchy theming app) as a palette source
+
+`aether --generate <image> --no-apply --output <dir>` renders Aether's own templates
+(colors.toml in Omarchy names, btop, neovim.lua for aether.nvim, vscode extension, chromium
+"r,g,b", …) into `<dir>` without touching the system — the safe way to see its extraction or
+its per-app mapping. **`--import-colors-toml` / `--import-base16` / `--apply-blueprint` apply
+immediately** (they write `~/.config/aether/theme/`, a VS Code extension
+`local.theme-aether-*` and `~/.config/zed/themes/aether.json`); do not use them to inspect.
+The GUI's swatches can be read off a screenshot by sampling pixels (ffmpeg → rgb24 → python).
+The rice mirrors Aether's app mappings as `templates/*-aether*.tpl` + `nvim_colorscheme =
+"aether"` so a palette can be compared both ways on the same theme.
