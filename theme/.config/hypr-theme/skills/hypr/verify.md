@@ -22,10 +22,16 @@ qs ipc call notifications test ; qs ipc call bar toggle ; qs ipc call bar positi
 hypr-theme set hyprmono-light ; hypr-theme set hyprmono      # dark/light
 sleep 1.5 between opening and capturing (animations, async images)
 ```
-Open a real app for app theming: `kitty --class check -e btop &`, `thunar &`,
-then `hyprctl dispatch focuswindow class:check`; close it after (`hyprctl
-dispatch closewindow class:check` closes **one** window — loop it, or use
-`hyprctl clients -j` addresses, and confirm nothing with class `check` is left).
+Open a real app for app theming: `hypr-float btop` / `hypr-float nvim <file>`
+(it opens its own kitty, class `hypr-float`, centred and big enough for btop —
+do **not** wrap a `kitty` inside it), `thunar &`; then `hyprctl dispatch
+focuswindow class:hypr-float`. Close it after by pid — `closewindow address:…`
+is rejected by the lua dispatcher on this Hyprland:
+
+```bash
+for p in $(hyprctl clients -j | jq -r '.[] | select(.class=="hypr-float") | .pid'); do kill $p; done
+```
+and confirm `hyprctl clients -j | jq -r '.[].class'` lists none left.
 
 ## The checklist for "check the rice" / a new theme
 

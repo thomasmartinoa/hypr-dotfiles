@@ -55,7 +55,7 @@ plus any key from `[terminal]`, `[git]`, `[apps]`.
    source that allows reuse (Unsplash / Pexels / Wikimedia) and note the URL in a
    `backgrounds/SOURCES` file.
 4. `hypr-theme set <id>` — it appears in the carousel (`SUPER+CTRL+SHIFT+SPACE`) automatically.
-5. **Verify in every surface** (verify.md). For btop use `hypr-float kitty --class check -e btop`
+5. **Verify in every surface** (verify.md). For btop use `hypr-float btop`
    (a tiled kitty next to other windows is < 80×24 and btop only prints "Terminal size too
    small"). `hypr-wall next` cycles to the theme's other backgrounds. Verify: bar (both skins: `qs ipc call bar toggle`),
    launcher `SUPER+D`, clipboard, notification (`qs ipc call notifications test`),
