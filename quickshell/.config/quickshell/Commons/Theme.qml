@@ -23,8 +23,7 @@ Singleton {
     property string themeBarStyle: "pill"
     // the skin you picked (SUPER+SHIFT+B, the menu) is saved in shell.json as
     // bar.skin so it survives restarts; "" = follow the theme's preference
-    property string barOverride: Config.skin
-    onBarOverrideChanged: if (barOverride !== Config.skin) Config.set("bar.skin", barOverride)
+    readonly property string barOverride: Config.skin
     readonly property string barStyle: barOverride !== "" ? barOverride : themeBarStyle
 
     // Defaults = HyprMono dark, so the shell renders before the file loads.

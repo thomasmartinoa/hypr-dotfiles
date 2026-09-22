@@ -24,11 +24,11 @@ Singleton {
 
     IdleMonitor {
         enabled: !root.paused; respectInhibitors: true; timeout: root.dimAfter
-        onIsIdleChanged: root.sh(isIdle ? "brightnessctl -d intel_backlight -s set 10%" : "brightnessctl -d intel_backlight -r")
+        onIsIdleChanged: root.sh(isIdle ? "~/.config/hypr/scripts/brightness.sh dim" : "~/.config/hypr/scripts/brightness.sh restore")
     }
     IdleMonitor {
         enabled: !root.paused; respectInhibitors: true; timeout: root.kbdAfter
-        onIsIdleChanged: root.sh(isIdle ? "brightnessctl -sd rgb:kbd_backlight set 0" : "brightnessctl -rd rgb:kbd_backlight")
+        onIsIdleChanged: root.sh(isIdle ? "~/.config/hypr/scripts/brightness.sh kbd-off" : "~/.config/hypr/scripts/brightness.sh kbd-restore")
     }
     IdleMonitor {
         enabled: !root.paused; respectInhibitors: true; timeout: root.lockAfter

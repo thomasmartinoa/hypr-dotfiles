@@ -716,13 +716,13 @@ else
 fi
 
 head2 "Live already"
-item "Configs are symlinked — Hyprland, waybar, swaync, rofi, kitty, zsh."
-item "${C_TXT}SUPER+R${C_RST} restarts waybar and swaync."
+item "Configs are symlinked — Hyprland, the shell, theme engine, kitty, nvim, zsh."
+item "${C_TXT}SUPER+R${C_RST} restarts the shell; ${C_TXT}SUPER+SPACE${C_RST} is the menu; ${C_TXT}/hypr${C_RST} in Claude Code knows the rest."
 
 head2 "Needs a re-login"
 item "GTK and Qt apps read their theme once, at startup."
-item "env.lua sets QT_QPA_PLATFORMTHEME and the scale factors — those only"
-item "reach applications launched by a fresh session."
+item "env.lua sets QT_QPA_PLATFORMTHEME and PATH — those only reach"
+item "applications launched by a fresh session."
 
 head2 "Worth doing first"
 item "${C_TXT}monitors.lua${C_RST} is hardcoded to one eDP-1 at 2560x1440@165Hz, scale 1.6."

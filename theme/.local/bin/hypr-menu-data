@@ -7,7 +7,6 @@ object, in one process (the menu runs it every time it opens).
                 "terminal": "kitty", "browser": "zen-browser", "agent": "claude" },
     "agents":      [ {id, label, icon, action, checked} ],
     "keybindings": [ {id, label, value, description} ],
-    "packages":    [ {id, label, checked, action} ],
     "reminders":   [ {id, label} ],
     "about":       [ {id, label, value} ]
   }
@@ -111,25 +110,6 @@ def keybindings():
     return rows
 
 
-def packages():
-    src = read(f"{REPO}/install.sh")
-    names = []
-    for var in ("PKGS_REPO", "PKGS_AUR"):
-        m = re.search(var + r"=\((.*?)\)", src, re.S)
-        if m:
-            body = re.sub(r"#[^\n]*", "", m.group(1))
-            names += body.split()
-    installed = set(sh("pacman -Qq", timeout=5).split())
-    helper = "yay" if shutil.which("yay") else "paru" if shutil.which("paru") else "sudo pacman"
-    out = []
-    for n in sorted(set(names)):
-        have = n in installed
-        out.append({"id": n, "label": n, "checked": have,
-                    "action": f"hypr-float {helper} -R{'ns' if helper == 'sudo pacman' else 'ns'} {n}" if have
-                              else f"hypr-float {helper} -S {n}"})
-    return out
-
-
 def reminders():
     out = []
     for line in sh("hypr-remind show").splitlines():
@@ -155,7 +135,7 @@ def about():
 def main():
     st = state()
     print(json.dumps({"state": st, "agents": agents(st["agent"]), "keybindings": keybindings(),
-                      "packages": packages(), "reminders": reminders(), "about": about()}))
+                      "reminders": reminders(), "about": about()}))
 
 
 if __name__ == "__main__":

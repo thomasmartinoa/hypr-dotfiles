@@ -29,12 +29,12 @@ Scope {
     IpcHandler {
         target: "bar"
         function style(name: string): string {
-            if (name === "pill" || name === "minimal") Theme.barOverride = name
-            else if (name === "auto" || name === "") Theme.barOverride = ""
+            if (name === "pill" || name === "minimal") Config.set("bar.skin", name)
+            else if (name === "auto" || name === "") Config.set("bar.skin", "")
             return Theme.barStyle
         }
         function current(): string { return Theme.barStyle }
-        function toggle(): string { Theme.barOverride = Theme.barStyle === "pill" ? "minimal" : "pill"; return Theme.barStyle }
+        function toggle(): string { Config.set("bar.skin", Theme.barStyle === "pill" ? "minimal" : "pill"); return Theme.barStyle }
         function position(edge: string): string { Config.setPosition(edge); return Config.position }
         function transparent(): bool { Config.toggleTransparent(); return Config.transparent }
         function visible(): bool { Config.set("bar.hidden", !Config.hidden); return !Config.hidden }

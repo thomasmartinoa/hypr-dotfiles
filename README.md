@@ -1,6 +1,9 @@
 # hypr-dotfiles
 
-My personal Hyprland rice — a dark, blurred, mostly-monochrome setup built around a **Lua-configured Hyprland**.
+My personal Hyprland rice — a blurred, monochrome setup (dark and light) built around a
+**Lua-configured Hyprland** and a **Quickshell** shell: bar, launcher, clipboard, notifications,
+lock screen, power menu, theme/wallpaper picker and a `SUPER+SPACE` menu, all drawn from one palette
+that also themes GTK, Qt, kitty, nvim, btop, VS Code and the login screen.
 
 Everything here is what I actually run day to day. Grab whatever's useful.
 
@@ -20,21 +23,25 @@ Everything here is what I actually run day to day. Grab whatever's useful.
 
 ![Fastfetch and Btop](Screenshots/withfastfetchandbtop.png)
 
-**Lock screen (hyprlock)**
+**Lock screen** (the shell's; the SDDM login screen is the same picture)
 
-![Hyprlock](Screenshots/hyprlock_scshot.png)
+![Lock screen](Screenshots/hyprlock_scshot.png)
 
-**Rofi launcher**
+**Launcher** (`SUPER+D`)
 
-![Rofi Launcher](Screenshots/rofi.png)
+![Launcher](Screenshots/rofi.png)
 
-**Logout menu (wlogout)**
+**Power menu** (`SUPER+M`)
 
-![Wlogout](Screenshots/wlogout.png)
+![Power menu](Screenshots/wlogout.png)
 
-**Notification centre (SwayNC)**
+**Notifications**
 
-![SwayNC Notifications](Screenshots/swaync_notification.png)
+![Notifications](Screenshots/swaync_notification.png)
+
+The bar, launcher, lock and power menu were rebuilt in the shell to be pixel-identical to the
+waybar / rofi / hyprlock / wlogout originals in these shots; the classic stack is still in the
+repo as a fallback (`HYPR_SHELL=waybar`).
 
 **Zen Browser**
 
@@ -46,20 +53,12 @@ Everything here is what I actually run day to day. Grab whatever's useful.
 
 | | Using | Package |
 |---|---|---|
-| Compositor | [Hyprland](https://hyprland.org/) | `hyprland` |
-| Bar | [Waybar](https://github.com/Alexays/Waybar) | `waybar` |
-| Launcher | [Rofi](https://github.com/davatorium/rofi) | `rofi` |
-| Notifications | [SwayNC](https://github.com/ErikReider/SwayNotificationCenter) | `swaync` |
-| Lock / idle | [hyprlock](https://github.com/hyprwm/hyprlock) + [hypridle](https://github.com/hyprwm/hypridle) | `hyprlock` `hypridle` |
-| Logout menu | [wlogout](https://github.com/ArtsyMacaw/wlogout) | `wlogout` |
-| Wallpaper | [awww](https://codeberg.org/LGFae/awww) | `awww` |
-| Terminal | [Kitty](https://sw.kovidgoyal.net/kitty/), [Alacritty](https://alacritty.org/) | `kitty` `alacritty` |
-| Shell | [Zsh](https://www.zsh.org/) + [Starship](https://starship.rs/) | `zsh` `starship` |
-| Editor | [Neovim](https://neovim.io/) ([LazyVim](https://www.lazyvim.org/)) | `neovim` |
-| Files | [Thunar](https://docs.xfce.org/xfce/thunar/start) | `thunar` |
-| Browser | [Zen Browser](https://zen-browser.app/) | `zen-browser-bin` |
-| Clipboard | [cliphist](https://github.com/sentriz/cliphist) with image thumbnails | `cliphist` `ffmpeg` |
-| Screenshots | grim + slurp | `grim` `slurp` |
+| Compositor | [Hyprland](https://hyprland.org/) (Lua config) | `hyprland` |
+| Shell | [Quickshell](https://quickshell.org/): bar (two skins), launcher, clipboard history, notifications, lock screen, power menu, OSD, panels, theme/wallpaper picker, menu, agents | `quickshell` |
+| Idle / logind bridge | [hypridle](https://github.com/hyprwm/hypridle) (the shell owns the timers) | `hypridle` |
+| Login screen | SDDM with a QML theme that mirrors the lock screen | `sddm` |
+| Theme engine | `hypr-theme`: one `colors.toml` → every app, dark + light | `python` `jq` |
+| Classic fallback | Waybar · Rofi · SwayNC · hyprlock · wlogout · awww (`HYPR_SHELL=waybar`) | `waybar` `rofi` `swaync` `hyprlock` `wlogout` `awww` |
 | App theming | GTK2/3/4 + Qt5/6 from one palette | `qt5ct` `qt6ct` `papirus-icon-theme` `inter-font` |
 
 ---
@@ -70,7 +69,7 @@ Everything here is what I actually run day to day. Grab whatever's useful.
 sudo pacman -S ttf-jetbrains-mono-nerd inter-font
 ```
 
-The **Propo** variant matters — it's what Waybar, SwayNC and hyprlock use. Check it landed:
+The **Propo** variant matters — every glyph in the shell (and the classic tools) uses it. Check it landed:
 
 ```bash
 fc-list : family | grep -i "JetBrainsMono Nerd Font Propo"
@@ -108,17 +107,20 @@ without asking first.
 If you'd rather not run the script:
 
 ```bash
-# compositor, session and theming
-sudo pacman -S hyprland hyprlock hypridle waybar rofi swaync awww \
-               xdg-desktop-portal-hyprland polkit-gnome power-profiles-daemon \
-               qt5ct qt6ct papirus-icon-theme adw-gtk-theme
+# compositor, shell, session, login and theming
+sudo pacman -S hyprland quickshell hypridle sddm xdg-desktop-portal-hyprland \
+               xdg-desktop-portal-gtk polkit-gnome power-profiles-daemon hyprsunset \
+               qt5ct qt6ct papirus-icon-theme adw-gtk-theme gsettings-desktop-schemas python jq
 
 # terminal, shell and editor
 sudo pacman -S kitty alacritty zsh starship neovim fastfetch btop eza
 
 # utilities
 sudo pacman -S grim slurp wl-clipboard cliphist ffmpeg playerctl brightnessctl \
-               batsignal jq thunar pavucontrol networkmanager nm-connection-editor
+               batsignal thunar pavucontrol networkmanager nm-connection-editor
+
+# classic fallback stack (optional)
+sudo pacman -S waybar rofi swaync hyprlock awww
 
 # fonts and stow
 sudo pacman -S ttf-jetbrains-mono-nerd inter-font stow
@@ -155,18 +157,15 @@ Each top-level folder is a Stow package mirroring your home directory:
 
 ```
 alacritty/   →  ~/.config/alacritty/
-gtk/         →  ~/.gtkrc-2.0, ~/.config/gtk-3.0/, ~/.config/gtk-4.0/
-hyprland/    →  ~/.config/hypr/     (lua config, hyprlock, hypridle, wallpapers)
+gtk/         →  ~/.config/gtk-3.0/gtk.css, ~/.config/gtk-4.0/gtk.css   (settings.ini is rendered by hypr-theme)
+hyprland/    →  ~/.config/hypr/     (lua config + modules/, scripts/, hypridle/hyprlock fallbacks)
 kittyterminal/ → ~/.config/kitty/
 nvim/        →  ~/.config/nvim/     (LazyVim)
-quickshell/  →  ~/.config/quickshell/ (the bar; more to come)
-rofi/        →  ~/.config/rofi/
+quickshell/  →  ~/.config/quickshell/ (the shell: Bar/ Panels/ Launcher/ Clipboard/ Menu/ Picker/ Lock/ Power/ Notifications/ Osd/ Wallpaper/ Services/)
 starship/    →  ~/.config/starship.toml
-swaync/      →  ~/.config/swaync/
-theme/       →  ~/.config/hypr-theme/ (themes, templates, engine), ~/.local/bin/hypr-theme*
-waybar/      →  ~/.config/waybar/   (classic bar, kept as a fallback: HYPR_SHELL=waybar)
-wlogout/     →  ~/.config/wlogout/
+theme/       →  ~/.config/hypr-theme/ (themes, templates, engine, menu.jsonc, agents, the /hypr skill), ~/.local/bin/hypr-*
 zsh/         →  ~/.zshrc
+rofi/ swaync/ waybar/ wlogout/  →  classic fallback stack (HYPR_SHELL=waybar)
 
 sddm/        →  /usr/share/sddm/themes/hyprmono, /etc/sddm.conf.d/   (not stowed — copied by install.sh)
 ```
@@ -345,6 +344,8 @@ If the login screen ever comes up black, switch to a TTY (`Ctrl+Alt+F3`) and
 | `SUPER` + `R` | Restart the shell (bar + notifications) |
 | `SUPER` + `SHIFT` + `B` | Bar skin: pill ↔ minimal |
 | `SUPER` + `CTRL` + `I` | Caffeine: pause idle lock & suspend (also the ☕ in the bar) |
+| `SUPER` + `CTRL` + `SHIFT` + `SPACE` / `SHIFT` + `W` | Theme picker · wallpaper picker |
+| `SUPER` + `SHIFT` + `T` | Dark ↔ light |
 | `SUPER` + `CTRL` + `SPACE` | Next wallpaper |
 | `SUPER` + `SHIFT` + `CTRL` + `A` | Launch the default coding agent (`hypr-agent default <name>`) |
 | `SUPER` + `Q` / `T` / `F` | Close · float · fullscreen |
@@ -354,7 +355,7 @@ If the login screen ever comes up black, switch to a TTY (`Ctrl+Alt+F3`) and
 | `SUPER` + `1`–`0` | Switch workspace (add `SHIFT` to move the window there) |
 | `SUPER` + scroll · 3-finger swipe | Cycle workspaces |
 | `SUPER` + `S` / `SHIFT` + `S` | Toggle scratchpad · move window to it |
-| `SUPER` + `Print` / `X` | Screenshot: whole screen · region |
+| `SUPER` + `Print` / `X` | Screenshot: whole screen · region (save + copy); `SHIFT` variants: active window · region to clipboard |
 | `SUPER` + `SHIFT` + `Print` / `X` | Active window · region to clipboard only |
 
 Screenshots are saved to `~/Pictures/screenshot/` and copied to the clipboard. Volume, brightness

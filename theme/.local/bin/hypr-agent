@@ -58,7 +58,7 @@ case "${1:-}" in
         agent="${2:-$(get_default)}"
         [[ -n "$agent" ]] || die "no coding agent installed (claude, codex, opencode, …)"
         have "$agent" || die "$agent is not installed"
-        term="${TERMINAL:-kitty}"
+        term="${TERMINAL:-$(cat "$HOME/.config/hypr-theme/defaults/terminal" 2>/dev/null || echo kitty)}"
         case "$term" in
             kitty)     exec setsid -f kitty --class "agent-$agent" --directory "$HOME" -e "$agent" ;;
             alacritty) exec setsid -f alacritty --class "agent-$agent" --working-directory "$HOME" -e "$agent" ;;
