@@ -218,6 +218,16 @@ two-column icon list — with fuzzy matching and a launch history so frequent ap
 rofi's on first run). **Clipboard** (`SUPER+V`): cliphist history with image thumbnails, Enter
 copies, Delete removes. rofi is now only the fallback when the shell is not running.
 
+**Agents** (`󱚝 47%` in the bar, hidden until a coding agent is logged in): the default agent's
+session usage, like Omarchy's. Click it for the panel — plan, the 5-hour session and weekly limits
+with their reset times, tokens by day for the last week and by model (counted from Claude Code's
+own transcripts), a launch button; right-click launches the default agent, so does
+`SUPER+SHIFT+CTRL+A`. `hypr-agent list|default <name>|launch|usage` on the command line; data is
+refreshed every 15 minutes (and on opening the panel) by `hypr-agent usage-update`, which reads the
+agent's local login (`~/.claude/.credentials.json`) and never writes to it. Claude Code has a
+provider in [`agents/usage.py`](theme/.config/hypr-theme/agents/usage.py); another agent is one
+function that returns `{name, plan, limits}`.
+
 **Panels** drop down from the bar: click the speaker for output/input volume and device pick, the
 wifi icon for networks (toggle, connect with a password prompt, right-click to forget), bluetooth
 (minimal skin; the pill skin leaves that to the tray applet) for devices, the battery for power
@@ -312,6 +322,7 @@ If the login screen ever comes up black, switch to a TTY (`Ctrl+Alt+F3`) and
 | `SUPER` + `SHIFT` + `B` | Bar skin: pill ↔ minimal |
 | `SUPER` + `CTRL` + `I` | Caffeine: pause idle lock & suspend (also the ☕ in the bar) |
 | `SUPER` + `CTRL` + `SPACE` | Next wallpaper |
+| `SUPER` + `SHIFT` + `CTRL` + `A` | Launch the default coding agent (`hypr-agent default <name>`) |
 | `SUPER` + `Q` / `T` / `F` | Close · float · fullscreen |
 | `SUPER` + `SHIFT` + `F` / `P` / `J` | Maximize · pseudo-tile · toggle split |
 | `SUPER` + `←↑↓→` | Move focus |

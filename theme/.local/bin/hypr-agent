@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# hypr-agent — coding agents in the shell, the Omarchy way.
+#
+#   hypr-agent list               agents this machine has (with the default marked)
+#   hypr-agent default [name]     show or set the default agent
+#   hypr-agent launch [name]      open the agent in a terminal (default agent if no name)
+#   hypr-agent usage-update       refresh ~/.local/state/hypr-theme/agents.json (bar + panel data)
+#   hypr-agent usage              print that data
+#
+# The default lives in ~/.config/hypr-theme/shell.json under "agents".
+set -euo pipefail
+
+CONF="$HOME/.config/hypr-theme/shell.json"
+STATE="$HOME/.local/state/hypr-theme/agents.json"
+COLLECT="$HOME/.config/hypr-theme/agents/usage.py"
+# command → label; anything on PATH from this list is offered
+KNOWN=(claude:"Claude Code" codex:"Codex" opencode:"OpenCode" gemini:"Gemini CLI" copilot:"GitHub Copilot"
+       crush:"Crush" grok:"Grok" pi:"Pi" ori:"Ori" aider:"Aider" goose:"Goose")
+
+die() { printf 'hypr-agent: %s\n' "$*" >&2; exit 1; }
+have() { command -v "$1" >/dev/null 2>&1; }
+
+installed() {
+    local k
+    for k in "${KNOWN[@]}"; do have "${k%%:*}" && printf '%s\t%s\n' "${k%%:*}" "${k#*:}"; done
+}
+get_default() {
+    local d=""
+    [[ -f "$CONF" ]] && have jq && d="$(jq -r '.agents.default // empty' "$CONF" 2>/dev/null || true)"
+    if [[ -z "$d" ]]; then d="$(installed | head -n1 | cut -f1)"; fi
+    printf '%s\n' "$d"
+}
+set_default() {
+    have jq || die "jq is needed to edit $CONF"
+    have "$1" || die "$1 is not installed"
+    mkdir -p "$(dirname "$CONF")"
+    [[ -f "$CONF" ]] || printf '{}\n' > "$CONF"
+    local tmp; tmp="$(mktemp)"
+    jq --arg a "$1" '.agents.default = $a' "$CONF" > "$tmp" && mv "$tmp" "$CONF"
+    printf 'default agent: %s\n' "$1"
+}
+
+case "${1:-}" in
+    list)
+        d="$(get_default)"
+        installed | while IFS=$'\t' read -r cmd label; do
+            [[ "$cmd" == "$d" ]] && printf '* %-10s %s (default)\n' "$cmd" "$label" || printf '  %-10s %s\n' "$cmd" "$label"
+        done ;;
+    default)
+        if [[ -n "${2:-}" ]]; then set_default "$2"; else get_default; fi ;;
+    launch)
+        agent="${2:-$(get_default)}"
+        [[ -n "$agent" ]] || die "no coding agent installed (claude, codex, opencode, …)"
+        have "$agent" || die "$agent is not installed"
+        term="${TERMINAL:-kitty}"
+        case "$term" in
+            kitty)     exec setsid -f kitty --class "agent-$agent" --directory "$HOME" -e "$agent" ;;
+            alacritty) exec setsid -f alacritty --class "agent-$agent" --working-directory "$HOME" -e "$agent" ;;
+            *)         exec setsid -f "$term" -e "$agent" ;;
+        esac ;;
+    usage-update)
+        exec python3 "$COLLECT" "${@:2}" ;;
+    usage)
+        [[ -f "$STATE" ]] || python3 "$COLLECT"
+        if have jq; then jq . "$STATE"; else cat "$STATE"; fi ;;
+    *)
+        sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'; exit 1 ;;
+esac

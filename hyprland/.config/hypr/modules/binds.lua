@@ -30,6 +30,7 @@ hl.bind(mainMod .. " + CTRL + SHIFT + space", hl.dsp.exec_cmd("hypr-theme-menu t
 hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("hypr-theme-menu wallpaper"))               -- wallpaper picker
 hl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd("hypr-theme toggle"))                -- dark <-> light
 hl.bind(mainMod .. " + CTRL + space", hl.dsp.exec_cmd("hypr-wall next"))                 -- next wallpaper
+hl.bind(mainMod .. " + SHIFT + CTRL + A", hl.dsp.exec_cmd("hypr-agent launch"))          -- default coding agent
 
 
 hl.bind(

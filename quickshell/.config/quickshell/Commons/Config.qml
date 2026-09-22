@@ -21,13 +21,13 @@ Singleton {
                 pill: {
                     left:   ["clock", "workspaces"],
                     center: ["tray"],
-                    right:  ["audio", "network", "battery", "caffeine", "bell"]
+                    right:  ["agents", "audio", "network", "battery", "caffeine", "bell"]
                 },
                 // Omarchy-style bar
                 minimal: {
                     left:   ["workspaces", "activewindow"],
                     center: ["media", "clock"],
-                    right:  ["sysmon", "tray", "bluetooth", "audio", "network", "battery", "caffeine", "bell"]
+                    right:  ["sysmon", "agents", "tray", "bluetooth", "audio", "network", "battery", "caffeine", "bell"]
                 }
             },
             // user modules referenced by id from a layout:
@@ -35,7 +35,9 @@ Singleton {
             //            (prints text or waybar JSON: {"text":"󰌆","class":"active"})
             //   "agent": { "qml": "~/.config/hypr-theme/plugins/agent.qml" }   (any QML Item; import qs.Bar for Pill)
             modules: {}
-        }
+        },
+        // coding agents (hypr-agent): which one SUPER+SHIFT+CTRL+A and the bar launch
+        agents: { default: "" }
     })
 
     property var data: JSON.parse(JSON.stringify(defaults))

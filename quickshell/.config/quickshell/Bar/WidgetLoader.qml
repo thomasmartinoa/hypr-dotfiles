@@ -23,6 +23,7 @@ Loader {
         case "media":        return media
         case "sysmon":       return sysmon
         case "keyboard":     return keyboard
+        case "agents":       return agents
         case "spacer":       return spacer
         default: {
             const d = Config.moduleDef(widgetId)
@@ -50,6 +51,7 @@ Loader {
     Component { id: media;        Media {} }
     Component { id: sysmon;       SysMon {} }
     Component { id: keyboard;     KeyboardLayout {} }
+    Component { id: agents;       Agents {} }
     Component { id: spacer;       Item { width: 12; height: 12 } }
     Component { id: command;      CommandWidget { moduleId: loader.widgetId } }
 }
