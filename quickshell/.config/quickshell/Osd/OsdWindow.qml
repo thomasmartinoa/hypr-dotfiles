@@ -38,7 +38,7 @@ Variants {
             Row {
                 anchors.centerIn: parent
                 spacing: 12
-                Label { text: parent.parent.icon; font.pixelSize: 18; width: 22; color: Osd.muted ? Theme.c.accentDim : Theme.c.accentBright }
+                Label { text: parent.parent.icon; font.pixelSize: Theme.fs(18); width: 22; color: Osd.muted ? Theme.c.accentDim : Theme.c.accentBright }
                 Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
                     width: 150; height: 6; radius: 3; color: Theme.c.bg3
@@ -49,7 +49,7 @@ Variants {
                     }
                 }
                 Label { text: Math.round(Osd.value * 100) + "%"; width: 36; horizontalAlignment: Text.AlignRight
-                        font.pixelSize: 12; color: Theme.c.accentMid }
+                        font.pixelSize: Theme.fs(12); color: Theme.c.accentMid }
             }
         }
     }

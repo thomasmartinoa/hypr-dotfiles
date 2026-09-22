@@ -44,7 +44,7 @@ Rectangle {
                 implicitSize: 32
             }
             Label { anchors.centerIn: parent; visible: card.n.image === "" && (card.n.appIcon === "" || Quickshell.iconPath(card.n.appIcon, true) === "")
-                    text: "󰂚"; font.pixelSize: 18; color: Theme.c.accentMid }
+                    text: "󰂚"; font.pixelSize: Theme.fs(18); color: Theme.c.accentMid }
         }
 
         Column {
@@ -52,13 +52,13 @@ Rectangle {
             spacing: 3
             Row {
                 width: parent.width
-                Label { text: card.n.appName; font.pixelSize: 11; color: Theme.c.accentMid; width: parent.width - 60; elide: Text.ElideRight }
-                Label { text: card.ago(); font.pixelSize: 11; color: Theme.c.accentDim; width: 60; rightPadding: 16; horizontalAlignment: Text.AlignRight }
+                Label { text: card.n.appName; font.pixelSize: Theme.fs(11); color: Theme.c.accentMid; width: parent.width - 60; elide: Text.ElideRight }
+                Label { text: card.ago(); font.pixelSize: Theme.fs(11); color: Theme.c.accentDim; width: 60; rightPadding: 16; horizontalAlignment: Text.AlignRight }
             }
-            Label { width: parent.width; text: card.n.summary; font.pixelSize: 13; font.weight: Font.Bold
+            Label { width: parent.width; text: card.n.summary; font.pixelSize: Theme.fs(13); font.weight: Font.Bold
                     color: Theme.c.accentBright; wrapMode: Text.WordWrap; maximumLineCount: 2; elide: Text.ElideRight }
             Label { visible: card.n.body !== ""; width: parent.width; text: card.n.body; textFormat: Text.StyledText
-                    font.pixelSize: 12; color: Theme.c.fg; wrapMode: Text.WordWrap; maximumLineCount: card.compact ? 3 : 6; elide: Text.ElideRight }
+                    font.pixelSize: Theme.fs(12); color: Theme.c.fg; wrapMode: Text.WordWrap; maximumLineCount: card.compact ? 3 : 6; elide: Text.ElideRight }
             Row {
                 visible: card.n.actions.length > 0
                 spacing: 6
@@ -70,7 +70,7 @@ Rectangle {
                         implicitWidth: al.implicitWidth + 20; implicitHeight: 24; radius: Theme.radius
                         color: am.containsMouse ? Theme.c.bg3 : Theme.c.bg2
                         border.width: 1; border.color: Theme.c.border
-                        Label { id: al; anchors.centerIn: parent; text: modelData.text; font.pixelSize: 11 }
+                        Label { id: al; anchors.centerIn: parent; text: modelData.text; font.pixelSize: Theme.fs(11) }
                         MouseArea { id: am; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                                     onClicked: { modelData.invoke(); Notifs.dismiss(card.entry) } }
                     }
@@ -82,7 +82,7 @@ Rectangle {
     // close
     Label {
         anchors.top: parent.top; anchors.right: parent.right; anchors.margins: 8
-        text: "󰅖"; font.pixelSize: 12; color: cm.containsMouse ? Theme.c.accentBright : Theme.c.accentDim
+        text: "󰅖"; font.pixelSize: Theme.fs(12); color: cm.containsMouse ? Theme.c.accentBright : Theme.c.accentDim
         MouseArea { id: cm; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: Notifs.dismiss(card.entry) }
     }
     MouseArea {

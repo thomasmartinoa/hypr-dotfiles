@@ -22,7 +22,7 @@ Rectangle {
     Label {
         id: ic
         x: 10; anchors.verticalCenter: parent.verticalCenter
-        text: r.icon; width: 20; font.pixelSize: 15
+        text: r.icon; width: 20; font.pixelSize: Theme.fs(15)
         color: r.active ? Theme.c.accentBright : Theme.c.accentMid
     }
     Column {
@@ -30,15 +30,15 @@ Rectangle {
         anchors.right: tr.left; anchors.rightMargin: 8
         anchors.verticalCenter: parent.verticalCenter
         spacing: 1
-        Label { width: parent.width; elide: Text.ElideRight; text: r.title; font.pixelSize: 13
+        Label { width: parent.width; elide: Text.ElideRight; text: r.title; font.pixelSize: Theme.fs(13)
                 color: r.active ? Theme.c.accentBright : Theme.c.fg; font.weight: r.active ? Font.DemiBold : Font.Medium }
         Label { visible: r.subtitle !== ""; width: parent.width; elide: Text.ElideRight; text: r.subtitle
-                font.pixelSize: 11; color: Theme.c.accentMid }
+                font.pixelSize: Theme.fs(11); color: Theme.c.accentMid }
     }
     Label {
         id: tr
         anchors.right: parent.right; anchors.rightMargin: 10; anchors.verticalCenter: parent.verticalCenter
-        text: r.busy ? "…" : r.trailing; font.pixelSize: 11; color: Theme.c.accentMid
+        text: r.busy ? "…" : r.trailing; font.pixelSize: Theme.fs(11); color: Theme.c.accentMid
     }
     MouseArea {
         id: m

@@ -30,7 +30,7 @@ Singleton {
                 minimal: {
                     left:   ["workspaces", "activewindow"],
                     center: ["media", "clock"],
-                    right:  ["tray", "sysmon", "agents", "bluetooth", "audio", "network", "battery", "caffeine", "bell"]
+                    right:  ["tray", "spacer", "sysmon", "spacer", "agents", "spacer", "nightlight", "bluetooth", "audio", "network", "battery", "caffeine", "bell"]
                 }
             },
             // user modules referenced by id from a layout:
@@ -39,6 +39,9 @@ Singleton {
             //   "agent": { "qml": "~/.config/hypr-theme/plugins/agent.qml" }   (any QML Item; import qs.Bar for Pill)
             modules: {}
         },
+        // apparent text size in px (hypr-text-size); every size in the shell
+        // is derived from it through Theme.fs()
+        font: { size: 12 },
         // coding agents (hypr-agent): which one SUPER+SHIFT+CTRL+A and the bar launch
         agents: { default: "" }
     })
@@ -49,6 +52,7 @@ Singleton {
     readonly property bool vertical: position === "left" || position === "right"
     readonly property bool transparent: !!(bar && bar.transparent)
     readonly property bool hidden: !!(bar && bar.hidden)
+    readonly property int fontSize: (data.font && data.font.size >= 8 && data.font.size <= 24) ? data.font.size : 12
     readonly property string skin: (bar && (bar.skin === "pill" || bar.skin === "minimal")) ? bar.skin : ""
     readonly property bool batteryPercent: !(bar && bar.battery === false)
 

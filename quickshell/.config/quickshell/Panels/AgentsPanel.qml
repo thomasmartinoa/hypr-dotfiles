@@ -27,17 +27,17 @@ Panel {
             width: parent.width; spacing: 8
             Row {
                 width: parent.width
-                Label { text: modelData.name; font.pixelSize: 13; font.weight: Font.DemiBold; color: Theme.c.fg; width: parent.width - plan.width }
+                Label { text: modelData.name; font.pixelSize: Theme.fs(13); font.weight: Font.DemiBold; color: Theme.c.fg; width: parent.width - plan.width }
                 Rectangle {
                     id: plan
                     visible: modelData.plan !== ""
                     width: planLbl.implicitWidth + 12; height: 18; radius: 3
                     color: Theme.c.bg2; border.width: 1; border.color: Theme.c.border
-                    Label { id: planLbl; anchors.centerIn: parent; text: modelData.plan; font.pixelSize: 10; color: Theme.c.accentMid }
+                    Label { id: planLbl; anchors.centerIn: parent; text: modelData.plan; font.pixelSize: Theme.fs(10); color: Theme.c.accentMid }
                 }
             }
             Label { visible: modelData.error !== ""; width: parent.width; wrapMode: Text.Wrap
-                    text: modelData.error; font.pixelSize: 11; color: Theme.c.accentMid }
+                    text: modelData.error; font.pixelSize: Theme.fs(11); color: Theme.c.accentMid }
             Repeater {
                 model: modelData.limits
                 Column {
@@ -45,9 +45,9 @@ Panel {
                     width: parent.width; spacing: 4
                     Row {
                         width: parent.width
-                        Label { text: modelData.name; font.pixelSize: 11; color: Theme.c.fg; width: parent.width - pct.width - reset.width }
-                        Label { id: reset; text: { void p.now; return Agents.resetsIn(modelData.resets_at) } font.pixelSize: 11; color: Theme.c.accentMid; rightPadding: 8 }
-                        Label { id: pct; text: modelData.percent + "%"; font.pixelSize: 11; font.weight: Font.DemiBold
+                        Label { text: modelData.name; font.pixelSize: Theme.fs(11); color: Theme.c.fg; width: parent.width - pct.width - reset.width }
+                        Label { id: reset; text: { void p.now; return Agents.resetsIn(modelData.resets_at) } font.pixelSize: Theme.fs(11); color: Theme.c.accentMid; rightPadding: 8 }
+                        Label { id: pct; text: modelData.percent + "%"; font.pixelSize: Theme.fs(11); font.weight: Font.DemiBold
                                 color: modelData.percent >= 90 ? Theme.c.accentDim : Theme.c.accentBright }
                     }
                     Rectangle {
@@ -61,7 +61,7 @@ Panel {
             Label {
                 visible: !!modelData.extra
                 text: modelData.extra ? "Extra usage: " + (modelData.extra.used ?? 0) + " / " + (modelData.extra.limit ?? "∞") + " " + modelData.extra.currency : ""
-                font.pixelSize: 11; color: Theme.c.accentMid
+                font.pixelSize: Theme.fs(11); color: Theme.c.accentMid
             }
         }
     }
@@ -69,7 +69,7 @@ Panel {
         visible: !Agents.present
         width: parent.width; wrapMode: Text.Wrap
         text: "No coding agent found. Install claude, codex or opencode and log in; usage shows up here."
-        font.pixelSize: 12; color: Theme.c.accentMid
+        font.pixelSize: Theme.fs(12); color: Theme.c.accentMid
     }
 
     Rectangle { visible: Agents.tokens.days.length > 0; width: parent.width; height: 1; color: Theme.c.bg3 }
@@ -83,8 +83,8 @@ Panel {
         readonly property real week: days.reduce((s, d) => s + d.total, 0)
         Row {
             width: parent.width
-            Label { text: "Tokens · last 7 days"; font.pixelSize: 11; color: Theme.c.accentMid; width: parent.width - wk.width }
-            Label { id: wk; text: Agents.fmtTokens(parent.parent.week); font.pixelSize: 11; color: Theme.c.fg }
+            Label { text: "Tokens · last 7 days"; font.pixelSize: Theme.fs(11); color: Theme.c.accentMid; width: parent.width - wk.width }
+            Label { id: wk; text: Agents.fmtTokens(parent.parent.week); font.pixelSize: Theme.fs(11); color: Theme.c.fg }
         }
         Row {
             id: chart
@@ -107,7 +107,7 @@ Panel {
                         }
                     }
                     Label { anchors.horizontalCenter: parent.horizontalCenter; text: Qt.formatDate(new Date(modelData.date + "T12:00:00"), "ddd").slice(0, 2)
-                            font.pixelSize: 9; color: index === chart.parent.days.length - 1 ? Theme.c.fg : Theme.c.accentDim }
+                            font.pixelSize: Theme.fs(9); color: index === chart.parent.days.length - 1 ? Theme.c.fg : Theme.c.accentDim }
                 }
             }
         }
@@ -117,14 +117,14 @@ Panel {
     Column {
         visible: Agents.tokens.models.length > 0
         width: parent.width; spacing: 4
-        Label { text: "By model"; font.pixelSize: 11; color: Theme.c.accentMid }
+        Label { text: "By model"; font.pixelSize: Theme.fs(11); color: Theme.c.accentMid }
         Repeater {
             model: Agents.tokens.models.slice(0, 4)
             Row {
                 required property var modelData
                 width: parent.width
-                Label { text: modelData.model; font.pixelSize: 11; color: Theme.c.fg; width: parent.width - tot.width }
-                Label { id: tot; text: Agents.fmtTokens(modelData.total) + "  ·  " + Agents.fmtTokens(modelData.output) + " out"; font.pixelSize: 11; color: Theme.c.accentMid }
+                Label { text: modelData.model; font.pixelSize: Theme.fs(11); color: Theme.c.fg; width: parent.width - tot.width }
+                Label { id: tot; text: Agents.fmtTokens(modelData.total) + "  ·  " + Agents.fmtTokens(modelData.output) + " out"; font.pixelSize: Theme.fs(11); color: Theme.c.accentMid }
             }
         }
     }
@@ -137,8 +137,8 @@ Panel {
         Column {
             width: parent.width - launch.width - refresh.width - 12
             anchors.verticalCenter: parent.verticalCenter; spacing: 1
-            Label { text: "Default: " + (Agents.defaultAgent || "none"); font.pixelSize: 12; color: Theme.c.fg }
-            Label { text: { void p.now; return "updated " + Agents.ago() } font.pixelSize: 10; color: Theme.c.accentMid; elide: Text.ElideRight; width: parent.width }
+            Label { text: "Default: " + (Agents.defaultAgent || "none"); font.pixelSize: Theme.fs(12); color: Theme.c.fg }
+            Label { text: { void p.now; return "updated " + Agents.ago() } font.pixelSize: Theme.fs(10); color: Theme.c.accentMid; elide: Text.ElideRight; width: parent.width }
         }
         PanelButton { id: refresh; icon: Agents.busy ? "󰑖" : "󰑐"; onClicked: Agents.refresh() }
         PanelButton { id: launch; icon: "󱚝"; text: "Launch"; primary: true; enabled: Agents.defaultAgent !== ""

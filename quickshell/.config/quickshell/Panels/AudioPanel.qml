@@ -23,12 +23,12 @@ Panel {
         width: parent.width; spacing: 6
         Row {
             width: parent.width; spacing: 8
-            Label { text: p.sink && p.sink.audio.muted ? "󰝟" : "󰕾"; width: 20; font.pixelSize: 15
+            Label { text: p.sink && p.sink.audio.muted ? "󰝟" : "󰕾"; width: 20; font.pixelSize: Theme.fs(15)
                     color: p.sink && p.sink.audio.muted ? Theme.c.accentDim : Theme.c.accentLight
                     MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor
                                 onClicked: if (p.sink) p.sink.audio.muted = !p.sink.audio.muted } }
-            Label { text: "Output"; font.pixelSize: 12; color: Theme.c.accentMid; width: parent.width - 100 }
-            Label { text: p.sink ? Math.round(p.sink.audio.volume * 100) + "%" : ""; font.pixelSize: 12; color: Theme.c.accentMid
+            Label { text: "Output"; font.pixelSize: Theme.fs(12); color: Theme.c.accentMid; width: parent.width - 100 }
+            Label { text: p.sink ? Math.round(p.sink.audio.volume * 100) + "%" : ""; font.pixelSize: Theme.fs(12); color: Theme.c.accentMid
                     width: 40; horizontalAlignment: Text.AlignRight }
         }
         Slider { value: p.sink ? p.sink.audio.volume : 0; dimmed: p.sink && p.sink.audio.muted
@@ -56,12 +56,12 @@ Panel {
         width: parent.width; spacing: 6
         Row {
             width: parent.width; spacing: 8
-            Label { text: p.source && p.source.audio.muted ? "󰍭" : "󰍬"; width: 20; font.pixelSize: 15
+            Label { text: p.source && p.source.audio.muted ? "󰍭" : "󰍬"; width: 20; font.pixelSize: Theme.fs(15)
                     color: p.source && p.source.audio.muted ? Theme.c.accentDim : Theme.c.accentLight
                     MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor
                                 onClicked: if (p.source) p.source.audio.muted = !p.source.audio.muted } }
-            Label { text: "Input"; font.pixelSize: 12; color: Theme.c.accentMid; width: parent.width - 100 }
-            Label { text: p.source ? Math.round(p.source.audio.volume * 100) + "%" : ""; font.pixelSize: 12; color: Theme.c.accentMid
+            Label { text: "Input"; font.pixelSize: Theme.fs(12); color: Theme.c.accentMid; width: parent.width - 100 }
+            Label { text: p.source ? Math.round(p.source.audio.volume * 100) + "%" : ""; font.pixelSize: Theme.fs(12); color: Theme.c.accentMid
                     width: 40; horizontalAlignment: Text.AlignRight }
         }
         Slider { value: p.source ? p.source.audio.volume : 0; dimmed: p.source && p.source.audio.muted

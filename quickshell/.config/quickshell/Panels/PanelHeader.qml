@@ -12,7 +12,7 @@ Item {
     height: 26
     Label {
         anchors.left: parent.left; anchors.verticalCenter: parent.verticalCenter
-        text: h.title; font.pixelSize: 13; font.weight: Font.Bold; color: Theme.c.accentBright
+        text: h.title; font.pixelSize: Theme.fs(13); font.weight: Font.Bold; color: Theme.c.accentBright
     }
     Toggle {
         id: sw

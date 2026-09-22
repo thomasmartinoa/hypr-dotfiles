@@ -45,14 +45,14 @@ Variants {
             Item {
                 id: bar
                 x: 14; y: 14; width: parent.width - 28; height: 30
-                Label { id: prompt; anchors.verticalCenter: parent.verticalCenter; x: 6; text: "clip"; font.pixelSize: 13; color: Theme.c.accentBright }
+                Label { id: prompt; anchors.verticalCenter: parent.verticalCenter; x: 6; text: "clip"; font.pixelSize: Theme.fs(13); color: Theme.c.accentBright }
                 TextInput {
                     id: input
                     anchors.left: prompt.right; anchors.leftMargin: 14
                     anchors.right: parent.right; anchors.verticalCenter: parent.verticalCenter
-                    font.family: Theme.font; font.pixelSize: 13; color: Theme.c.accentBright
+                    font.family: Theme.font; font.pixelSize: Theme.fs(13); color: Theme.c.accentBright
                     focus: true
-                    Label { visible: !input.text; anchors.verticalCenter: parent.verticalCenter; text: "search clipboard"; font.pixelSize: 13; color: Theme.c.accentMid }
+                    Label { visible: !input.text; anchors.verticalCenter: parent.verticalCenter; text: "search clipboard"; font.pixelSize: Theme.fs(13); color: Theme.c.accentMid }
                     Keys.onPressed: (e) => {
                         const n = win.items.length
                         if (e.key === Qt.Key_Escape) { Clip.open = false; e.accepted = true; return }
@@ -97,13 +97,13 @@ Variants {
                         anchors.verticalCenter: parent.verticalCenter
                         width: parent.width - x - 8; elide: Text.ElideRight
                         text: row.modelData.preview.replace(/\s+/g, " ")
-                        font.pixelSize: 13
+                        font.pixelSize: Theme.fs(13)
                         color: row.sel ? Theme.c.accentBright : Theme.c.fg
                     }
                     MouseArea { anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                                 onEntered: win.selected = row.index; onClicked: Clip.copy(row.modelData) }
                 }
-                Label { visible: win.items.length === 0; anchors.centerIn: parent; text: "clipboard is empty"; font.pixelSize: 12; color: Theme.c.accentMid }
+                Label { visible: win.items.length === 0; anchors.centerIn: parent; text: "clipboard is empty"; font.pixelSize: Theme.fs(12); color: Theme.c.accentMid }
             }
         }
     }

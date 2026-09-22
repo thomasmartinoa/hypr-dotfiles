@@ -622,6 +622,7 @@ else
   if command -v swaync >/dev/null 2>&1; then
     systemctl --user mask swaync.service >/dev/null 2>&1 && ok "swaync user unit masked (the shell is the notification daemon)."
   fi
+  "$HOME/.local/bin/hypr-text-size" reset >/dev/null 2>&1 || true   # writes the terminal font-size overrides
   if "$HOME/.local/bin/hypr-agent" skills install >/dev/null 2>&1; then
     ok "/hypr skill linked for coding agents ($(ls -d "$HOME"/.claude/skills "$HOME"/.agents/skills 2>/dev/null | tr '\n' ' '))."
   else

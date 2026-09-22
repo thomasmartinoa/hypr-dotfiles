@@ -15,11 +15,11 @@ Panel {
     Item {
         width: parent.width; height: 26
         Label { anchors.left: parent.left; anchors.leftMargin: 8; anchors.verticalCenter: parent.verticalCenter
-                text: "󰅁"; font.pixelSize: 14; color: Theme.c.accentMid
+                text: "󰅁"; font.pixelSize: Theme.fs(14); color: Theme.c.accentMid
                 MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: p.step(-1) } }
-        Label { anchors.centerIn: parent; text: Qt.formatDate(p.shown, "MMMM yyyy"); font.pixelSize: 13; font.weight: Font.Bold; color: Theme.c.accentBright }
+        Label { anchors.centerIn: parent; text: Qt.formatDate(p.shown, "MMMM yyyy"); font.pixelSize: Theme.fs(13); font.weight: Font.Bold; color: Theme.c.accentBright }
         Label { anchors.right: parent.right; anchors.rightMargin: 8; anchors.verticalCenter: parent.verticalCenter
-                text: "󰅂"; font.pixelSize: 14; color: Theme.c.accentMid
+                text: "󰅂"; font.pixelSize: Theme.fs(14); color: Theme.c.accentMid
                 MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: p.step(1) } }
         MouseArea { anchors.fill: parent; z: -1; onWheel: (w) => p.step(w.angleDelta.y > 0 ? -1 : 1) }
     }
@@ -29,7 +29,7 @@ Panel {
         Repeater {
             model: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
             Label { required property string modelData; width: p.panelWidth / 7 - 4; horizontalAlignment: Text.AlignHCenter
-                    text: modelData; font.pixelSize: 10; color: Theme.c.accentDim }
+                    text: modelData; font.pixelSize: Theme.fs(10); color: Theme.c.accentDim }
         }
     }
     Grid {
@@ -47,7 +47,7 @@ Panel {
                 readonly property bool isToday: inMonth && p.today.getFullYear() === p.shown.getFullYear() && p.today.getMonth() === p.shown.getMonth() && p.today.getDate() === day
                 width: p.panelWidth / 7 - 4; height: 30
                 Rectangle { anchors.centerIn: parent; width: 26; height: 26; radius: 13; color: parent.isToday ? Theme.c.fg : "transparent" }
-                Label { anchors.centerIn: parent; text: parent.inMonth ? parent.day : ""; font.pixelSize: 12
+                Label { anchors.centerIn: parent; text: parent.inMonth ? parent.day : ""; font.pixelSize: Theme.fs(12)
                         color: parent.isToday ? Theme.c.bg0 : Theme.c.fg; font.weight: parent.isToday ? Font.Bold : Font.Medium }
             }
         }

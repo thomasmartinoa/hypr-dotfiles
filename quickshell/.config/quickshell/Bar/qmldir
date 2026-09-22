@@ -18,3 +18,4 @@ SysMon 1.0 SysMon.qml
 KeyboardLayout 1.0 KeyboardLayout.qml
 CommandWidget 1.0 CommandWidget.qml
 Agents 1.0 Agents.qml
+NightLight 1.0 NightLight.qml

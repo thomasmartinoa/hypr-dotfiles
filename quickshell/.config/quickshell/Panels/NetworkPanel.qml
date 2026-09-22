@@ -54,7 +54,7 @@ Panel {
     Column {
         width: parent.width; spacing: 2
         visible: Networking.wifiEnabled
-        Label { visible: p.networks.length === 0; text: "Scanning…"; font.pixelSize: 12; color: Theme.c.accentMid; padding: 6 }
+        Label { visible: p.networks.length === 0; text: "Scanning…"; font.pixelSize: Theme.fs(12); color: Theme.c.accentMid; padding: 6 }
         Repeater {
             model: p.networks.slice(0, 10)
             Column {
@@ -80,9 +80,9 @@ Panel {
                         anchors.fill: parent; anchors.margins: 8
                         verticalAlignment: TextInput.AlignVCenter
                         echoMode: TextInput.Password
-                        font.family: Theme.font; font.pixelSize: 12; color: Theme.c.fg
+                        font.family: Theme.font; font.pixelSize: Theme.fs(12); color: Theme.c.fg
                         focus: p.pskFor === modelData
-                        Label { anchors.verticalCenter: parent.verticalCenter; visible: !psk.text; text: "password, Enter to connect"; font.pixelSize: 11; color: Theme.c.accentDim }
+                        Label { anchors.verticalCenter: parent.verticalCenter; visible: !psk.text; text: "password, Enter to connect"; font.pixelSize: Theme.fs(11); color: Theme.c.accentDim }
                         onAccepted: { modelData.connectWithPsk(text); text = ""; p.pskFor = null }
                         Keys.onEscapePressed: p.pskFor = null
                     }

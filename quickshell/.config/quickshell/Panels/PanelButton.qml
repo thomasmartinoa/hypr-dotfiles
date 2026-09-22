@@ -20,8 +20,8 @@ Rectangle {
         id: row
         anchors.centerIn: parent
         spacing: 8
-        Label { visible: b.icon !== ""; text: b.icon; font.pixelSize: 14; color: b.primary ? Theme.c.bg0 : Theme.c.accentLight }
-        Label { visible: b.text !== ""; text: b.text; font.pixelSize: 12; color: b.primary ? Theme.c.bg0 : Theme.c.fg }
+        Label { visible: b.icon !== ""; text: b.icon; font.pixelSize: Theme.fs(14); color: b.primary ? Theme.c.bg0 : Theme.c.accentLight }
+        Label { visible: b.text !== ""; text: b.text; font.pixelSize: Theme.fs(12); color: b.primary ? Theme.c.bg0 : Theme.c.fg }
     }
     MouseArea { id: m; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: b.clicked() }
 }

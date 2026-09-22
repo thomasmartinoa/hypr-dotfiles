@@ -17,7 +17,7 @@ Panel {
         toggle.on: Notifs.dnd
         onToggled: (on) => Notifs.dnd = on
         Label { anchors.right: parent.right; anchors.rightMargin: 48; anchors.verticalCenter: parent.verticalCenter
-                text: "Do not disturb"; font.pixelSize: 11; color: Theme.c.accentMid }
+                text: "Do not disturb"; font.pixelSize: Theme.fs(11); color: Theme.c.accentMid }
     }
 
     Flickable {
@@ -29,7 +29,7 @@ Panel {
             id: list
             width: parent.width
             spacing: 8
-            Label { visible: Notifs.count === 0; text: "Nothing here"; font.pixelSize: 12; color: Theme.c.accentMid; padding: 6 }
+            Label { visible: Notifs.count === 0; text: "Nothing here"; font.pixelSize: Theme.fs(12); color: Theme.c.accentMid; padding: 6 }
             Repeater {
                 model: Notifs.items
                 NotificationCard { required property var modelData; entry: modelData }

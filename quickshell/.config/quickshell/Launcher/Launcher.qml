@@ -55,18 +55,18 @@ Variants {
                     id: prompt
                     width: pl.implicitWidth + 24; height: parent.height; radius: Theme.radius
                     color: Theme.c.accentLight
-                    Label { id: pl; anchors.centerIn: parent; text: "Applications"; font.pixelSize: 13; color: Theme.c.bg0 }
+                    Label { id: pl; anchors.centerIn: parent; text: "Applications"; font.pixelSize: Theme.fs(13); color: Theme.c.bg0 }
                 }
                 TextInput {
                     id: input
                     anchors.left: prompt.right; anchors.leftMargin: 12
                     anchors.right: parent.right; anchors.rightMargin: 12
                     anchors.verticalCenter: parent.verticalCenter
-                    font.family: Theme.font; font.pixelSize: 13
+                    font.family: Theme.font; font.pixelSize: Theme.fs(13)
                     color: Theme.c.accentBright
                     focus: true
                     onTextChanged: Apps.query = text
-                    Label { visible: !input.text; anchors.verticalCenter: parent.verticalCenter; text: "Search..."; font.pixelSize: 13; color: Theme.c.accentMid }
+                    Label { visible: !input.text; anchors.verticalCenter: parent.verticalCenter; text: "Search..."; font.pixelSize: Theme.fs(13); color: Theme.c.accentMid }
                     Keys.onPressed: (e) => {
                         const n = Apps.results.length
                         if (e.key === Qt.Key_Escape) { Apps.open = false; e.accepted = true; return }
@@ -108,11 +108,11 @@ Variants {
                             x: 16; anchors.verticalCenter: parent.verticalCenter
                             implicitSize: 30
                             source: row.modelData.icon ? Quickshell.iconPath(row.modelData.icon, true) : ""
-                            Label { visible: parent.source === ""; anchors.centerIn: parent; text: "󰀻"; font.pixelSize: 18; color: Theme.c.accentMid }
+                            Label { visible: parent.source === ""; anchors.centerIn: parent; text: "󰀻"; font.pixelSize: Theme.fs(18); color: Theme.c.accentMid }
                         }
                         Label {
                             x: 58; anchors.verticalCenter: parent.verticalCenter; width: parent.width - 70; elide: Text.ElideRight
-                            text: row.modelData.name; font.pixelSize: 13
+                            text: row.modelData.name; font.pixelSize: Theme.fs(13)
                             color: row.sel ? Theme.c.accentBright : Theme.c.fg
                         }
                         MouseArea { anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor

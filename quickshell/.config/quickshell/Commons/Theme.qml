@@ -50,7 +50,10 @@ Singleton {
 
     readonly property string font: "JetBrainsMono Nerd Font Propo"
     // GTK's "12px" in the old waybar css rendered at ~15 logical px; match it.
-    readonly property int fontSize: barStyle === "pill" ? 12 : 12
+    // one knob for text size: `hypr-text-size <px>` writes shell.json, this
+    // scales every size in the shell from the 12px design baseline
+    readonly property int fontSize: Config.fontSize
+    function fs(px) { return Math.max(6, Math.round(px * Config.fontSize / 12)) }
 
     function parse() {
         try {

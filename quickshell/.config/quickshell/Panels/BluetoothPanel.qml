@@ -46,7 +46,7 @@ Panel {
     Column {
         width: parent.width; spacing: 2
         visible: p.on
-        Label { visible: p.devices.length === 0; text: p.adapter && p.adapter.discovering ? "Searching…" : "No devices"; font.pixelSize: 12; color: Theme.c.accentMid; padding: 6 }
+        Label { visible: p.devices.length === 0; text: p.adapter && p.adapter.discovering ? "Searching…" : "No devices"; font.pixelSize: Theme.fs(12); color: Theme.c.accentMid; padding: 6 }
         Repeater {
             model: p.devices.slice(0, 10)
             PanelRow {
@@ -65,7 +65,7 @@ Panel {
             }
         }
     }
-    Label { visible: !p.on; text: "Bluetooth is off"; font.pixelSize: 12; color: Theme.c.accentMid; padding: 6 }
+    Label { visible: !p.on; text: "Bluetooth is off"; font.pixelSize: Theme.fs(12); color: Theme.c.accentMid; padding: 6 }
 
     Row {
         width: parent.width; spacing: 8; layoutDirection: Qt.RightToLeft

@@ -57,7 +57,7 @@ Variants {
                     anchors.verticalCenter: parent.verticalCenter
                     visible: Menu.crumb !== "Menu"
                     text: Menu.crumb + "  ›"
-                    font.pixelSize: 12; color: Theme.c.accentMid
+                    font.pixelSize: Theme.fs(12); color: Theme.c.accentMid
                     MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: Menu.up() }
                 }
                 TextInput {
@@ -66,11 +66,11 @@ Variants {
                     anchors.leftMargin: 8
                     anchors.right: parent.right; anchors.rightMargin: 8
                     anchors.verticalCenter: parent.verticalCenter
-                    font.family: Theme.font; font.pixelSize: 13; color: Theme.c.accentBright
+                    font.family: Theme.font; font.pixelSize: Theme.fs(13); color: Theme.c.accentBright
                     focus: true
                     onTextChanged: { if (!Menu.inputRow) { Menu.query = text; Menu.selected = 0 } }
                     Label { visible: !input.text; anchors.verticalCenter: parent.verticalCenter
-                            text: Menu.inputRow ? Menu.placeholder : "Search"; font.pixelSize: 13; color: Theme.c.accentDim }
+                            text: Menu.inputRow ? Menu.placeholder : "Search"; font.pixelSize: Theme.fs(13); color: Theme.c.accentDim }
                     Keys.onPressed: (e) => {
                         const n = win.rows.length
                         if (e.key === Qt.Key_Escape) { if (Menu.inputRow || input.text !== "") Menu.up(); else Menu.close(); e.accepted = true; return }
@@ -108,7 +108,7 @@ Variants {
                     Label {
                         id: ic
                         x: 10; anchors.verticalCenter: parent.verticalCenter; width: 18
-                        text: row.modelData.icon; font.pixelSize: 13
+                        text: row.modelData.icon; font.pixelSize: Theme.fs(13)
                         color: row.sel ? Theme.c.accentBright : Theme.c.accentMid
                         horizontalAlignment: Text.AlignHCenter
                     }
@@ -117,25 +117,25 @@ Variants {
                         anchors.right: right.left; anchors.rightMargin: 10
                         anchors.verticalCenter: parent.verticalCenter
                         elide: Text.ElideRight
-                        text: row.modelData.label; font.pixelSize: 12
+                        text: row.modelData.label; font.pixelSize: Theme.fs(12)
                         color: row.sel ? Theme.c.accentBright : Theme.c.fg
                     }
                     Row {
                         id: right
                         anchors.right: parent.right; anchors.rightMargin: 10; anchors.verticalCenter: parent.verticalCenter
                         spacing: 10
-                        Label { visible: Menu.query !== "" && row.modelData.crumb !== ""; text: row.modelData.crumb; font.pixelSize: 11; color: Theme.c.accentDim
+                        Label { visible: Menu.query !== "" && row.modelData.crumb !== ""; text: row.modelData.crumb; font.pixelSize: Theme.fs(11); color: Theme.c.accentDim
                                 elide: Text.ElideRight; width: Math.min(implicitWidth, 150) }
-                        Label { visible: row.modelData.value !== ""; text: row.modelData.value; font.pixelSize: 11; color: Theme.c.accentMid
+                        Label { visible: row.modelData.value !== ""; text: row.modelData.value; font.pixelSize: Theme.fs(11); color: Theme.c.accentMid
                                 elide: Text.ElideRight; width: Math.min(implicitWidth, 170) }
-                        Label { visible: row.modelData.checked === true; text: "󰄬"; font.pixelSize: 13; color: Theme.c.accentBright }
-                        Label { visible: row.modelData.sub; text: "󰅂"; font.pixelSize: 13; color: Theme.c.accentDim }
+                        Label { visible: row.modelData.checked === true; text: "󰄬"; font.pixelSize: Theme.fs(13); color: Theme.c.accentBright }
+                        Label { visible: row.modelData.sub; text: "󰅂"; font.pixelSize: Theme.fs(13); color: Theme.c.accentDim }
                     }
                     MouseArea { anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                                 onEntered: Menu.selected = row.index; onClicked: Menu.activate(row.modelData) }
                 }
-                Label { visible: win.rows.length === 0 && !Menu.inputRow; anchors.centerIn: parent; text: "nothing found"; font.pixelSize: 12; color: Theme.c.accentDim }
-                Label { visible: !!Menu.inputRow; anchors.centerIn: parent; text: "Enter to set"; font.pixelSize: 12; color: Theme.c.accentDim }
+                Label { visible: win.rows.length === 0 && !Menu.inputRow; anchors.centerIn: parent; text: "nothing found"; font.pixelSize: Theme.fs(12); color: Theme.c.accentDim }
+                Label { visible: !!Menu.inputRow; anchors.centerIn: parent; text: "Enter to set"; font.pixelSize: Theme.fs(12); color: Theme.c.accentDim }
             }
         }
     }

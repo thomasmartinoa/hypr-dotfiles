@@ -49,6 +49,8 @@ def state():
         "terminal": read(f"{HOME}/.config/hypr-theme/defaults/terminal", "kitty"),
         "browser": read(f"{HOME}/.config/hypr-theme/defaults/browser", "zen-browser"),
         "agent": sh("hypr-agent default"),
+        "textsize": sh("hypr-text-size").splitlines()[0].split(":")[1].strip().split()[0] if shutil.which("hypr-text-size") else "12",
+        "scale": (sh("hyprctl monitors -j | jq -r '.[] | select(.focused) | .scale'") or "").rstrip("0").rstrip(".") or "1",
         "wallpaper": os.path.basename(os.path.realpath(f"{HOME}/.config/hypr-theme/current/background")),
     }
 

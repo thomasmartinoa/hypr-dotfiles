@@ -25,18 +25,18 @@ Panel {
 
     Row {
         width: parent.width; spacing: 12
-        Label { text: p.pct + "%"; font.pixelSize: 30; font.weight: Font.Bold; color: Theme.c.accentBright }
+        Label { text: p.pct + "%"; font.pixelSize: Theme.fs(30); font.weight: Font.Bold; color: Theme.c.accentBright }
         Column {
             anchors.verticalCenter: parent.verticalCenter; spacing: 2
-            Label { text: p.status; font.pixelSize: 12; color: Theme.c.fg }
-            Label { text: p.dev && p.dev.healthSupported ? "Health " + Math.round(p.dev.healthPercentage) + "%" : ""; font.pixelSize: 11; color: Theme.c.accentMid }
+            Label { text: p.status; font.pixelSize: Theme.fs(12); color: Theme.c.fg }
+            Label { text: p.dev && p.dev.healthSupported ? "Health " + Math.round(p.dev.healthPercentage) + "%" : ""; font.pixelSize: Theme.fs(11); color: Theme.c.accentMid }
         }
     }
 
     // power profile ----------------------------------------------------
     Column {
         width: parent.width; spacing: 6
-        Label { text: "Profile"; font.pixelSize: 11; color: Theme.c.accentMid }
+        Label { text: "Profile"; font.pixelSize: Theme.fs(11); color: Theme.c.accentMid }
         Row {
             id: profiles
             width: parent.width; spacing: 6

@@ -24,6 +24,7 @@ Loader {
         case "sysmon":       return sysmon
         case "keyboard":     return keyboard
         case "agents":       return agents
+        case "nightlight":   return nightlight
         case "spacer":       return spacer
         default: {
             const d = Config.moduleDef(widgetId)
@@ -52,6 +53,7 @@ Loader {
     Component { id: sysmon;       SysMon {} }
     Component { id: keyboard;     KeyboardLayout {} }
     Component { id: agents;       Agents {} }
-    Component { id: spacer;       Item { width: 12; height: 12 } }
+    Component { id: nightlight;   NightLight {} }
+    Component { id: spacer;       Item { width: 6; height: 6 } }   // a small break between groups of widgets
     Component { id: command;      CommandWidget { moduleId: loader.widgetId } }
 }

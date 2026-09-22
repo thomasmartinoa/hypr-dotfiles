@@ -75,6 +75,10 @@ Rules of the house:
   vertical bars, hover, `clicked/rightClicked/middleClicked/scrolled`. Hide text
   in the minimal/vertical bar with `visible: pillMode && !vertical` like the
   built-ins. Never hardcode colours — `Theme.c.*`; sizes come from the skin.
+- **Sizes**: every font size goes through `Theme.fs(px)`, which scales the 12px
+  design baseline by the user's `hypr-text-size`. Never write a bare
+  `font.pixelSize: 13` outside Lock/ (hyprlock's geometry) and the theme
+  preview (a picture of a theme, not UI).
 - **Glyphs** are Nerd Font (JetBrainsMono Nerd Font Propo). Private-use glyphs
   vanish in shell heredocs: write them as `"\u{f0a7a}"` escapes in QML, or edit
   with the Edit tool.

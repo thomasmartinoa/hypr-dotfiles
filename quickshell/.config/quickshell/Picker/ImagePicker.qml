@@ -152,7 +152,7 @@ Variants {
                 anchors.top: carousel.bottom; anchors.topMargin: 18
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: "\u{f0349}  " + win.filter
-                font.pixelSize: 13; color: Theme.c.fg
+                font.pixelSize: Theme.fs(13); color: Theme.c.fg
             }
         }
     }

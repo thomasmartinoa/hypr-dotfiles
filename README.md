@@ -202,7 +202,7 @@ edits apply live. Scripts: `qs ipc call bar position left`, `qs ipc call bar tra
 Widgets: `clock` (calendar popup), `workspaces`, `tray`, `audio`, `network`, `bluetooth`, `battery`,
 `caffeine`, `bell`, `activewindow` (focused title), `media` (now playing: click play/pause, middle
 next, scroll prev/next), `sysmon` (cpu · mem · gpu when a card reports it, click for btop), `keyboard` (layout, click to switch),
-`spacer`. Anything else in a layout is looked up under `"modules"` as a **command module**:
+`nightlight` (warm tint, hyprsunset), `agents`, `spacer` (a small break between groups). Anything else in a layout is looked up under `"modules"` as a **command module**:
 
 ```json
 "modules": { "vpn": { "exec": "~/bin/vpn-status", "interval": 5, "onClick": "nm-connection-editor" } }
@@ -237,6 +237,14 @@ on the right), `↑↓`, `Enter`, `Backspace`/`←` up, `→` in, `Esc`. ✓ and
 `SUPER+CTRL+O` opens Toggle; `qs ipc call menu toggle`, `menu open|run <id>` from scripts. It is
 data: [`menu.jsonc`](theme/.config/hypr-theme/menu.jsonc) (documented at the top); your own
 entries go in `~/.config/hypr-theme/menu.local.jsonc`, merged by id and hot-reloaded.
+
+**Text size and display scale.** `hypr-text-size <9–20>` is one knob for apparent text size: the
+shell (every size derives from it), GTK apps (`text-scaling-factor`, quantized so the interface font
+lands on a whole point size) and the terminals (a per-machine include, so the repo's own font
+settings stay put). `hypr-scale <n>|up|down` sets the focused monitor's scale, rounded to a value
+Hyprland accepts for that mode, applied live with `hyprctl eval` and written back into
+`modules/monitors.lua`. Both are in the menu under Style, both modelled on Omarchy's
+`display text size` / `monitor scaling`.
 
 **`/hypr` — the rice as an agent skill.** One skill (no menu of commands to learn): say what
 you want — *"make a warm dark theme called ember"*, *"add a widget that shows my power draw"*,
