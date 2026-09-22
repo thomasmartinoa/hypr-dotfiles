@@ -197,8 +197,8 @@ Singleton {
 
     IpcHandler {
         target: "menu"
-        function toggle(section: string): void { root.toggle(section) }
-        function open(section: string): void { root.show(section) }
+        function toggle(): void { root.toggle("") }
+        function open(section: string): void { if (root.open && root.path === section) root.close(); else root.show(section) }
         function close(): void { root.close() }
         function search(q: string): void { root.show(""); root.query = q }
         // run one entry by id without opening the menu (keybinds, scripts): `qs ipc call menu run toggle.caffeine`

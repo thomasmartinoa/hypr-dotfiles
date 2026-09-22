@@ -39,7 +39,7 @@ hl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd("hypr-theme toggle"))        
 hl.bind(mainMod .. " + CTRL + space", hl.dsp.exec_cmd("hypr-wall next"))                 -- next wallpaper
 hl.bind(mainMod .. " + SHIFT + CTRL + A", hl.dsp.exec_cmd("hypr-agent launch"))          -- default coding agent
 hl.bind(mainMod .. " + space", hl.dsp.exec_cmd("qs ipc call menu toggle"))              -- the menu
-hl.bind(mainMod .. " + CTRL + O", hl.dsp.exec_cmd("qs ipc call menu toggle toggle"))       -- the menu: toggles
+hl.bind(mainMod .. " + CTRL + O", hl.dsp.exec_cmd("qs ipc call menu open toggle"))         -- the menu: toggles
 
 
 hl.bind(

@@ -237,7 +237,7 @@ keybinding list read live from `binds.lua`, README, wikis) · Install (the rice'
 installed, select to remove; any package) · Update (system, shell, Hyprland, theme, stow, doctor) ·
 Reminder (`15 pick up jack`) · About · System. Type to search every entry from anywhere (the row
 shows where it lives), `↑↓`/`Tab`, `Enter`, `Backspace` up, `1–9` jump, `Esc`. ✓ and values are
-live. `SUPER+CTRL+O` opens Toggle directly; `qs ipc call menu open|run <id>` from scripts. It is
+live. `SUPER+CTRL+O` opens Toggle directly; `qs ipc call menu toggle`, `menu open|run <id>` from scripts. It is
 data: [`menu.jsonc`](theme/.config/hypr-theme/menu.jsonc) (documented at the top); your own
 entries go in `~/.config/hypr-theme/menu.local.jsonc`, merged by id and hot-reloaded.
 
