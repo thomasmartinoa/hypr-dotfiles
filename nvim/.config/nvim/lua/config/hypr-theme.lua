@@ -28,7 +28,10 @@ function M.apply()
     -- omacom/aether.nvim built from the palette, the way Aether/Omarchy do it
     local ok_a, aether = pcall(require, "aether")
     if ok_a then
-      aether.load({ colors = t.aether })
+      -- setup() first: lualine's aether theme reads the saved options, not
+      -- the opts passed to load(), and would otherwise show stock colours.
+      aether.setup({ colors = t.aether })
+      aether.load()
       return
     end
   end
