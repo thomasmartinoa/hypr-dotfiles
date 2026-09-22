@@ -304,6 +304,10 @@ palette), the others as dimmed slices to either side that slide as you move. Eve
 Enter applies, type to filter (the filter is the only text shown), Esc. The same carousel picks wallpapers (the current theme's first, then the rest). Without the
 shell, `hypr-theme-menu --rofi`.
 
+Shipped themes: `hyprmono` (dark), `hyprmono-light`, and `catppuccin-mocha` — the one hued theme,
+official Mocha palette with lavender accents and the real pastel syntax in nvim (`catppuccin-mocha`)
+and VS Code.
+
 To make a theme: copy `themes/hyprmono/`, edit `colors.toml` (`mode = "light"` flips GTK/Qt/nvim to
 their light variants), run `hypr-theme set <name>`. Templates use `{{ bg0 }}`, filters like
 `{{ bg0 | rgba 0.6 }}` / `{{ bg0 | hypr }}`, and `{{ mix bg0 fg 20% }}` — see

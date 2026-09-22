@@ -1,0 +1,83 @@
+# Catppuccin Mocha — the one hued theme in an otherwise monochrome rice.
+#
+# Palette is the official Catppuccin Mocha set (https://catppuccin.com/palette):
+# backgrounds walk crust → mantle → base → surface0 → surface1, text is
+# text/subtext/overlay, lavender is the accent (active borders, focus).
+# The legacy hue names carry real Mocha colours so VS Code / GTK get the
+# proper pastel syntax instead of greys.
+
+name = "Catppuccin Mocha"
+mode = "dark"
+bar  = "pill"
+
+[colors]
+# Backgrounds — darkest to lightest
+bg0 = "#11111b"     # crust   — bar / cards
+bg1 = "#181825"     # mantle
+bg2 = "#1e1e2e"     # base    — module backgrounds
+bg3 = "#313244"     # surface0 — borders, separators
+bg4 = "#45475a"     # surface1 — hover states
+
+# Foregrounds
+fg            = "#cdd6f4"   # text
+accent_bright = "#b4befe"   # lavender — active / important
+accent_light  = "#bac2de"   # subtext1 — primary text
+accent_mid    = "#a6adc8"   # subtext0 — secondary text
+accent_dim    = "#6c7086"   # overlay0 — inactive
+
+# Semantic
+active   = "#b4befe"   # lavender
+hover    = "#89b4fa"   # blue
+warning  = "#f9e2af"   # yellow
+critical = "#f38ba8"   # red
+
+# Extra greys
+grey0 = "#585b70"   # surface2
+grey1 = "#7f849c"   # overlay1
+grey2 = "#9399b2"   # overlay2
+
+# Hues (real ones here — it is Catppuccin)
+red    = "#f38ba8"
+orange = "#fab387"   # peach
+yellow = "#f9e2af"
+green  = "#a6e3a1"
+aqua   = "#94e2d5"   # teal
+blue   = "#89b4fa"
+purple = "#cba6f7"   # mauve
+
+[terminal]
+background = "#1e1e2e"
+foreground = "#cdd6f4"
+cursor     = "#f5e0dc"
+selection_background = "#353749"
+selection_foreground = "#cdd6f4"
+color0  = "#45475a"
+color1  = "#f38ba8"
+color2  = "#a6e3a1"
+color3  = "#f9e2af"
+color4  = "#89b4fa"
+color5  = "#f5c2e7"
+color6  = "#94e2d5"
+color7  = "#bac2de"
+color8  = "#585b70"
+color9  = "#f38ba8"
+color10 = "#a6e3a1"
+color11 = "#f9e2af"
+color12 = "#89b4fa"
+color13 = "#f5c2e7"
+color14 = "#94e2d5"
+color15 = "#a6adc8"
+
+[git]
+added     = "#a6e3a1"
+modified  = "#f9e2af"
+deleted   = "#f38ba8"
+renamed   = "#89b4fa"
+conflict  = "#fab387"
+
+[apps]
+gtk_theme       = "adw-gtk3-dark"
+icon_theme      = "Papirus-Dark"
+cursor_theme    = "default"
+qt_style        = "Adwaita-Dark"
+nvim_colorscheme = "catppuccin-mocha"
