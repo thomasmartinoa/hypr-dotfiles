@@ -291,10 +291,18 @@ does not pick up gsettings on Wayland — verified, including via the settings p
 |---|---|
 | Waybar, SwayNC, polkit dialog (restarted for you) | Thunar, nwg-look, other GTK3 apps |
 | Hyprland borders, wallpaper, kitty, rofi, wlogout | Qt apps (qt5ct/qt6ct is read at start) |
-| GTK4 / libadwaita apps, Zen / Firefox (portal) | Kdenlive and other KDE apps (kdeglobals) |
+| GTK4 / libadwaita apps, Zen (portal) | Kdenlive and other KDE apps (kdeglobals) |
+| | Firefox chrome + about: pages (userChrome/userContent, read at start) |
 | VS Code, Electron apps such as Claude (portal) | Alacritty (reads its import at start) |
 | Neovim (every running instance), btop (SIGUSR2) | pkexec apps like grub-customizer |
 | Shell state colours (battery, sysmon, critical notifications) | |
+
+Firefox: `hypr-theme set` drops `userChrome.css`/`userContent.css` into every profile in
+`profiles.ini` (`~/.config/mozilla/firefox`, or `~/.mozilla/firefox` on older builds) and
+merges the prefs that enable them into `user.js` between `// >>> hypr-theme` markers — your
+own `user.js` lines outside the markers are kept. Web pages are not touched; toolbars, tabs,
+urlbar, menus, sidebar, settings, add-ons, new tab and reader view follow the theme. A
+profile created after the theme was applied gets it on the next `hypr-theme set|reload`.
 | Login screen, `/root` GTK config (root sync) | |
 
 The **picker** is an Omarchy-style carousel in the shell: the selected theme is shown large as a

@@ -84,6 +84,25 @@ SysMon > 85 % yellow, critical notification border red; the waybar fallback uses
 `@state-good/-warning/-critical` from `palette.css`. When adding a widget with a state,
 follow that pattern — `Theme.hued ? Theme.c.critical : Theme.c.accentDim`.
 
+## Firefox
+
+`templates/firefox-userChrome.css.tpl` (browser chrome), `firefox-userContent.css.tpl`
+(about: pages, new tab, reader) and `firefox-user.js.tpl` (prefs). `apply_firefox` in
+`hypr-theme` installs them into every profile from `profiles.ini` — Firefox 156+ keeps
+profiles under `~/.config/mozilla/firefox`, older builds under `~/.mozilla/firefox`. Facts
+that cost time once:
+- Both user sheets are *user-origin*: every declaration needs `!important` or the page's
+  own tokens win (the settings page kept its cyan accent until then).
+- Firefox ≥ 130 chrome is built on design-system tokens (`--background-color-canvas`,
+  `--toolbar-background-color`, `--color-accent-primary`, `--panel-*`, `--tab-*`,
+  `--urlbar-*`); override those, not element selectors. Pull current names from the build:
+  `unzip -o /usr/lib/firefox/omni.ja 'chrome/toolkit/skin/classic/global/design-system/*.css'`.
+- New tab uses its own `--newtab-*` vars (in browser/omni.ja, builtin-addons/newtab).
+- Nothing reloads live: `pkill -x firefox` and relaunch; screenshot with
+  `grim -g "$(hyprctl activewindow -j | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"')"`.
+- A never-launched Firefox has no profile; `timeout 15 firefox --headless about:blank`
+  creates one without a window.
+
 ## Change one app for every theme
 
 Edit its template in `templates/`, `hypr-theme reload`, verify in dark and light.

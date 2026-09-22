@@ -156,6 +156,32 @@ CONF
     sed -i 's/^theme_background *=.*/theme_background = False/' "$conf"
 }
 
+apply_firefox() {
+    # Firefox: userChrome/userContent go into <profile>/chrome/ and the prefs
+    # that enable them into <profile>/user.js (merged between markers so the
+    # user's own prefs survive). Every profile listed in profiles.ini gets it;
+    # Firefox 156+ keeps them under ~/.config/mozilla, older under ~/.mozilla.
+    # Both files are read once at startup: restart Firefox to see a change.
+    local ini base dir prof userjs
+    for ini in "$HOME/.config/mozilla/firefox/profiles.ini" "$HOME/.mozilla/firefox/profiles.ini"; do
+        [[ -f "$ini" ]] || continue
+        base="$(dirname "$ini")"
+        while IFS= read -r prof; do
+            [[ "$prof" == /* ]] && dir="$prof" || dir="$base/$prof"
+            [[ -d "$dir" ]] || continue
+            install_file "$CURRENT_DIR/firefox-userChrome.css"  "$dir/chrome/userChrome.css"
+            install_file "$CURRENT_DIR/firefox-userContent.css" "$dir/chrome/userContent.css"
+            userjs="$dir/user.js"
+            [[ -f "$userjs" ]] && sed -i '/^\/\/ >>> hypr-theme/,/^\/\/ <<< hypr-theme/d' "$userjs"
+            {
+                printf '// >>> hypr-theme (managed: everything to the <<< line is rewritten by hypr-theme)\n'
+                cat "$CURRENT_DIR/firefox-user.js"
+                printf '// <<< hypr-theme\n'
+            } >> "$userjs"
+        done < <(sed -n 's/^Path=//p' "$ini")
+    done
+}
+
 apply() {
     local mode gtk_theme icon_theme
     mode="$(theme_mode "$CURRENT_DIR/theme")"
@@ -217,6 +243,7 @@ apply() {
         nvim --server "$sock" --remote-send '<Cmd>lua pcall(function() require("config.hypr-theme").apply() end)<CR>' >/dev/null 2>&1 || true
     done
     apply_vscode "$HOME/.vscode/extensions" "$HOME/.config/Code/User/settings.json"
+    apply_firefox
 
     # quickshell (when the shell exists): it watches colors.json itself, but a
     # nudge makes the switch instant.
