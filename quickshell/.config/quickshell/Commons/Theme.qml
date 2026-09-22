@@ -26,12 +26,17 @@ Singleton {
     readonly property string barOverride: Config.skin
     readonly property string barStyle: barOverride !== "" ? barOverride : themeBarStyle
 
+    // hued = true for a real-palette theme (Catppuccin…): widgets then use
+    // c.good / c.warning / c.critical the way a stock bar does; the mono
+    // themes keep telling state apart by shade only.
+    property bool hued: false
+
     // Defaults = HyprMono dark, so the shell renders before the file loads.
     property var c: ({
         bg0: "#0a0a0a", bg1: "#141414", bg2: "#1e1e1e", bg3: "#282828", bg4: "#333333",
         fg: "#e8e8e8",
         accentBright: "#ffffff", accentLight: "#e0e0e0", accentMid: "#a0a0a0", accentDim: "#606060",
-        active: "#ffffff", hover: "#cccccc", warning: "#b0b0b0", critical: "#808080",
+        active: "#ffffff", hover: "#cccccc", warning: "#b0b0b0", critical: "#808080", good: "#b0b0b0",
         grey0: "#404040", grey1: "#707070", grey2: "#a0a0a0",
         border: "#3de0e0e0", borderStrong: "#abffffff"
     })
@@ -52,6 +57,7 @@ Singleton {
             const j = JSON.parse(view.text())
             if (j.colors) root.c = j.colors
             if (j.mode) root.mode = j.mode
+            root.hued = j.hued === true
             if (j.name) root.name = j.name
             if (j.bar) root.themeBarStyle = j.bar
             if (j.radius !== undefined) root.radius = j.radius

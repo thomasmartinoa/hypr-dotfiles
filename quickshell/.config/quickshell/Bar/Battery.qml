@@ -17,8 +17,13 @@ Pill {
     readonly property var icons: ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂀", "󰂂", "󰁹"]
     // same rules as the waybar config: charging glyph, plug only when idle on AC, else the level
     readonly property string icon: charging ? "󰂄" : idleOnAc ? "󰚥" : icons[Math.min(10, Math.floor(pct / 10))]
-    readonly property color tone: plugged ? Theme.c.accentBright
-                                 : pct <= 15 ? Theme.c.accentDim : pct <= 30 ? Theme.c.accentMid : Theme.c.accentLight
+    // hued themes: green while charging, yellow/red when low (the stock bar look);
+    // mono themes tell the levels apart by shade alone
+    readonly property color tone: Theme.hued
+        ? (charging ? Theme.c.good : plugged ? Theme.c.accentBright
+           : pct <= 15 ? Theme.c.critical : pct <= 30 ? Theme.c.warning : Theme.c.accentLight)
+        : (plugged ? Theme.c.accentBright
+           : pct <= 15 ? Theme.c.accentDim : pct <= 30 ? Theme.c.accentMid : Theme.c.accentLight)
 
     onClicked: Panels.toggle("power", bat)
 

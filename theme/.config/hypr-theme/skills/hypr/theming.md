@@ -42,7 +42,8 @@ plus any key from `[terminal]`, `[git]`, `[apps]`.
      (any installed scheme works — LazyVim already ships `catppuccin-*` and `tokyonight-*`;
      `hyprmono` is the generated grey one; check `ls ~/.local/share/nvim/lazy/` before naming another).
    - `bar = "pill"|"minimal"` is the skin the theme prefers.
-   - **Hued theme** (Catppuccin, Gruvbox, Nord …): `hued = true` at the top, the ramp uses the
+   - **Hued theme** — the default for any new theme unless martin asks for monochrome:
+     `hued = true` at the top, the ramp uses the
      palette's own surface/text steps (Mocha: crust→mantle→base→surface0→surface1, text/subtext/
      overlay), `accent_bright`/`active` = the palette's accent (Mocha: lavender), and the hue keys
      `red orange yellow green aqua blue purple` + `warning critical` carry the *real* colours
@@ -77,8 +78,11 @@ mono themes did not move:
 cd ~/.config/hypr-theme; for t in hyprmono hyprmono-light; do
   python3 render.py themes/$t templates /tmp/$t-after >/dev/null; done   # vs a copy made before
 ```
-The shell (Quickshell) reads only the ramp from `colors.json`; it never uses `warning`/
-`critical`, so a hued theme colours the bar through `accent_bright`/`active` only.
+The shell reads `hued` and `colors.good/warning/critical` from `colors.json`
+(`Theme.hued`, `Theme.c.*`). Hued today: battery (charging green, ≤30 % yellow, ≤15 % red),
+SysMon > 85 % yellow, critical notification border red; the waybar fallback uses
+`@state-good/-warning/-critical` from `palette.css`. When adding a widget with a state,
+follow that pattern — `Theme.hued ? Theme.c.critical : Theme.c.accentDim`.
 
 ## Change one app for every theme
 

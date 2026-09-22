@@ -138,17 +138,20 @@ tooltip label {
     color: @accent-light;
 }
 
-#battery.charging,
+#battery.charging {
+    color: @state-good;
+}
+
 #battery.plugged {
     color: @accent-bright;
 }
 
 #battery.warning:not(.charging) {
-    color: @accent-mid;
+    color: @state-warning;
 }
 
 #battery.critical:not(.charging) {
-    color: @accent-dim;
+    color: @state-critical;
     animation: blink 1s linear infinite;
 }
 

@@ -1,6 +1,7 @@
 {
   "name": "{{ name }}",
   "mode": "{{ mode }}",
+  "hued": {{ hued }},
   "bar": "{{ bar }}",
   "colors": {
     "bg0": "{{ bg0 }}", "bg1": "{{ bg1 }}", "bg2": "{{ bg2 }}", "bg3": "{{ bg3 }}", "bg4": "{{ bg4 }}",
@@ -8,6 +9,7 @@
     "accentBright": "{{ accent_bright }}", "accentLight": "{{ accent_light }}",
     "accentMid": "{{ accent_mid }}", "accentDim": "{{ accent_dim }}",
     "active": "{{ active }}", "hover": "{{ hover }}", "warning": "{{ warning }}", "critical": "{{ critical }}",
+    "good": "{{ green }}",
     "grey0": "{{ grey0 }}", "grey1": "{{ grey1 }}", "grey2": "{{ grey2 }}",
     "border": "{{ accent_light | argb 0.24 }}", "borderStrong": "{{ accent_bright | argb 0.67 }}"
   },

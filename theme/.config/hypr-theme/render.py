@@ -22,6 +22,7 @@ Template syntax — one tag per colour, Omarchy-style:
     {{ bg0 | hypr 0.66 }}        rgba(0a0a0aa8)
     {{ mix bg0 fg 20% }}         a colour 20% of the way from bg0 to fg
     {{ dark "1" "0" }}           first value if mode = dark, else second
+    {{ hued }}                   true / false (the flag itself; JSON-friendly)
     {{ hued blue grey1 }}        first value if the theme sets hued = true, else second
                                  (only the chosen side is resolved, so a hued theme may
                                  define extra hue keys and use them there)
@@ -105,7 +106,7 @@ class Renderer:
         if head == "light":
             toks = re.findall(r'"[^"]*"|\S+', text)[1:]
             return self.value(toks[0]) if self.mode == "light" else self.value(toks[1])
-        if head == "hued":
+        if head == "hued" and len(parts) > 1:
             toks = re.findall(r'"[^"]*"|\S+', text)[1:]
             return self.value(toks[0]) if self.hued else self.value(toks[1])
         if len(parts) != 1:

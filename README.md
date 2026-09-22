@@ -295,6 +295,7 @@ does not pick up gsettings on Wayland — verified, including via the settings p
 | GTK4 / libadwaita apps, Zen / Firefox (portal) | Kdenlive and other KDE apps (kdeglobals) |
 | VS Code, Electron apps such as Claude (portal) | Alacritty (reads its import at start) |
 | Neovim (every running instance), btop (SIGUSR2) | pkexec apps like grub-customizer |
+| Shell state colours (battery, sysmon, critical notifications) | |
 | Login screen, `/root` GTK config (root sync) | |
 
 The **picker** is an Omarchy-style carousel in the shell: the selected theme is shown large as a

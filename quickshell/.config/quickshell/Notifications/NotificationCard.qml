@@ -19,7 +19,7 @@ Rectangle {
     radius: Theme.radius
     color: Theme.c.bg1
     border.width: 1
-    border.color: critical ? Theme.c.borderStrong : Theme.c.border
+    border.color: critical ? (Theme.hued ? Theme.alpha(Theme.c.critical, 0.67) : Theme.c.borderStrong) : Theme.c.border
     Behavior on color { ColorAnimation { duration: 150 } }
 
     function ago() {

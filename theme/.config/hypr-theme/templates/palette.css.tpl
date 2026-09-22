@@ -25,6 +25,10 @@
 @define-color hover    {{ hover }};
 @define-color warning  {{ warning }};
 @define-color critical {{ critical }};
+/* state colours: real hues in a hued theme, shades in a mono one */
+@define-color state-good     {{ hued green accent_bright }};
+@define-color state-warning  {{ hued warning accent_mid }};
+@define-color state-critical {{ hued critical accent_dim }};
 
 /* Main foreground */
 @define-color fg {{ fg }};

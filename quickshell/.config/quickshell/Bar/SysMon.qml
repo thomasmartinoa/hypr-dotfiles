@@ -34,8 +34,9 @@ Pill {
         }
     }
     Timer { interval: 3000; running: true; repeat: true; triggeredOnStart: true; onTriggered: rd.running = true }
-    Label { text: "󰍛"; color: sm.cpu > 85 ? Theme.c.accentBright : Theme.c.accentLight }
+    readonly property color hot: Theme.hued ? Theme.c.warning : Theme.c.accentBright
+    Label { text: "󰍛"; color: sm.cpu > 85 ? sm.hot : Theme.c.accentLight }
     Label { visible: !sm.vertical; text: sm.cpu + "%"; color: Theme.c.accentLight }
-    Label { visible: !sm.vertical; text: "󰘚"; color: sm.mem > 85 ? Theme.c.accentBright : Theme.c.accentLight }
+    Label { visible: !sm.vertical; text: "󰘚"; color: sm.mem > 85 ? sm.hot : Theme.c.accentLight }
     Label { visible: !sm.vertical; text: sm.mem + "%"; color: Theme.c.accentLight }
 }
