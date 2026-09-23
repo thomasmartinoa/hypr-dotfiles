@@ -10,7 +10,7 @@ import qs.Services
 
 // Now-playing card: a record spinning with the cover art as its label, a
 // tonearm that drops on while playing, the cover blurred into the card as an
-// ambient glow; seek, transport, shuffle/loop, volume, player switcher.
+// ambient glow; seek, transport, shuffle/loop, player switcher.
 Panel {
     id: p
     name: "media"
@@ -118,7 +118,6 @@ Panel {
             id: record
             width: 184; height: 184
             anchors.centerIn: parent
-            anchors.horizontalCenterOffset: -14
             layer.enabled: true
             layer.effect: MultiEffect {
                 shadowEnabled: true
@@ -456,31 +455,6 @@ Panel {
                 onTap: p.player.loopState = ls === MprisLoopState.None ? MprisLoopState.Playlist
                                           : ls === MprisLoopState.Playlist ? MprisLoopState.Track : MprisLoopState.None
             }
-        }
-    }
-
-    // volume -----------------------------------------------------------
-    Row {
-        width: parent.width
-        spacing: 10
-        visible: p.player && p.player.volumeSupported
-        Label {
-            anchors.verticalCenter: parent.verticalCenter
-            width: 16
-            text: !p.player || p.player.volume <= 0 ? "\u{f075f}" : p.player.volume < 0.5 ? "\u{f0580}" : "\u{f057e}"
-            font.pixelSize: Theme.fs(14); color: Theme.c.accentMid
-        }
-        Slider {
-            anchors.verticalCenter: parent.verticalCenter
-            width: parent.width - 26 - 36
-            value: p.player ? p.player.volume : 0
-            onMoved: (v) => { if (p.player && p.player.canControl) p.player.volume = v }
-        }
-        Label {
-            anchors.verticalCenter: parent.verticalCenter
-            width: 26; horizontalAlignment: Text.AlignRight
-            text: p.player ? Math.round(p.player.volume * 100) : ""
-            font.pixelSize: Theme.fs(10); color: Theme.c.accentMid
         }
     }
 

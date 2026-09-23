@@ -112,7 +112,14 @@ down) — don't go back to `QsMenuAnchor.open()`: those are unthemed Qt widget
 menus and need `//@ pragma UseQApplication`. `Panel` takes `pad`, `spacing`
 and a `backdrop` (items clipped under the content, e.g. a blurred cover).
 Inside a gradient, `GradientStop`s can't see the gradient's own properties
-unqualified — give it an id. `WifiNetwork.signalStrength` is **0..1**, not a percentage. MPRIS
+unqualified — give it an id.
+QML `Canvas` here: `putImageData` silently writes nothing (read back and
+see) — do pixel transforms with `globalCompositeOperation` (`qt-difference`
+with white = invert, then `destination-in` + the image to restore alpha); a
+hidden Canvas drops its paint, and `requestPaint()` from inside `onPaint`
+(e.g. via a binding that flips `visible`) is ignored — `Qt.callLater` it.
+`Bar/Tray.qml` samples each icon this way and inverts colourless icons that
+match the bar's lightness. `WifiNetwork.signalStrength` is **0..1**, not a percentage. MPRIS
 `position` only updates when you call `player.positionChanged()` (poll on a
 Timer while visible); VLC registers twice on the bus — dedupe players.
 To test media UI with no player running: build a silent mp3 with cover art
