@@ -30,9 +30,9 @@ Pill {
     Component.onCompleted: refresh()
 
     readonly property bool wired: dev && dev.type === DeviceType.Wired
-    readonly property int strength: (network && network.signalStrength !== undefined) ? network.signalStrength : 100
-    // pill skin shows the full-strength glyph like the old bar did; minimal shows real strength
-    readonly property string icon: !dev ? "󰤭" : wired ? "󰈀" : pillMode ? "󰤨"
+    // Quickshell reports signalStrength as 0..1; bound, so the glyph follows it live
+    readonly property int strength: network ? Math.round(network.signalStrength * 100) : 100
+    readonly property string icon: !dev ? "󰤭" : wired ? "󰈀"
                                    : strength > 75 ? "󰤨" : strength > 50 ? "󰤥" : strength > 25 ? "󰤢" : "󰤟"
     readonly property string text: !dev ? "offline" : wired ? (dev.address || "wired") : (network ? network.name : "wifi")
 

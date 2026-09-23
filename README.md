@@ -200,8 +200,9 @@ skin's layout — reorder or drop widgets by editing the `left` / `center` / `ri
 edits apply live. Scripts: `qs ipc call bar position left`, `qs ipc call bar transparent`.
 
 Widgets: `clock` (calendar popup), `workspaces`, `tray`, `audio`, `network`, `bluetooth`, `battery`,
-`caffeine`, `bell`, `activewindow` (focused title), `media` (now playing: click play/pause, middle
-next, scroll prev/next), `sysmon` (cpu · mem · gpu when a card reports it, click for btop), `keyboard` (layout, click to switch),
+`caffeine`, `bell`, `activewindow` (focused title), `tray` (click / right-click menu), `media` (now playing: click opens the
+player card — spinning record with the cover art, seek, prev/play/next, shuffle/loop, player switcher; middle-click play/pause,
+scroll prev/next), `sysmon` (cpu · mem · gpu when a card reports it, click for btop), `keyboard` (layout, click to switch),
 `nightlight` (warm tint, hyprsunset), `agents`, `spacer` (a small break between groups). Anything else in a layout is looked up under `"modules"` as a **command module**:
 
 ```json

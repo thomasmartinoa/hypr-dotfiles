@@ -53,8 +53,11 @@ Rectangle {
         verticalItemAlignment: Grid.AlignVCenter
     }
 
+    // below the content (z -1) so children with their own MouseArea (tray
+    // icons, player buttons) get their clicks; plain Labels fall through to it
     MouseArea {
         id: mouse
+        z: -1
         anchors.fill: parent
         hoverEnabled: true
         acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton

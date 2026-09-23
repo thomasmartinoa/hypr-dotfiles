@@ -19,7 +19,7 @@ Bar/WidgetLoader.qml      id → widget map (add new built-in widgets here)
 Bar/<Widget>.qml          Clock Workspaces Tray Audio Network Bluetooth Battery Caffeine Bell
                           ActiveWindow Media SysMon KeyboardLayout Agents CommandWidget Label
 Panels/Panel.qml          popup under a widget; PanelHeader PanelRow PanelButton Slider Toggle
-Panels/<X>Panel.qml       Audio Network Bluetooth Power Calendar Agents
+Panels/<X>Panel.qml       Audio Network Bluetooth Power Calendar Agents Media
 Launcher/ Clipboard/ Picker/ Lock/ Power/ Notifications/ Osd/ Wallpaper/   overlays
 ```
 
@@ -105,6 +105,16 @@ size; `Screen.devicePixelRatio` rounds fractional scale — use
 `Hyprland.monitorFor(screen).scale`; `Hyprland.activeToplevel` is null until a
 focus event; "Cannot override FINAL property" after an edit is stale hot-reload
 cache → `shell.sh restart`.
+Pill's own MouseArea sits at `z: -1`, so a child MouseArea (tray icon, button)
+wins its clicks — keep it that way or the tray goes dead. Tray menus
+(`QsMenuAnchor.open()`) need `//@ pragma UseQApplication` at the top of
+shell.qml. `WifiNetwork.signalStrength` is **0..1**, not a percentage. MPRIS
+`position` only updates when you call `player.positionChanged()` (poll on a
+Timer while visible); VLC registers twice on the bus — dedupe players.
+To test media UI with no player running: build a silent mp3 with cover art
+(`ffmpeg -f lavfi -i anullsrc -i cover.jpg -map 0 -map 1 -t 240 -c:v mjpeg
+-disposition:v attached_pic …`; put `-t` *after* the inputs) and play it with
+`cvlc --no-video --control dbus`; `pkill -x vlc` after.
 
 ## Apply and verify
 

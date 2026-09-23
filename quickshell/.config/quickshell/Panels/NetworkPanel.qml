@@ -32,7 +32,8 @@ Panel {
     }
     Timer { interval: 2000; running: p.open; repeat: true; onTriggered: p.refresh() }
 
-    function strengthIcon(s) { return s > 75 ? "󰤨" : s > 50 ? "󰤥" : s > 25 ? "󰤢" : "󰤟" }
+    // signalStrength is 0..1
+    function strengthIcon(v) { const s = v * 100; return s > 75 ? "󰤨" : s > 50 ? "󰤥" : s > 25 ? "󰤢" : "󰤟" }
     function tap(n) {
         if (n.connected) { n.disconnect(); return }
         if (n.known || n.security === WifiSecurityType.None) { n.connect(); return }
