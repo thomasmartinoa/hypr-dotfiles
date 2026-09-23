@@ -113,13 +113,15 @@ menus and need `//@ pragma UseQApplication`. `Panel` takes `pad`, `spacing`
 and a `backdrop` (items clipped under the content, e.g. a blurred cover).
 Inside a gradient, `GradientStop`s can't see the gradient's own properties
 unqualified — give it an id.
-QML `Canvas` here: `putImageData` silently writes nothing (read back and
-see) — do pixel transforms with `globalCompositeOperation` (`qt-difference`
-with white = invert, then `destination-in` + the image to restore alpha); a
-hidden Canvas drops its paint, and `requestPaint()` from inside `onPaint`
-(e.g. via a binding that flips `visible`) is ignored — `Qt.callLater` it.
-`Bar/Tray.qml` samples each icon this way and inverts colourless icons that
-match the bar's lightness. `WifiNetwork.signalStrength` is **0..1**, not a percentage. MPRIS
+QML `Canvas` here is unreliable for image work: `putImageData` silently
+writes nothing, `loadImage` can't read `itemgrabber:` urls (draw a hidden
+`Image` with that source instead) and a file-loaded icon can be stale after
+the icon theme flips (Papirus ↔ Papirus-Dark follow light/dark). Use Canvas
+only to *measure*; do pixel effects with a `ShaderEffect` + a compiled
+shader in `Shaders/` (`/usr/lib/qt6/bin/qsb --qt6 -o x.frag.qsb x.frag`;
+commit both). `Bar/Tray.qml` snapshots each icon as displayed
+(`grabToImage`), and inverts colourless ones that match the bar's lightness
+with `Shaders/invert.frag`; it re-measures after a light/dark switch. `WifiNetwork.signalStrength` is **0..1**, not a percentage. MPRIS
 `position` only updates when you call `player.positionChanged()` (poll on a
 Timer while visible); VLC registers twice on the bus — dedupe players.
 To test media UI with no player running: build a silent mp3 with cover art

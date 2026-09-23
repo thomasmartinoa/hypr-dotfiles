@@ -19,40 +19,44 @@ Pill {
             required property var modelData
             width: 16; height: 16
             // Many apps ship a single-colour white (or black) tray icon made for one
-            // kind of bar. Sample it once; if it's colourless and the same lightness
-            // as the bar, show it inverted (drawn in the probe canvas). Colourful icons stay as-is.
+            // kind of bar. Look at what's actually drawn; if it's colourless and the
+            // same lightness as the bar, invert it on the GPU. Colourful icons stay as-is.
             property real tone: 0   // +1 light mono icon, -1 dark mono icon, 0 colourful / unknown
             readonly property bool clash: (tone > 0 && Theme.light) || (tone < 0 && !Theme.light)
             IconImage {
                 id: icon
                 anchors.fill: parent
                 source: entry.modelData.icon
-                visible: !entry.clash
                 opacity: entry.modelData.status === Status.Passive ? 0.5 : 1
+                layer.enabled: entry.clash
+                layer.effect: ShaderEffect { fragmentShader: Qt.resolvedUrl("../Shaders/invert.frag.qsb") }
+                onSourceChanged: probe.again()
             }
+            // Sample a snapshot of the icon as displayed (not the file: the icon theme,
+            // Papirus vs Papirus-Dark, follows light/dark and changes the pixels).
             Canvas {
                 id: probe
-                visible: entry.clash
-                opacity: icon.opacity
-                anchors.centerIn: parent
-                width: 48; height: 48; scale: entry.width / 48   // drawn big, shown at icon size: stays crisp
-                smooth: true
-                property string src: entry.modelData.icon
-                property bool probed: false
+                visible: false
+                width: 32; height: 32
+                property var grab: null   // keep the ItemGrabResult alive while it's used
                 property int tries: 0
-                onSrcChanged: { probed = false; tries = 0; if (src) loadImage(src); requestPaint() }
-                // tray icons often arrive after the item: retry until there are pixels
-                Timer { interval: 700; repeat: true; running: !probe.probed && probe.tries < 15
-                        onTriggered: { probe.tries++; if (!probe.isImageLoaded(probe.src)) probe.loadImage(probe.src); probe.requestPaint() } }
-                onImageLoaded: requestPaint()
-                // a hidden canvas drops its paint, and this flips mid-paint (tone is set
-                // there) where requestPaint is ignored — so repaint on the next tick
-                onVisibleChanged: if (visible) Qt.callLater(requestPaint)
+                function again() { tries = 0; retry.restart() }
+                function snap() {
+                    if (entry.clash) { retry.restart(); return }   // don't sample the inverted layer
+                    icon.grabToImage(r => { grab = r }, Qt.size(width, height))
+                }
+                Timer { id: retry; interval: 600; onTriggered: { probe.tries++; probe.snap() } }
+                Component.onCompleted: again()
+                // the icon theme swaps a moment after the colours do: look again then
+                Connections { target: Theme; function onLightChanged() { entry.tone = 0; probe.again() } }
+                // Canvas can't load "itemgrabber:" urls; an Image can, and Canvas draws Images
+                Image { id: snapImg; visible: false; source: probe.grab ? probe.grab.url : ""; cache: false
+                        onStatusChanged: if (status === Image.Ready) probe.requestPaint() }
                 onPaint: {
-                    if (!src || !isImageLoaded(src)) return
+                    if (snapImg.status !== Image.Ready) return
                     const ctx = getContext("2d")
                     ctx.clearRect(0, 0, width, height)
-                    ctx.drawImage(src, 0, 0, width, height)
+                    ctx.drawImage(snapImg, 0, 0, width, height)
                     const d = ctx.getImageData(0, 0, width, height).data
                     let n = 0, lum = 0, sat = 0
                     for (let i = 0; i < d.length; i += 4) {
@@ -61,21 +65,10 @@ Pill {
                         const mx = Math.max(r, g, b), mn = Math.min(r, g, b)
                         lum += (mx + mn) / 2; sat += mx - mn; n++
                     }
-                    if (n < 8) return   // not loaded yet: keep the last verdict
-                    probed = true
+                    // nothing drawn yet (icon still loading): try again shortly
+                    if (n < 8) { if (tries < 15) retry.restart(); return }
                     lum /= n; sat /= n
                     entry.tone = sat > 0.18 ? 0 : lum > 0.7 ? 1 : lum < 0.3 ? -1 : 0
-                    if (entry.tone === 0) return
-                    // invert with blend modes (putImageData writes nothing in this Qt):
-                    // white "difference" flips the colours, then the icon's own alpha
-                    // masks it back to shape
-                    ctx.save()
-                    ctx.globalCompositeOperation = "qt-difference"
-                    ctx.fillStyle = "white"
-                    ctx.fillRect(0, 0, width, height)
-                    ctx.globalCompositeOperation = "destination-in"
-                    ctx.drawImage(src, 0, 0, width, height)
-                    ctx.restore()
                 }
             }
             TrayMenu {
