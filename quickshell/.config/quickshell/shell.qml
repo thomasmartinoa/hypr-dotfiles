@@ -1,5 +1,3 @@
-//@ pragma UseQApplication
-// ^ tray icons open their menus as platform (QWidget) menus, which need a QApplication
 import QtQuick
 import Quickshell
 import qs.Bar

@@ -3,6 +3,8 @@ import Quickshell
 import Quickshell.Services.SystemTray
 import Quickshell.Widgets
 import qs.Commons
+import qs.Services
+import qs.Panels
 
 Pill {
     id: tray
@@ -21,12 +23,12 @@ Pill {
                 source: entry.modelData.icon
                 opacity: entry.modelData.status === Status.Passive ? 0.5 : 1
             }
-            QsMenuAnchor {
+            TrayMenu {
                 id: menu
-                menu: entry.modelData.menu
-                anchor.item: entry
-                anchor.edges: Edges.Bottom
-                anchor.gravity: Edges.Bottom
+                name: "tray:" + (entry.modelData.id || entry.modelData.title)
+                anchorItem: entry
+                handle: entry.modelData.menu
+                title: entry.modelData.title || entry.modelData.tooltipTitle || entry.modelData.id
             }
             MouseArea {
                 anchors.fill: parent
@@ -34,7 +36,7 @@ Pill {
                 cursorShape: Qt.PointingHandCursor
                 onClicked: (e) => {
                     if (e.button === Qt.RightButton || entry.modelData.onlyMenu) {
-                        if (entry.modelData.hasMenu) menu.open()
+                        if (entry.modelData.hasMenu) Panels.toggle(menu.name, entry)
                     } else if (e.button === Qt.MiddleButton) entry.modelData.secondaryActivate()
                     else entry.modelData.activate()
                 }

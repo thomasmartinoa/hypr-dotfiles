@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
+import Quickshell.Widgets
 import qs.Commons
 import qs.Services
 
@@ -12,7 +13,10 @@ PopupWindow {
     required property string name
     required property Item anchorItem
     default property alias content: column.data
+    property alias backdrop: backdropItem.data   // drawn under the content, clipped to the card
     property int panelWidth: 320
+    property int pad: 14
+    property alias spacing: column.spacing
 
     readonly property bool open: Panels.open === name && Panels.item === anchorItem
     visible: open
@@ -47,17 +51,25 @@ PopupWindow {
     Rectangle {
         id: card
         width: parent.width
-        implicitHeight: column.implicitHeight + 28
+        implicitHeight: column.implicitHeight + popup.pad * 2
         color: Theme.c.bg0
         border.width: 1
         border.color: Theme.c.border
         radius: Theme.radius
         Behavior on color { ColorAnimation { duration: 150 } }
 
+        ClippingRectangle {
+            id: backdropItem
+            anchors.fill: parent
+            anchors.margins: 1
+            radius: Math.max(0, Theme.radius - 1)
+            color: "transparent"
+            visible: children.length > 0
+        }
         Column {
             id: column
-            x: 14; y: 14
-            width: parent.width - 28
+            x: popup.pad; y: popup.pad
+            width: parent.width - popup.pad * 2
             spacing: 10
         }
         Keys.onEscapePressed: Panels.close()
