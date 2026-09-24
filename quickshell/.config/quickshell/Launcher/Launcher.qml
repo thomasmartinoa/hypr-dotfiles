@@ -43,7 +43,8 @@ Variants {
             height: 30 + 42 + 10 + win.rowsShown * 44 + (win.rowsShown - 1) * 10 + 6
             radius: Theme.radius
             color: Theme.alpha(Theme.c.bg0, 0.74)
-            border.width: 1; border.color: Theme.c.borderStrong
+            // one physical pixel: a logical 1px is ~2 device px at scale 1.6
+            border.width: 1 / (win.screen ? win.screen.devicePixelRatio : 1); border.color: Theme.c.borderStrong
 
             // inputbar
             Rectangle {
