@@ -1,9 +1,9 @@
 -- Colourscheme follows the hypr-theme engine (see config/hypr-theme.lua).
 -- "hyprmono" is generated from the theme palette by lua/hyprmono/init.lua;
 -- zenbones stays installed as the fallback family with real light/dark
--- variants for themes that name it; gruvbox is the warm scheme the
--- golden-evening theme names; aether.nvim is coloured from the palette
--- (colorscheme "aether"), Aether/Omarchy style.
+-- variants for themes that name it; gruvbox is a warm stock scheme a theme
+-- can name; aether.nvim is coloured from the palette (colorscheme "aether"),
+-- Aether/Omarchy style.
 local bridge = require("config.hypr-theme")
 local theme = bridge.read()
 

@@ -32,3 +32,10 @@ theme/.config/hypr-theme/defaults/
 theme/.config/hypr-theme/ui/
 __pycache__/
 *.pyc
+
+# themes: the rice ships these three; any other folder under themes/ is the
+# user's own (made by hand or by an agent) and stays on their machine
+theme/.config/hypr-theme/themes/*
+!theme/.config/hypr-theme/themes/hyprmono/
+!theme/.config/hypr-theme/themes/hyprmono-light/
+!theme/.config/hypr-theme/themes/catppuccin-mocha/

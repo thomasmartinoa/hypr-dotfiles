@@ -329,17 +329,16 @@ palette), the others as dimmed slices to either side that slide as you move. Eve
 Enter applies, type to filter (the filter is the only text shown), Esc. The same carousel picks wallpapers (the current theme's first, then the rest). Without the
 shell, `hypr-theme-menu --rofi`.
 
-Shipped themes: `hyprmono` (dark), `hyprmono-light`, and two hued ones — `catppuccin-mocha`
-(official Mocha palette, lavender accents, the real pastel syntax in nvim `catppuccin-mocha` and
-VS Code) and `golden-evening` (umber / cream / gold sampled from the sunset oil painting that is
-its wallpaper; nvim uses `gruvbox`, the closest stock warm scheme), plus `alpine-dusk` — the
-palette [Aether](https://github.com/omacom/aether) auto-detects from a snow-peak photo (every hue
-is a shade of the sky), and `tokyo-night` — the official Tokyo Night (night) palette with blue
-accents and magenta hover, nvim `tokyonight-night`, over a neon Shinjuku rooftop wallpaper. Alpine-dusk also carries the **Aether way** of colouring apps from a palette, for
-comparison with the rice's own mapping: nvim `nvim_colorscheme = "aether"` builds
-[aether.nvim](https://github.com/omacom/aether.nvim) from the theme; VS Code gets a second entry
-"Hypr Theme (Aether)" (Ctrl+K Ctrl+T); btop gets `hypr-theme-aether` (Esc → Options → Color
-theme). Both are rendered for every theme from `templates/*-aether*.tpl`.
+Shipped themes: `hyprmono` (dark), `hyprmono-light`, and `catppuccin-mocha` — hued, on the
+official Mocha palette with lavender accents and the real pastel syntax in nvim
+`catppuccin-mocha` and VS Code. Themes you make (by hand or with an agent) live next to them in
+`themes/` and stay yours: `.gitignore` keeps everything but these three out of the repo.
+
+A theme can also colour apps the **Aether way** instead of the rice's own mapping: nvim
+`nvim_colorscheme = "aether"` builds [aether.nvim](https://github.com/omacom/aether.nvim) from the
+theme; VS Code gets a second entry "Hypr Theme (Aether)" (Ctrl+K Ctrl+T); btop gets
+`hypr-theme-aether` (Esc → Options → Color theme). Both are rendered for every theme from
+`templates/*-aether*.tpl`.
 
 To make a theme: copy `themes/hyprmono/`, edit `colors.toml` (`mode = "light"` flips GTK/Qt/nvim to
 their light variants; `hued = true` for a real palette — templates branch with
