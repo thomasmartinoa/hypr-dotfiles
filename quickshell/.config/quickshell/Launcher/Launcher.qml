@@ -73,10 +73,18 @@ Variants {
                         if (e.key === Qt.Key_Escape) { Apps.open = false; e.accepted = true; return }
                         if (e.key === Qt.Key_Return || e.key === Qt.Key_Enter) { Apps.launch(Apps.results[win.selected]); e.accepted = true; return }
                         if (n === 0) return
-                        if (e.key === Qt.Key_Down || (e.key === Qt.Key_Tab)) { win.selected = (win.selected + 1) % n; e.accepted = true }
-                        else if (e.key === Qt.Key_Up || e.key === Qt.Key_Backtab) { win.selected = (win.selected + n - 1) % n; e.accepted = true }
-                        else if (e.key === Qt.Key_Right) { win.selected = Math.min(n - 1, win.selected + win.rowsShown); e.accepted = true }
-                        else if (e.key === Qt.Key_Left) { win.selected = Math.max(0, win.selected - win.rowsShown); e.accepted = true }
+                        // arrows move on screen: up/down within the column,
+                        // left/right to the same row of the next column;
+                        // Tab / Shift+Tab walk the whole list in order
+                        const r = win.rowsShown, i = win.selected
+                        if (e.key === Qt.Key_Tab) win.selected = (i + 1) % n
+                        else if (e.key === Qt.Key_Backtab) win.selected = (i + n - 1) % n
+                        else if (e.key === Qt.Key_Down) { if (i % r < r - 1 && i + 1 < n) win.selected = i + 1 }
+                        else if (e.key === Qt.Key_Up) { if (i % r > 0) win.selected = i - 1 }
+                        else if (e.key === Qt.Key_Right) { if (i + r < n) win.selected = i + r; else if (Math.floor(i / r) < Math.floor((n - 1) / r)) win.selected = n - 1 }
+                        else if (e.key === Qt.Key_Left) { if (i - r >= 0) win.selected = i - r }
+                        else return
+                        e.accepted = true
                     }
                 }
             }
@@ -86,7 +94,10 @@ Variants {
                 id: grid
                 x: 30; y: bar.y + bar.height + 10
                 width: parent.width - 60
-                height: win.rowsShown * 44 + (win.rowsShown - 1) * 10
+                // GridView fits floor(height / cellHeight) rows per column:
+                // a full cell per row, or the last row wraps into the next
+                // column and the arrows (which assume rowsShown) land wrong
+                height: win.rowsShown * cellHeight
                 clip: true
                 flow: GridView.FlowTopToBottom
                 cellWidth: (width - 10) / win.cols + 5
@@ -116,8 +127,9 @@ Variants {
                             text: row.modelData.name; font.pixelSize: Theme.fs(13)
                             color: row.sel ? Theme.c.accentBright : Theme.c.fg
                         }
-                        MouseArea { anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
-                                    onEntered: win.selected = row.index; onClicked: Apps.launch(row.modelData) }
+                        // click only: hovering never moves the selection
+                        MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor
+                                    onClicked: Apps.launch(row.modelData) }
                     }
                 }
             }

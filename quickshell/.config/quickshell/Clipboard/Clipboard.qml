@@ -100,8 +100,9 @@ Variants {
                         font.pixelSize: Theme.fs(13)
                         color: row.sel ? Theme.c.accentBright : Theme.c.fg
                     }
-                    MouseArea { anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
-                                onEntered: win.selected = row.index; onClicked: Clip.copy(row.modelData) }
+                    // click only: hovering never moves the selection
+                    MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor
+                                onClicked: Clip.copy(row.modelData) }
                 }
                 Label { visible: win.items.length === 0; anchors.centerIn: parent; text: "clipboard is empty"; font.pixelSize: Theme.fs(12); color: Theme.c.accentMid }
             }

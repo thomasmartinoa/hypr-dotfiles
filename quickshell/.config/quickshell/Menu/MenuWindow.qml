@@ -131,8 +131,9 @@ Variants {
                         Label { visible: row.modelData.checked === true; text: "󰄬"; font.pixelSize: Theme.fs(13); color: Theme.c.accentBright }
                         Label { visible: row.modelData.sub; text: "󰅂"; font.pixelSize: Theme.fs(13); color: Theme.c.accentDim }
                     }
-                    MouseArea { anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
-                                onEntered: Menu.selected = row.index; onClicked: Menu.activate(row.modelData) }
+                    // click only: hovering never moves the selection
+                    MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor
+                                onClicked: Menu.activate(row.modelData) }
                 }
                 Label { visible: win.rows.length === 0 && !Menu.inputRow; anchors.centerIn: parent; text: "nothing found"; font.pixelSize: Theme.fs(12); color: Theme.c.accentDim }
                 Label { visible: !!Menu.inputRow; anchors.centerIn: parent; text: "Enter to set"; font.pixelSize: Theme.fs(12); color: Theme.c.accentDim }
