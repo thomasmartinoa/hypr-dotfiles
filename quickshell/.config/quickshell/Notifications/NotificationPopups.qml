@@ -9,7 +9,7 @@ PanelWindow {
     id: win
     visible: Notifs.popups.length > 0
     anchors { top: true; right: true }
-    margins { top: Theme.barStyle === "pill" ? 44 : 32; right: 8 }
+    margins { top: Theme.barStyle === "pill" ? 44 : Theme.barStyle === "floating" ? 37 : 32; right: 8 }
     implicitWidth: 380
     implicitHeight: Math.min(stack.implicitHeight, screen.height - 100)
     color: "transparent"

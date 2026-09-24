@@ -12,7 +12,7 @@ helper. The shell reads `current/colors.json` live (`Commons/Theme.qml`).
 
 ```
 themes/<id>/
-├── colors.toml     name, mode (dark|light), bar (pill|minimal), [colors] [terminal] [git] [apps]
+├── colors.toml     name, mode (dark|light), bar (pill|floating|minimal), [colors] [terminal] [git] [apps]
 └── backgrounds/    1-*.png|jpg … first one is the default wallpaper
 templates/<app>.tpl → current/<app>
 ```
@@ -41,7 +41,7 @@ plus any key from `[terminal]`, `[git]`, `[apps]`.
    - `[git]` keeps real hues. `[apps]` names the GTK/Qt/icon/cursor themes and `nvim_colorscheme`
      (any installed scheme works — LazyVim already ships `catppuccin-*` and `tokyonight-*`;
      `hyprmono` is the generated grey one; check `ls ~/.local/share/nvim/lazy/` before naming another).
-   - `bar = "pill"|"minimal"` is the skin the theme prefers.
+   - `bar = "pill"|"floating"|"minimal"` is the skin the theme prefers (pill is shown as "Legacy").
    - **Hued theme** — the default for any new theme unless martin asks for monochrome:
      `hued = true` at the top, the ramp uses the
      palette's own surface/text steps (Mocha: crust→mantle→base→surface0→surface1, text/subtext/
@@ -60,7 +60,7 @@ plus any key from `[terminal]`, `[git]`, `[apps]`.
 4. `hypr-theme set <id>` — it appears in the carousel (`SUPER+CTRL+SHIFT+SPACE`) automatically.
 5. **Verify in every surface** (verify.md). For btop use `hypr-float btop`
    (a tiled kitty next to other windows is < 80×24 and btop only prints "Terminal size too
-   small"). `hypr-wall next` cycles to the theme's other backgrounds. Verify: bar (both skins: `qs ipc call bar toggle`),
+   small"). `hypr-wall next` cycles to the theme's other backgrounds. Verify: bar (every skin: `qs ipc call bar toggle` cycles them),
    launcher `SUPER+D`, clipboard, notification (`qs ipc call notifications test`),
    panels (audio/network/power/agents), picker, power menu, lock screen (careful —
    see SKILL rule 5; the SDDM Main.qml uses the same geometry, so a screenshot of

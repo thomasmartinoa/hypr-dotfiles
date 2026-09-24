@@ -14,7 +14,7 @@ Commons/Config.qml        shell.json: Config.position/vertical/transparent, layo
 Services/*.qml            singletons (pragma Singleton) with IpcHandler: Notifs, Panels, Themes,
                           Wallpaper, Lock, Idle, Caffeine, Osd, Apps, Clip, Agents
 Bar/Bar.qml               per-screen PanelWindow, gestures (drag to edge, double-click transparent)
-Bar/Pill.qml              the module container: pill skin (bordered) / minimal skin (flat)
+Bar/Pill.qml              the module container: pill skin (bordered) / floating + minimal (flat)
 Bar/WidgetLoader.qml      id → widget map (add new built-in widgets here)
 Bar/<Widget>.qml          Clock Workspaces Tray Audio Network Bluetooth Battery Caffeine Bell
                           ActiveWindow Media SysMon KeyboardLayout Agents CommandWidget Label
@@ -25,7 +25,7 @@ Launcher/ Clipboard/ Picker/ Lock/ Power/ Notifications/ Osd/ Wallpaper/   overl
 
 ## Bar layout — no code
 
-`~/.config/hypr-theme/shell.json` → `bar.layout.<pill|minimal>.<left|center|right>` are
+`~/.config/hypr-theme/shell.json` → `bar.layout.<pill|minimal>.<left|center|right>` (floating uses minimal's) are
 lists of widget ids; hot-reloads. Built-ins: `clock workspaces tray audio network
 bluetooth battery caffeine bell activewindow media sysmon keyboard agents spacer`.
 Anything else is looked up in `bar.modules`:
@@ -71,7 +71,7 @@ Pill {
 ```
 
 Rules of the house:
-- **Pill**: put `Label`s (or small Items) inside; it handles padding, both skins,
+- **Pill**: put `Label`s (or small Items) inside; it handles padding, every skin,
   vertical bars, hover, `clicked/rightClicked/middleClicked/scrolled`. Hide text
   in the minimal/vertical bar with `visible: pillMode && !vertical` like the
   built-ins. Never hardcode colours — `Theme.c.*`; sizes come from the skin.
@@ -133,7 +133,7 @@ To test media UI with no player running: build a silent mp3 with cover art
 
 Save → hot-reload; check `qs log` for `WARN`/`ERROR` mentioning your file.
 New files, qmldir edits or persistent weirdness → `shell.sh restart` (wait ~3 s).
-Then screenshot the bar in **both skins** (`qs ipc call bar toggle`) and both
+Then screenshot the bar in **all three skins** (`qs ipc call bar toggle` cycles them) and both
 themes, and the panel open (`qs ipc call panels open <name>`) — verify.md.
 
 ## The menu (SUPER+SPACE)

@@ -54,7 +54,7 @@ repo as a fallback (`HYPR_SHELL=waybar`).
 | | Using | Package |
 |---|---|---|
 | Compositor | [Hyprland](https://hyprland.org/) (Lua config) | `hyprland` |
-| Shell | [Quickshell](https://quickshell.org/): bar (two skins), launcher, clipboard history, notifications, lock screen, power menu, OSD, panels, theme/wallpaper picker, menu, agents | `quickshell` |
+| Shell | [Quickshell](https://quickshell.org/): bar (three skins), launcher, clipboard history, notifications, lock screen, power menu, OSD, panels, theme/wallpaper picker, menu, agents | `quickshell` |
 | Idle / logind bridge | [hypridle](https://github.com/hyprwm/hypridle) (the shell owns the timers) | `hypridle` |
 | Login screen | SDDM with a QML theme that mirrors the lock screen | `sddm` |
 | Theme engine | `hypr-theme`: one `colors.toml` → every app, dark + light | `python` `jq` |
@@ -183,20 +183,22 @@ The Hyprland config is split into modules under
 lock screen and launcher follow (see the roadmap below). It reads the theme's `colors.json` live, so a
 theme switch recolours it in place — no restart.
 
-Two skins, switched live:
+Three skins, switched live from the menu (`SUPER+SPACE` › Style › Bar) or `SUPER+SHIFT+B`:
 
-| `pill` | the classic look: bordered floating modules, clock · workspaces · tray · audio · wifi · battery · caffeine · bell |
-| `minimal` | flat 26px strip, Omarchy layout: numbered workspaces with a dot for the active one, day + time centred, icons right |
+| `pill` (Legacy) | the classic look: bordered floating modules, clock · workspaces · tray · audio · wifi · battery · caffeine · bell |
+| `floating` | the minimal layout on a strip inset from the screen edge, rounded and bordered |
+| `minimal` | flat 26px strip flush with the edge, Omarchy layout: numbered workspaces with a dot for the active one, day + time centred, icons right |
 
-A theme picks its skin with `bar = "pill"` in `colors.toml`; `SUPER+SHIFT+B` (or
-`qs ipc call bar style minimal|pill|auto`) overrides it for the session. `SUPER+R` restarts the shell.
+A theme picks its skin with `bar = "pill"` in `colors.toml`; the menu, `SUPER+SHIFT+B` (cycles
+Legacy → floating → minimal) or `qs ipc call bar style pill|legacy|floating|minimal|auto`
+overrides it, saved in `shell.json`. `SUPER+R` restarts the shell.
 `HYPR_SHELL=waybar` in `autostart.lua` brings the old waybar back.
 
 **Move it, make it see-through, rearrange it** — the bar is configured on the bar itself, like
 Omarchy's: drag empty bar space (or press-and-hold) and let go near a screen edge to move the bar
-there (top, bottom, left, right; vertical bars go icon-only); double-click empty space on the minimal
-bar to toggle transparency. Both persist in `~/.config/hypr-theme/shell.json`, which also holds each
-skin's layout — reorder or drop widgets by editing the `left` / `center` / `right` lists, and hand
+there (top, bottom, left, right; vertical bars go icon-only); double-click empty space on the floating
+or minimal bar to toggle transparency. Both persist in `~/.config/hypr-theme/shell.json`, which also holds each
+skin's layout (floating uses minimal's) — reorder or drop widgets by editing the `left` / `center` / `right` lists, and hand
 edits apply live. Scripts: `qs ipc call bar position left`, `qs ipc call bar transparent`.
 
 Widgets: `clock` (calendar popup), `workspaces`, `tray`, `audio`, `network`, `bluetooth`, `battery`,
@@ -378,7 +380,7 @@ If the login screen ever comes up black, switch to a TTY (`Ctrl+Alt+F3`) and
 | `SUPER` + `CTRL` + `O` | The menu, opened on Toggle |
 | `SUPER` + `L` / `M` | Lock screen · power menu |
 | `SUPER` + `R` | Restart the shell (bar + notifications) |
-| `SUPER` + `SHIFT` + `B` | Bar skin: pill ↔ minimal |
+| `SUPER` + `SHIFT` + `B` | Bar skin: Legacy → floating → minimal |
 | `SUPER` + `CTRL` + `I` | Caffeine: pause idle lock & suspend (also the ☕ in the bar) |
 | `SUPER` + `CTRL` + `SHIFT` + `SPACE` / `SHIFT` + `W` | Theme picker · wallpaper picker |
 | `SUPER` + `CTRL` + `SPACE` | Next wallpaper |

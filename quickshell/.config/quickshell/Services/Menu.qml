@@ -55,6 +55,7 @@ Singleton {
         case "light":     return Theme.light
         case "wallpaper": return (data.state && data.state.wallpaper) || ""
         case "bar.pill":  return Theme.barStyle === "pill"
+        case "bar.floating": return Theme.barStyle === "floating"
         case "bar.minimal": return Theme.barStyle === "minimal"
         case "bar.top": case "bar.bottom": case "bar.left": case "bar.right": return Config.position === key.slice(4)
         case "bar.transparent": return Config.transparent
@@ -74,10 +75,10 @@ Singleton {
 
     // ---- rows ------------------------------------------------------------
     readonly property var widgetIds: ["clock", "workspaces", "tray", "audio", "network", "bluetooth", "battery", "caffeine", "bell", "activewindow", "media", "sysmon", "keyboard", "agents"]
-    function layoutAll() { const s = Theme.barStyle; return ["left", "center", "right"].map(sec => Config.layoutFor(s, sec)) }
+    function layoutAll() { const s = Theme.barLayout; return ["left", "center", "right"].map(sec => Config.layoutFor(s, sec)) }
     function widgetOn(id) { return layoutAll().some(l => l.indexOf(id) !== -1) }
     function toggleWidget(id) {
-        const s = Theme.barStyle
+        const s = Theme.barLayout
         for (const sec of ["left", "center", "right"]) {
             const l = Config.layoutFor(s, sec).slice()
             const i = l.indexOf(id)

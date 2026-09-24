@@ -15,8 +15,8 @@ Singleton {
         version: 1,
         bar: {
             position: "top",                 // top | bottom | left | right
-            transparent: false,              // minimal skin only
-            skin: "",                        // pill | minimal | "" = the theme's choice
+            transparent: false,              // floating + minimal skins only
+            skin: "",                        // pill (Legacy) | floating | minimal | "" = the theme's choice
             hidden: false,                   // Menu › Toggle › Bar
             battery: true,                   // show the percentage next to the battery glyph
             layout: {
@@ -54,7 +54,10 @@ Singleton {
     readonly property bool hidden: !!(bar && bar.hidden)
     readonly property int fontSize: (data.font && data.font.size >= 8 && data.font.size <= 24) ? data.font.size : 12
     readonly property string fontFamily: (data.font && data.font.family) ? data.font.family : ""
-    readonly property string skin: (bar && (bar.skin === "pill" || bar.skin === "minimal")) ? bar.skin : ""
+    readonly property var skins: ["pill", "floating", "minimal"]
+    readonly property string skin: (bar && skins.indexOf(bar.skin) !== -1) ? bar.skin : ""
+    // true once shell.json was read (or found missing); see Theme.ready
+    property bool ready: false
     readonly property bool batteryPercent: !(bar && bar.battery === false)
 
     function layoutFor(style, section) {
@@ -99,7 +102,7 @@ Singleton {
         watchChanges: true
         blockWrites: false
         onFileChanged: reload()
-        onLoaded: root.parse()
-        onLoadFailed: (err) => { /* no file yet: defaults, and write them so the user has something to edit */ root.save() }
+        onLoaded: { root.parse(); root.ready = true }
+        onLoadFailed: (err) => { /* no file yet: defaults, and write them so the user has something to edit */ root.save(); root.ready = true }
     }
 }

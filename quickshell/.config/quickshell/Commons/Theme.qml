@@ -17,7 +17,9 @@ Singleton {
     property string mode: "dark"
     readonly property bool light: mode === "light"
 
-    // Bar skin: "pill" (the classic look) or "minimal" (flat, Omarchy-like).
+    // Bar skin: "pill" (Legacy: floating bordered modules), "floating" (the
+    // minimal strip, inset from the edge with rounded corners) or "minimal"
+    // (flat strip flush with the edge, Omarchy-like).
     // A theme sets its preference in colors.toml; `qs ipc call bar style X`
     // overrides it for this session.
     property string themeBarStyle: "pill"
@@ -25,6 +27,11 @@ Singleton {
     // bar.skin so it survives restarts; "" = follow the theme's preference
     readonly property string barOverride: Config.skin
     readonly property string barStyle: barOverride !== "" ? barOverride : themeBarStyle
+    // widget set + layout the skin uses: floating shares minimal's
+    readonly property string barLayout: barStyle === "pill" ? "pill" : "minimal"
+    // true once colors.json was read (or failed): the bar maps only then, so
+    // it never starts with another skin's margins (they would stick)
+    property bool ready: false
 
     // hued = true for a real-palette theme (Catppuccin…): widgets then use
     // c.good / c.warning / c.critical the way a stock bar does; the mono
@@ -63,7 +70,7 @@ Singleton {
             if (j.mode) root.mode = j.mode
             root.hued = j.hued === true
             if (j.name) root.name = j.name
-            if (j.bar) root.themeBarStyle = j.bar
+            if (j.bar === "pill" || j.bar === "floating" || j.bar === "minimal") root.themeBarStyle = j.bar
             if (j.radius !== undefined) root.radius = j.radius
         } catch (e) {
             console.warn("Theme: could not parse " + root.file + ": " + e)
@@ -75,8 +82,8 @@ Singleton {
         path: root.file
         watchChanges: true
         onFileChanged: reload()
-        onLoaded: root.parse()
-        onLoadFailed: (err) => console.warn("Theme: " + root.file + " not readable (" + err + "), using defaults")
+        onLoaded: { root.parse(); root.ready = true }
+        onLoadFailed: (err) => { console.warn("Theme: " + root.file + " not readable (" + err + "), using defaults"); root.ready = true }
     }
 
     IpcHandler {

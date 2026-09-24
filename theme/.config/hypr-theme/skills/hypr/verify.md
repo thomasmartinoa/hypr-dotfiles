@@ -35,7 +35,7 @@ and confirm `hyprctl clients -j | jq -r '.[].class'` lists none left.
 
 ## The checklist for "check the rice" / a new theme
 
-For **dark and light**: bar (pill + minimal), launcher, clipboard, a
+For **dark and light**: bar (all three skins: pill/Legacy, floating, minimal), launcher, clipboard, a
 notification popup + the bell's list, audio/network/power/agents panels,
 picker (theme + wallpaper), power menu, kitty with fastfetch, btop, nvim,
 Thunar, one Qt app, VS Code, the lock screen (rule 5 in SKILL.md — a lock
