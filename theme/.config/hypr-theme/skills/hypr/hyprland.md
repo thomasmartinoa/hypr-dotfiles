@@ -37,7 +37,7 @@ hl.bind(mainMod .. " + " .. i, hl.dsp.focus({ workspace = i }))
 Dispatchers are `hl.dsp.*` (Lua form) — the shell also uses them through
 `Hyprland.dispatch("hl.dsp.focus({ workspace = 2 })")` when `Hyprland.usingLua`.
 For exotic ones check the Hyprland Lua docs at wiki.hypr.land (syntax changes
-between versions — fetch, don't recall). Keep the README keybind table in sync.
+between versions — fetch, don't recall). A keybind that ships with the rice goes in the README keybind table too.
 
 ## Window / layer rules
 

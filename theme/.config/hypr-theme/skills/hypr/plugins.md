@@ -87,7 +87,7 @@ Rules of the house:
 - **Services** (state, IPC, timers, processes) belong in `Services/<Name>.qml`
   (`pragma Singleton`, add `singleton Name 1.0 Name.qml` to `Services/qmldir`).
   Built-in widgets go in `Bar/` + `Bar/qmldir` + a `case` in `WidgetLoader.qml`
-  + the default layouts in `Commons/Config.qml` (and README's widget list).
+  + the default layouts in `Commons/Config.qml` (and README's widget list if it ships).
 - **Overlays** (fullscreen things like launcher/picker) are a `Variants { model:
   Quickshell.screens; PanelWindow { WlrLayershell.layer: Overlay; keyboardFocus:
   Exclusive when open; namespace: "hypr-<name>" } }`; give the namespace a
@@ -119,7 +119,7 @@ writes nothing, `loadImage` can't read `itemgrabber:` urls (draw a hidden
 the icon theme flips (Papirus ↔ Papirus-Dark follow light/dark). Use Canvas
 only to *measure*; do pixel effects with a `ShaderEffect` + a compiled
 shader in `Shaders/` (`/usr/lib/qt6/bin/qsb --qt6 -o x.frag.qsb x.frag`;
-commit both). `Bar/Tray.qml` snapshots each icon as displayed
+keep both: the `.qsb` is what loads). `Bar/Tray.qml` snapshots each icon as displayed
 (`grabToImage`), and inverts colourless ones that match the bar's lightness
 with `Shaders/invert.frag`; it re-measures after a light/dark switch. `WifiNetwork.signalStrength` is **0..1**, not a percentage. MPRIS
 `position` only updates when you call `player.positionChanged()` (poll on a
@@ -129,12 +129,28 @@ To test media UI with no player running: build a silent mp3 with cover art
 -disposition:v attached_pic …`; put `-t` *after* the inputs) and play it with
 `cvlc --no-video --control dbus`; `pkill -x vlc` after.
 
+Layer-surface and input traps, each cost an evening:
+- A `PanelWindow`'s `margins` set before it first maps can stick in the
+  compositor while its size updates fine — the bar came up at 6,5 on a flush
+  skin. Map once settings are read (`visible: … && Config.ready && Theme.ready`)
+  and check real geometry with `hyprctl layers`, not the QML values.
+- Over an empty workspace Hyprland sends a layer surface a pointer *leave* as
+  soon as a drag leaves it, and Qt turns that into a release; nothing else
+  gets the motion, and a surface mapped mid-drag isn't shown until the button
+  is up. Over a window the grab holds, so always test drags on an empty
+  workspace too. The bar's fix: grow its own surface to the screen while a
+  button is held (exclusive zone fixed) so the cursor never leaves it.
+- `GridView` fits `floor(height / cellHeight)` rows per column — size it in
+  whole cells or rows spill into the next column and arrow keys land wrong.
+- Pickers select by keyboard and launch by click; don't select on hover
+  (`onEntered`): opening one under a resting mouse moves the selection.
+
 ## Apply and verify
 
 Save → hot-reload; check `qs log` for `WARN`/`ERROR` mentioning your file.
 New files, qmldir edits or persistent weirdness → `shell.sh restart` (wait ~3 s).
 Then screenshot the bar in **all three skins** (`qs ipc call bar toggle` cycles them) and both
-themes, and the panel open (`qs ipc call panels open <name>`) — verify.md.
+themes, on an empty workspace as well as one with a window, and the panel open (`qs ipc call panels open <name>`) — verify.md.
 
 ## The menu (SUPER+SPACE)
 

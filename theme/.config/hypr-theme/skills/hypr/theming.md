@@ -42,7 +42,7 @@ plus any key from `[terminal]`, `[git]`, `[apps]`.
      (any installed scheme works — LazyVim already ships `catppuccin-*` and `tokyonight-*`;
      `hyprmono` is the generated grey one; check `ls ~/.local/share/nvim/lazy/` before naming another).
    - `bar = "pill"|"floating"|"minimal"` is the skin the theme prefers (pill is shown as "Legacy").
-   - **Hued theme** — the default for any new theme unless martin asks for monochrome:
+   - **Hued theme** — the default for any new theme unless the user asks for monochrome:
      `hued = true` at the top, the ramp uses the
      palette's own surface/text steps (Mocha: crust→mantle→base→surface0→surface1, text/subtext/
      overlay), `accent_bright`/`active` = the palette's accent (Mocha: lavender), and the hue keys
@@ -67,7 +67,9 @@ plus any key from `[terminal]`, `[git]`, `[apps]`.
    the lock screen stands in), kitty + fastfetch, btop, nvim, Thunar (GTK3, restart it),
    a Qt app (qt6ct-aware, restart it), VS Code. Fix any unreadable text by adjusting
    the ramp, not one app.
-6. Commit `themes/<id>/` (+ README if you add anything user-facing).
+6. The theme is the user's: `themes/<id>/` is gitignored, so it stays on
+   this machine. Don't commit it or `git add -f` it (MAINTAINER.md decides
+   what ships). To share it, the user copies the folder.
 
 ## Hued vs monochrome in templates
 
@@ -111,16 +113,16 @@ that cost time once:
 Edit its template in `templates/`, `hypr-theme reload`, verify in dark and light.
 If the app needs a file at a fixed path, add an `install_file` line in
 `hypr-theme`'s `apply()` and, if it can be reloaded live, the reload there too
-(see the kitty/btop/nvim lines). Add the app to README's live-vs-restart table.
+(see the kitty/btop/nvim lines). If it ships with the rice, add the app to README's live-vs-restart table.
 
 ## Make an app follow the theme (new template)
 
 1. Find what the app reads (a config file, a theme dir, env vars, gsettings) and
    whether it reloads live (signal, IPC, file watch) — check its man page/source.
-2. Write `templates/<file>.tpl` with the tags above; keep it monochrome.
+2. Write `templates/<file>.tpl` with the tags above; colour it the app's stock way and branch with `{{ hued … }}` so the mono themes stay grey.
 3. Wire `apply()` in `theme/.local/bin/hypr-theme` (install + reload).
-4. If the app is worth having on a fresh machine, add it to `PKGS_REPO` in install.sh.
-5. Verify dark + light with screenshots; add a README row.
+4. If it ships with the rice and the app is worth having on a fresh machine, add it to `PKGS_REPO` in install.sh.
+5. Verify dark + light with screenshots (+ a README row if it ships).
 
 ## Font, text size, scale
 

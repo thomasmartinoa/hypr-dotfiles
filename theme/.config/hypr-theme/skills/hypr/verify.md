@@ -33,6 +33,14 @@ for p in $(hyprctl clients -j | jq -r '.[] | select(.class=="hypr-float") | .pid
 ```
 and confirm `hyprctl clients -j | jq -r '.[].class'` lists none left.
 
+Pointer/keyboard input (drags, arrow keys) can't be driven by `qs ipc`. A tiny
+python uinput device works when `/dev/uinput` is writable (EV_KEY BTN_LEFT +
+arrow keys, EV_REL X/Y; `UI_DEV_SETUP` + `UI_DEV_CREATE`, wait ~1 s before the
+first event). Place the cursor with `hyprctl dispatch 'hl.dsp.cursor.move({x=…,y=…})'`.
+Relative motion is accelerated, so read `hyprctl cursorpos` after a drag
+before judging the result. Injected keys go to whatever has focus — ask
+before using it while the user is at the keyboard.
+
 ## The checklist for "check the rice" / a new theme
 
 For **dark and light**: bar (all three skins: pill/Legacy, floating, minimal), launcher, clipboard, a

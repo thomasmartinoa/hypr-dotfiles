@@ -39,3 +39,5 @@ theme/.config/hypr-theme/themes/*
 !theme/.config/hypr-theme/themes/hyprmono/
 !theme/.config/hypr-theme/themes/hyprmono-light/
 !theme/.config/hypr-theme/themes/catppuccin-mocha/
+# the maintainer's own rules for the /hypr skill (see SKILL.md); not published
+theme/.config/hypr-theme/skills/hypr/MAINTAINER.md

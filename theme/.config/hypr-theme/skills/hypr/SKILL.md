@@ -16,13 +16,25 @@ description: >
 
 Request: $ARGUMENTS
 
-You are working on **martin's monochrome Hyprland rice**. Everything lives
-in the git repo `~/hypr-dotfiles` and is *symlinked* into `~` with GNU stow
+You are working on **hypr-dotfiles, a Hyprland rice, on the user's own
+machine**. The user installed it and now wants to make themes, customise
+the bar and shell, change keybindings or fix something. Everything lives in
+the git clone `~/hypr-dotfiles` and is *symlinked* into `~` with GNU stow
 (one package per app: `hyprland quickshell theme kittyterminal alacritty
 nvim zsh starship gtk sddm`; `waybar rofi swaync wlogout` are legacy
 fallbacks kept for when the shell is not running). **Edit files in the repo**
-— `~/.config/hypr` *is* `~/hypr-dotfiles/hyprland/.config/hypr` — and commit
-when done, without "Co-Authored-By" or "Generated with" lines.
+— `~/.config/hypr` *is* `~/hypr-dotfiles/hyprland/.config/hypr`.
+
+**Changes stay on this machine.** Do not commit, push or open a PR unless
+the user asks for it; `git diff` shows what you changed and `git stash` /
+`git checkout -- <file>` undo it. Themes the user makes are theirs:
+`themes/` tracks only the three shipped ones (`hyprmono`, `hyprmono-light`,
+`catppuccin-mocha`) and `.gitignore` keeps every other theme folder out —
+never force-add one.
+
+**If `MAINTAINER.md` exists next to this file, read it now**: you are then
+working with the rice's maintainer, and its rules (committing, pushing,
+what ships) override this paragraph. It is not part of the published rice.
 
 ## 1. Decide what the request is, then read the matching guide
 
@@ -87,7 +99,7 @@ Commands you will use (all `--help`/header-documented — read the script if uns
    `~/.config/btop/themes/hypr-theme.theme`, `/usr/share/**`, `/etc/**`
    (except through install.sh). They are rendered from `templates/*.tpl` —
    change the template (all themes) or `colors.toml` (one theme).
-2. **Colour is the default; monochrome only when martin says so.** The two
+2. **Colour is the default; monochrome only when the user asks for it.** The two
    `hyprmono*` themes are the old greys-only look (plus `[git]` hues) and stay
    that way. Every other theme is **hued**: `hued = true` in colors.toml, the
    palette's official colours, and each app coloured the way its stock
@@ -115,8 +127,10 @@ Commands you will use (all `--help`/header-documented — read the script if uns
 6. **Backups are git.** Work on the current branch; `git stash`/`git checkout
    -- <file>` undoes a bad change. Before deleting or overwriting anything
    outside the repo, look at it.
-7. **Fresh install must still work.** If you add a package, a file the theme
-   installs, a stow package or a sudo step, update `install.sh` and README.
+7. **Fresh install must still work.** A change meant to ship with the rice
+   (MAINTAINER.md) that adds a package, a file the theme installs, a stow
+   package or a sudo step also updates `install.sh` and README. For a change
+   that is only for this machine, tell the user what to install instead.
 
 ## 4. How a change is applied (live vs restart)
 
@@ -145,8 +159,6 @@ session.
 
 - Screenshot-verified in dark and light (verify.md), `hyprctl configerrors`
   clean, `qs log` free of new warnings.
-- README updated if a user-facing thing changed (keybind table, widget list,
-  live-vs-restart table).
-- One commit, message says *why*; no attribution lines.
+- No commit or push unless the user asked (or MAINTAINER.md says so).
 - Tell the user in a few lines what changed and how to use it; include the
-  keybinding or command.
+  keybinding or command, and how to undo it if it is a big change.
